@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Timetable Maker</title>
+  
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  
+  <!-- Pure CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  
+  <!-- Font -->
+  <link href='https://fonts.googleapis.com/css?family=Lato:400' rel='stylesheet' type='text/css'>
+  
+  <!-- Select2 -->  
+  <link rel="stylesheet" type="text/css" href= "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+  
+  <!-- Course Data -->
+  <script src="data.js"></script>
+  
+  
+  
+  <style>
+  
+    html {
+      background-color: #EEEEEE;
+      height: 100%;
+    }
+    
+    body {
+      width: 90%;
+      height: 100%;
+      max-width: 800px;
+      padding: 2.5%;
+      margin: auto;
+      background:white;
+    }
+
+    html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
+      font-family: 'Lato', sans-serif;
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 1px solid #4F2683;
+      text-transform: uppercase;
+    }
+    
+    h1{
+      margin-top: 0;
+      color: #4F2683;
+      font-weight: lighter;
+    }
+        
+    h3 {
+      afont-weight: normal;
+      color: #4F2683;
+    }
+    
+    
+            
+    .select2-dropdown {
+      font-size: 80%;
+    }
+    
+    .toggle {
+      width: 100px;
+    }
+    
+    .right {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      width: 100px;
+      float: right;
+    }
+    
+    .pure-button-active {
+      box-shadow: 0 0 0 1px #4F2683 inset,0 0 6px rgba(0,0,0,.2) inset;
+      font-weight: bolder;
+      color: #4F2683;
+    }
+    
+    .pure-button-hover, .pure-button:hover, .pure-button:focus {
+      background-color: #dfdfdf;
+      background-image: none; 
+    }
+    
+    .pure-button-primary {
+      background-color: #4F2683;
+    }
+    
+    .pure-button-primary:hover {
+      background-color: #4F2683;
+      font-weight: bolder;
+    }
+    
+    .pure-menu-list {
+      width: 90%;
+      text-align: center;
+    }
+    
+    .pure-menu-link{
+      border-radius: 2px;
+    }
+    
+    .pure-menu-link:hover {
+      text-decoration: line-through;
+    }
+    
+    .first-grid {
+      aborder-bottom: 1px solid #4F2683;
+    }
+    
+    #compute {
+    }
+     
+     #afsmask {
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index:1 !important;
+      background-color: black;
+      opacity: 0.6;
+     }
+     
+  </style>
+  
+  <script>
+    var term = -1;                  // flag for term selected
+    
+    var termNames = new Array(2);   // stores term names
+    termNames[0] = "first term";
+    termNames[1] = "second term";
+
+    var selc = new Array();         // selected courses id
+  
+    $(document).ready(function(){
+      
+      // Load search boxes and make hidden
+      function loadSelect(){
+        for (i = 0; i < 2; i++){
+          var selector = "select[data-id=" + i + "]";
+          console.log(selector);
+          $(selector).empty().append("<option></option>");
+          $(selector).select2({
+            data: data[i],
+            placeholder: "Search for " + termNames[i] + " and full year courses",
+            minimumInputLength: 2
+          })
+          $("#select-div"+i).hide();
+        }
+      }
+      
+      // Remove :focus from button
+      $("button").click(function () {
+        $(this).blur();
+      });
+      
+      // Toggle select2 visibility
+      function toggleSelect() {
+        $("#select-div"+term).show();
+        // TODO
+        // $("#select"+(1-term)).select2('val', null);
+        $("#select-div"+(1-term)).hide();
+      }
+      
+      // Toggle Fall/Winter terms
+      $(".toggle").click(function () {
+        
+        var button = $(this).attr('data-id');
+        if (term == button)
+          return;
+          
+        term = button;
+        toggleSelect();
+        $('#clear').click();       
+        
+        switch(button) {
+          case "0":
+            $("#winter").removeClass("pure-button-active");
+            $("#fall").addClass("pure-button-active");
+            break;
+          case "1":
+            console.log('here');
+            $("#fall").removeClass("pure-button-active");
+            $("#winter").addClass("pure-button-active");
+            break;
+        }
+        
+      });
+      
+      // Add button    
+      $("#add").click(function() {
+        $(this).blur();
+        id = $("#select"+term).select2('data')[0].id;
+        
+        if (id == "")
+          return;
+          
+        if(selc.indexOf(id) != -1)
+          return;
+          
+        selc.push(id);
+        text = $("#select"+term).select2('data')[0].text;
+        
+        
+        
+        var toAdd = '<li class="pure-menu-item list-item" id=' + id + '><a href="#" class="pure-menu-link">' + text + '</a></li>';
+        $("#list").append(toAdd);
+      });
+      
+      // Remove course from list
+      $('ul').on('click', '.list-item', function() {
+        console.log(selc);
+        index = selc.indexOf($(this).attr("id"));
+        selc.splice(index, 1);
+        console.log(selc);
+        $(this).remove();
+      });
+      
+      // Clear All button
+      $('#clear').on('click', function() {
+        $(this).blur();
+        selc = new Array();
+        $('#list').empty();
+      });
+      
+      loadSelect();
+      
+      // Set Fall as default term
+      $("#fall").click();
+        
+    });
+  </script>
+  
+</head>
+
+<body>
+
+    <header>
+      <h1>Western Timetable Maker</h1>
+    </header>
+    
+    <div class="pure-g first-grid">
+      <div class="pure-u-1 pure-u-md-1-2">
+        <h3>Semester</h3>
+        <button id="fall" class="toggle pure-button" data-id=0>Fall</button>
+        <button id="winter" class="toggle pure-button" data-id=1>Winter</button>
+        
+        <h3>Courses</h3>
+        <div id="select-div0">
+          <select style="width: 100%;" id="select0" data-id=0>
+            <option></option>
+          </select>
+        </div>
+        <div id="select-div1">
+          <select style="width: 100%;" id="select1" data-id=1>
+            <option></option>
+          </select>
+        </div>
+        
+        <button id="add" class="pure-button right">Add</button>
+        <br>
+        <br>
+        
+        <h3 style="margin-bottom: 0;">Preferences</h3>
+        <div class="pure-g">
+          <div class="pure-u-1 pure-u-md-1-2">
+          <h4>Class spread</h4>
+          <form>
+            <input id="spread-off" type="radio" name="spread" value="0" checked>
+            <label for="spread-off">Maximum days off</label><br>
+            <input id="spread-even" type="radio" name="spread" value="1">
+            <label for="spread-even">Even spread</label>
+          </form>
+          </div>
+          
+          <div class="pure-u-1 pure-u-md-1-2">
+          <h4>Start of day</h4>
+          <form>
+            <input id="start-early" type="radio" name="late" value="0" checked>
+            <label for="start-early">Early starts</label><br>
+            <input id="start-late" type="radio" name="late" value="1">
+            <label for="start-late">Late starts</label>
+          </form>
+          </div>
+        </div>
+        <br>
+        <button id="compute" class="pure-button pure-button-primary right">Compute!</button>
+
+
+      </div>
+      
+      <div class="pure-u-1 pure-u-md-1-2">
+        <h3>Selected Courses</h3>
+        <ul id="list" class="pure-menu-list">
+        </ul>
+        <button id="clear" class="pure-button right">Clear All</button>
+
+      </div>
+    </div>
+    
+    <div id="fsmask"></div>
+    
+  </body>
