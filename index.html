@@ -21,24 +21,21 @@
   <!-- Course Data -->
   <script src="data.js"></script>
   
-  
-  
   <style>
   
     html {
-      background-color: #EEEEEE;
-      height: 100%;
+      background-color: #dfdfdf;
     }
     
     body {
       width: 90%;
-      aheight: 100%;
+      height: 100%;
       max-width: 800px;
       padding: 1% 2.5%;
       padding-top: 1%;
-      margin: auto;
-      margin-top: 0.5rem;
+      margin: 0.5rem auto 1rem auto;
       background:white;
+      overflow: auto;
     }
     
     body {
@@ -52,13 +49,14 @@
     header {
       text-align: center;
       border-bottom: 1px solid #4F2683;
-      text-transform: uppercase;
+      atext-transform: uppercase;
     }
     
     h1{
       margin-top: 0;
       color: #4F2683;
       afont-weight: lighter;
+      text-shadow: 2px 2px #DFDFDF;
     }
         
     h3 {
@@ -66,8 +64,11 @@
       color: #4F2683;
     }
     
-    
-            
+    label {
+      cursor: pointer;
+      cursor: hand;
+    }
+                
     .select2-dropdown {
       font-size: 80%;
     }
@@ -77,12 +78,12 @@
     }
     
     .right {
-      margin-top: 0.5em;
-      margin-bottom: 0.5em;
+      amargin-top: 0.5em;
+      amargin-bottom: 0.5em;
       width: 100px;
       float: right;
     }
-    
+            
     .pure-button-active {
       box-shadow: 0 0 0 1px #4F2683 inset,0 0 6px rgba(0,0,0,.2) inset;
       font-weight: bolder;
@@ -104,12 +105,8 @@
     }
     
     .pure-menu-list {
-      width: 90%;
+      margin: 0.5em auto;
       text-align: center;
-    }
-    
-    .pure-menu-link{
-      border-radius: 2px;
     }
     
     .pure-menu-link:hover {
@@ -125,6 +122,10 @@
       display: flex;
       justify-content: center;
     }
+    
+    .select2 {
+      margin: 0.5em auto;
+    }
      
      #afsmask {
       height: 100%;
@@ -134,9 +135,9 @@
       top: 0;
       z-index:1 !important;
       background-color: black;
-      opacity: 0.6;
+      opacity: 0.7;
      }
-     
+          
   </style>
   
   <script>
@@ -159,7 +160,7 @@
           $(selector).select2({
             data: data[i],
             placeholder: "Search for " + termNames[i] + " and full year courses",
-            minimumInputLength: 2
+            minimumInputLength: 0
           })
           $("#select-div"+i).hide();
         }
@@ -217,19 +218,21 @@
         selc.push(id);
         text = $("#select"+term).select2('data')[0].text;
         
-        
-        
         var toAdd = '<li class="pure-menu-item list-item" id=' + id + '><a href="#" class="pure-menu-link">' + text + '</a></li>';
+          
         $("#list").append(toAdd);
+        
+//        toAdd = '<li class="pure-menu-item list-item section-list-item" id="sec' + id + '"><a href="#" class="pure-menu-link">' + text + '</a></li>
+//        $('#sections-list').append();
       });
       
       // Remove course from list
-      $('ul').on('click', '.list-item', function() {
+      $('ul').on('click', '.pure-menu-link', function() {
         console.log(selc);
         index = selc.indexOf($(this).attr("id"));
         selc.splice(index, 1);
         console.log(selc);
-        $(this).remove();
+        $(this).closest("li").remove();
       });
       
       // Clear All button
@@ -239,11 +242,16 @@
         $('#list').empty();
       });
       
+      //About button to display footer
+      $('#about').click(function(){
+        $('footer').toggle();
+      });
+      
       loadSelect();
       
       // Set Fall as default term
       $("#fall").click();
-        
+      
     });
   </script>
   
@@ -251,8 +259,17 @@
 
 <body>
     <header>
-        <h1>Western Timetable Maker</h1>
+        <h1>WESTERN TIMETABLE MAKER</h1>
     </header>
+    
+    <div id="instructions">
+    <h3>Instructions</h3>
+    <ol>
+      <li>Select a semester first. This works one semester at a time.</li>
+      <li>Add your courses.</li>
+      <li>Sections can be excluded manually. By default all sections are selected.</li>
+      <li>Timetables are sorted by preference and all possible timetables are shown.</li>
+    </ol>
     
     <div class="pure-g first-grid">
         <div class="pure-u-1 pure-u-sm-1-3">
@@ -263,7 +280,7 @@
             <br>
             <h3 style="margin-bottom: 0;">Preferences</h3>
             <div class="pure-g">
-                <div class="pure-u-1 pure-u-md-1-2">
+                <div class="pure-u-1 pure-u-md-1-2 prefs">
                     <h4></h4>
                     <form>
                         <input id="spread-off" type="radio" name="spread" value="0" checked>
@@ -273,7 +290,7 @@
                         <label for="spread-even">Even spread</label>
                     </form>
                 </div>
-                <div class="pure-u-1 pure-u-md-1-2">
+                <div class="pure-u-1 pure-u-md-1-2 prefs">
                     <h4></h4>
                     <form>
                         <input id="start-early" type="radio" name="late" value="0" checked>
@@ -287,11 +304,15 @@
             <br>
         </div>
         
-        
         <div class="pure-u-1 pure-u-sm-2-3">
+              
             <h3>Courses</h3>
+            
+            
             <ul id="list" class="pure-menu-list">
             </ul>
+            
+            <button id="sections" class="pure-button" style="float: left;">Sections</button>
             <button id="clear" class="pure-button right">Clear All</button>
             <div id="select-div0">
                 <select style="width: 100%;" id="select0" data-id=0><option></option>
@@ -304,9 +325,18 @@
             <button id="add" class="pure-button right">Add</button>
         </div>
     </div>
+    
     <br>
     
     <button id="compute" class="pure-button pure-button-primary">Compute!</button>
     
-    <div id="fsmask"></div>
+    <a href="#" id="about">About</a>
+    
+    <footer style="display: none; border-top: 1px solid #4F2683; margin: 1em auto; text-align: center; color: #4F2683;">
+      <p>Copyright © 2016 Shrumit Mehta</p>
+    </footer>
+    
+    <div id="fsmask" style="display: none;"></div>
+    
+    
 </body>
