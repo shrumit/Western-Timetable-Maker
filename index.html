@@ -1,49 +1,63 @@
+<!--
+
+Copyright (C) Shrumit Mehta 2016
+
+-->
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Timetable Maker</title>
-  
+
   <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-  
+  <script src="jquery-2.2.4.min.js"></script>
+
   <!-- Pure CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
-  
+
   <!-- Font -->
   <link href='https://fonts.googleapis.com/css?family=Lato:400' rel='stylesheet' type='text/css'>
   
-  <!-- Select2 -->  
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <!-- Handlebars.js -->
+  
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  
+  <!-- Select2 -->
   <link rel="stylesheet" type="text/css" href= "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   
+
   <!-- Course Data -->
-  <script src="data.js"></script>
-  
+  <script src="search.js"></script>
+
   <style>
-  
+
     html {
       background-color: #dfdfdf;
+      min-height: 100%;
     }
-    
+
     body {
       width: 90%;
       height: 100%;
-      max-width: 800px;
+      max-width: 900px;
       padding: 1% 2.5%;
       padding-top: 1%;
       margin: 0.5rem auto 1rem auto;
       background:white;
       overflow: auto;
     }
-    
+
     body {
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     }
 
     html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
-      font-family: 'Lato', sans-serif;
+      font-family: 'Roboto', sans-serif;
     }
 
     header {
@@ -51,83 +65,135 @@
       border-bottom: 1px solid #4F2683;
       atext-transform: uppercase;
     }
-    
+
     h1{
       margin-top: 0;
       color: #4F2683;
-      afont-weight: lighter;
+      afont-weight: normal;
       text-shadow: 2px 2px #DFDFDF;
     }
-        
+
     h3 {
       afont-weight: normal;
+      aletter-spacing: 0.1em;
+      text-transform: uppercase;
       color: #4F2683;
+    }
+
+    p {
+      margin: 0;
     }
     
     label {
       cursor: pointer;
       cursor: hand;
+      
     }
-                
-    .select2-dropdown {
-      font-size: 80%;
+            
+    ainput[type=radio] {
+       width: 1.2em;
+       height: 1.3em;
+       vertical-align: top;
     }
     
+
     .toggle {
       width: 100px;
     }
-    
+
     .right {
       amargin-top: 0.5em;
       amargin-bottom: 0.5em;
       width: 100px;
       float: right;
     }
-            
+    
+    
     .pure-button-active {
       box-shadow: 0 0 0 1px #4F2683 inset,0 0 6px rgba(0,0,0,.2) inset;
       font-weight: bolder;
       color: #4F2683;
     }
-    
+
     .pure-button-hover, .pure-button:hover, .pure-button:focus {
       background-color: #dfdfdf;
-      background-image: none; 
+      background-image: none;
     }
-    
+
     .pure-button-primary {
       background-color: #4F2683;
     }
-    
+
     .pure-button-primary:hover {
       background-color: #4F2683;
       font-weight: bolder;
     }
-    
+
     .pure-menu-list {
       margin: 0.5em auto;
       text-align: center;
     }
-    
+
     .pure-menu-link:hover {
-      text-decoration: line-through;
+      atext-decoration: line-through;
+      background-color: #dfdfdf;
+      border-radius: 2px
     }
     
-    .first-grid {
-      aborder-bottom: 1px solid #4F2683;
+    .list-item {
+      display: flex;
+      justify-content: flex-end;
+      aflex-grow: 1;
+      background: #E6E6E6;
+      border-radius: 2px;
+      margin: 1px;
     }
     
+    .list-title{
+      flex-grow: 1;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: block;
+    }
+    
+    .list-cross{
+      max-width: 100px;
+      border-left: 2px solid white;
+    }
+    
+    .section-div {
+      display: none;
+      color: #777777;
+    }
+    
+    .sections-table {
+      text-align: left;
+      letter-spacing: 0em;
+      afont-size: 80%;
+      border: 0.191em solid #dfdfdf;
+    }
+
+    td {
+      padding: 0.1em 0.5em;
+      border: 1px solid #dfdfdf;
+    }
+
     #compute {
       margin: 0 auto;
       display: flex;
       justify-content: center;
     }
-    
+
     .select2 {
       margin: 0.5em auto;
     }
-     
-     #afsmask {
+    
+    .select2-dropdown {
+      font-size: 80%;
+    }
+
+    
+    #fsmask {
       height: 100%;
       width: 100%;
       position: fixed;
@@ -137,20 +203,21 @@
       background-color: black;
       opacity: 0.7;
      }
-          
+
   </style>
-  
+
   <script>
     var term = -1;                  // flag for term selected
-    
+
     var termNames = new Array(2);   // stores term names
     termNames[0] = "first term";
     termNames[1] = "second term";
 
-    var selc = new Array();         // selected courses id
-  
+    var selc = [];         // selected courses id
+    
     $(document).ready(function(){
-      
+      var url = window.location.origin + "/api/";
+
       // Load search boxes and make hidden
       function loadSelect(){
         for (i = 0; i < 2; i++){
@@ -158,38 +225,39 @@
           console.log(selector);
           $(selector).empty().append("<option></option>");
           $(selector).select2({
-            data: data[i],
+            data: search_data[i],
             placeholder: "Search for " + termNames[i] + " and full year courses",
-            minimumInputLength: 0
+            minimumInputLength: 2
           })
           $("#select-div"+i).hide();
         }
       }
-      
+
       // Remove :focus from button
       $("button").click(function () {
         $(this).blur();
       });
       
+      
+
       // Toggle select2 visibility
       function toggleSelect() {
         $("#select-div"+term).show();
-        // TODO
         // $("#select"+(1-term)).select2('val', null);
         $("#select-div"+(1-term)).hide();
       }
-      
+
       // Toggle Fall/Winter terms
       $(".toggle").click(function () {
-        
+
         var button = $(this).attr('data-id');
         if (term == button)
           return;
-          
+
         term = button;
         toggleSelect();
-        $('#clear').click();       
-        
+        $('#clear').click();
+
         switch(button) {
           case "0":
             $("#winter").removeClass("pure-button-active");
@@ -201,77 +269,153 @@
             $("#winter").addClass("pure-button-active");
             break;
         }
-        
+
       });
-      
-      // Add button    
-      $("#add").click(function() {
-        $(this).blur();
-        id = $("#select"+term).select2('data')[0].id;
-        
-        if (id == "")
-          return;
-          
-        if(selc.indexOf(id) != -1)
-          return;
-          
-        selc.push(id);
-        text = $("#select"+term).select2('data')[0].text;
-        
-        var toAdd = '<li class="pure-menu-item list-item" id=' + id + '><a href="#" class="pure-menu-link">' + text + '</a></li>';
-          
-        $("#list").append(toAdd);
-        
-//        toAdd = '<li class="pure-menu-item list-item section-list-item" id="sec' + id + '"><a href="#" class="pure-menu-link">' + text + '</a></li>
-//        $('#sections-list').append();
-      });
-      
+
+
       // Remove course from list
-      $('ul').on('click', '.pure-menu-link', function() {
+      $('ul').on('click', '.list-cross', function() {
         console.log(selc);
-        index = selc.indexOf($(this).attr("id"));
+        index = selc.indexOf($(this).attr("data-id"));
         selc.splice(index, 1);
         console.log(selc);
         $(this).closest("li").remove();
       });
       
+      // Expand sections div
+      $('ul').on('click', '.list-title', function () {
+        $(this).blur();
+        id = $(this).closest('li').attr("data-id");
+        if ($('.section-div[data-id='+id+']').css("display") == "none")
+          $('.section-div').css("display", "none");
+        $('.section-div[data-id='+id+']').slideToggle(100);
+        
+      });
+
       // Clear All button
       $('#clear').on('click', function() {
         $(this).blur();
         selc = new Array();
         $('#list').empty();
       });
-      
+
       //About button to display footer
       $('#about').click(function(){
-        $('footer').toggle();
+        $('footer').slideToggle(100);
       });
-      
+
       loadSelect();
-      
+
       // Set Fall as default term
       $("#fall").click();
       
-    });
+      // Add button
+      $("#add").click(function() {
+        $(this).blur();
+        
+        // check for emptiness or duplicacy
+        id = $("#select"+term).select2('data')[0].id;
+        if (id == "")
+          return;
+        if(selc.indexOf(id) != -1)
+          return;
+        selc.push(id);
+                
+        $.get(url+id, function(data){
+          //console.log(data);
+          data_obj = JSON.parse(data);
+          $('#list').append(sec_template(data_obj));
+        });
+        
+      });
+
+      var template = $('#list-template').html();
+      var sec_template = Handlebars.compile(template);
+      
+    });//end of document.ready
+  </script>
+  <script id="test-template" type="text/x-handlebars-template">
+    <li>{{text}}</li>
   </script>
   
+  <!--  Sections Template -->
+  <script id="old-list-template" type="text/x-handlebars-template">
+    <li class="pure-menu-item" data-id="{{id}}">
+      <div class="list-item">
+        <a href="#" class="pure-menu-link list-title">
+          {{text}}
+        </a>
+        <a href="#" class="pure-menu-link list-cross">
+          X
+        </a>
+      </div>
+      <div class="pure-g section-div" data-id="{{id}}">
+        {{#each components}}
+        <div class="pure-u-1-3">
+          <p style="font-style:italic;">{{name}}</p>
+          <form data-id={{@index}}>
+            {{#each sections}}           
+            <input type="checkbox" value={{@index}} id="c{{@../index}}s{{@index}}" checked>
+            <label for="c{{@../index}}s{{@index}}" class="checked-label">{{name}}</label><br>
+            {{/each}}
+          </form>
+        </div>
+        {{/each}}
+      </div>
+    </li>
+  </script>
+  
+  <script id="list-template" type="text/x-handlebars-template">
+    <li class="pure-menu-item" data-id="{{id}}">
+      <div class="list-item">
+        <a href="#" class="pure-menu-link list-title">
+          {{text}}
+        </a>
+        <a href="#" class="pure-menu-link list-cross">
+          X
+        </a>
+      </div>
+      <div class="pure-g section-div" data-id="{{id}}">
+        <table class="sections-table">
+        {{#each components}}
+        <tr>
+          <td style="font-style:italic; width: 100px; text-align: left">{{name}}</td>
+          <td>
+              {{#each sections}}           
+              <input type="checkbox" value={{@index}} id="c{{@../index}}s{{@index}}" checked>
+              <label for="c{{@../index}}s{{@index}}" class="checked-label">{{name}}</label>
+              {{/each}}
+          </td>
+        </tr>
+        {{/each}}
+        </table>
+      </div>
+    </li>
+  </script>
+
+
 </head>
 
 <body>
+
     <header>
         <h1>WESTERN TIMETABLE MAKER</h1>
     </header>
-    
+
     <div id="instructions">
-    <h3>Instructions</h3>
-    <ol>
-      <li>Select a semester first. This works one semester at a time.</li>
-      <li>Add your courses.</li>
-      <li>Sections can be excluded manually. By default all sections are selected.</li>
-      <li>Timetables are sorted by preference and all possible timetables are shown.</li>
-    </ol>
-    
+      <h3>Instructions</h3>
+      <ol>
+        <li>Select a semester first. This works one semester at a time.</li>
+        <li>Search for and add courses to the list.</li>
+        <li>Click on a course in the list to select sections.</li>
+        <li>Click "Compute!" to generate timetables.</li>
+        <li>Timetables are sorted by preference. All possible conflict-free timetables will be produced.</li>
+      </ol>
+    </div>
+
+    <!-- Main Controls -->
     <div class="pure-g first-grid">
+        <!-- Left Panel -->
         <div class="pure-u-1 pure-u-sm-1-3">
             <h3>Semester</h3>
             <button id="fall" class="toggle pure-button" data-id=0>Fall</button>
@@ -283,10 +427,10 @@
                 <div class="pure-u-1 pure-u-md-1-2 prefs">
                     <h4></h4>
                     <form>
-                        <input id="spread-off" type="radio" name="spread" value="0" checked>
-                        <label for="spread-off">Max days off</label>
+                        <input id="spread-off" type="radio" class="big-radio" name="spread" value="0" checked>
+                        <label for="spread-off" class="checked-label">Max days off</label>
                         <br>
-                        <input id="spread-even" type="radio" name="spread" value="1">
+                        <input id="spread-even" type="radio" class="big-radio" name="spread" value="1">
                         <label for="spread-even">Even spread</label>
                     </form>
                 </div>
@@ -294,7 +438,7 @@
                     <h4></h4>
                     <form>
                         <input id="start-early" type="radio" name="late" value="0" checked>
-                        <label for="start-early">Early starts</label>
+                        <label for="start-early" class="checked-label">Early starts</label>
                         <br>
                         <input id="start-late" type="radio" name="late" value="1">
                         <label for="start-late">Late starts</label>
@@ -303,16 +447,15 @@
             </div>
             <br>
         </div>
-        
+
+        <!-- Right Panel -->
         <div class="pure-u-1 pure-u-sm-2-3">
-              
             <h3>Courses</h3>
-            
-            
+
             <ul id="list" class="pure-menu-list">
             </ul>
-            
-            <button id="sections" class="pure-button" style="float: left;">Sections</button>
+
+            <!--<button id="sections" class="pure-button" style="float: left;">Sections</button> -->
             <button id="clear" class="pure-button right">Clear All</button>
             <div id="select-div0">
                 <select style="width: 100%;" id="select0" data-id=0><option></option>
@@ -325,18 +468,17 @@
             <button id="add" class="pure-button right">Add</button>
         </div>
     </div>
-    
     <br>
-    
+
     <button id="compute" class="pure-button pure-button-primary">Compute!</button>
-    
+
     <a href="#" id="about">About</a>
-    
+
+    <!-- Footer -->
     <footer style="display: none; border-top: 1px solid #4F2683; margin: 1em auto; text-align: center; color: #4F2683;">
       <p>Copyright © 2016 Shrumit Mehta</p>
     </footer>
-    
+
     <div id="fsmask" style="display: none;"></div>
-    
-    
+
 </body>

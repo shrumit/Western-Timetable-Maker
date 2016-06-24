@@ -1,1 +1,8 @@
 dump/
+node_modules/
+public/
+temp/
+
+jquery*
+
+master*
