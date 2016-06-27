@@ -1,6 +1,6 @@
 <!--
 
-Copyright (C) Shrumit Mehta 2016
+Copyright (C) Shrumit Mehta 2016. All rights reserved.
 
 -->
 
@@ -18,12 +18,10 @@ Copyright (C) Shrumit Mehta 2016
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
 
   <!-- Font -->
-  <link href='https://fonts.googleapis.com/css?family=Lato:400' rel='stylesheet' type='text/css'>
-  
-  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-  <!-- Handlebars.js -->
-  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Neuton" rel="stylesheet">
 
+
+  <!-- Handlebars.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
   
   <!-- Select2 -->
@@ -37,7 +35,7 @@ Copyright (C) Shrumit Mehta 2016
   <style>
 
     html {
-      background-color: #dfdfdf;
+      background-color: #E6E6E6;
       min-height: 100%;
     }
 
@@ -46,42 +44,37 @@ Copyright (C) Shrumit Mehta 2016
       height: 100%;
       max-width: 900px;
       padding: 1% 2.5%;
-      padding-top: 1%;
       margin: 0.5rem auto 1rem auto;
       background:white;
       overflow: auto;
-    }
-
-    body {
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     }
 
     html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Open Sans', sans-serif;
+    }
+    
+    h1, h3 {
+      font-family: 'Neuton', serif;
     }
 
     header {
       text-align: center;
       border-bottom: 1px solid #4F2683;
-      atext-transform: uppercase;
     }
 
     h1{
-      margin-top: 0;
+      font-weight: normal;
       color: #4F2683;
-      afont-weight: normal;
-      text-shadow: 2px 2px #DFDFDF;
+      atext-shadow: 2px 2px #E6E6E6;
+      font-size: 3em;
+      margin: 0.1em auto; 
     }
 
     h3 {
-      afont-weight: normal;
-      aletter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #4F2683;
-    }
-
-    p {
-      margin: 0;
+      font-weight: normal;
+      font-size: 1.4em;
+      color: black;
     }
     
     label {
@@ -108,25 +101,36 @@ Copyright (C) Shrumit Mehta 2016
       float: right;
     }
     
+    .pure-button {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+     }
     
     .pure-button-active {
-      box-shadow: 0 0 0 1px #4F2683 inset,0 0 6px rgba(0,0,0,.2) inset;
-      font-weight: bolder;
+      //box-shadow: 0 0 0 1px #4F2683 inset,0 0 6px rgba(0,0,0,.2) inset;
+      //box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      font-weight: bold;
+      atext-decoration: underline;
+      background-color: #F2F2F2;
       color: #4F2683;
+      color: black;
+      
     }
 
     .pure-button-hover, .pure-button:hover, .pure-button:focus {
-      background-color: #dfdfdf;
+      background-color: #F2F2F2;
       background-image: none;
+      
     }
 
     .pure-button-primary {
       background-color: #4F2683;
+      
     }
 
     .pure-button-primary:hover {
       background-color: #4F2683;
       font-weight: bolder;
+      
     }
 
     .pure-menu-list {
@@ -136,7 +140,7 @@ Copyright (C) Shrumit Mehta 2016
 
     .pure-menu-link:hover {
       atext-decoration: line-through;
-      background-color: #dfdfdf;
+      background-color: #F5F5F5;
       border-radius: 2px
     }
     
@@ -145,8 +149,10 @@ Copyright (C) Shrumit Mehta 2016
       justify-content: flex-end;
       aflex-grow: 1;
       background: #E6E6E6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
       border-radius: 2px;
-      margin: 1px;
+      margin: 2px;
+      
     }
     
     .list-title{
@@ -154,23 +160,25 @@ Copyright (C) Shrumit Mehta 2016
       text-overflow: ellipsis;
       overflow: hidden;
       display: block;
+      color: #2E2E2E;
     }
     
     .list-cross{
       max-width: 100px;
-      border-left: 2px solid white;
+      border-left: 2px dashed white;
     }
     
     .section-div {
       display: none;
-      color: #777777;
+      acolor: #777777;
     }
     
     .sections-table {
       text-align: left;
       letter-spacing: 0em;
       afont-size: 80%;
-      border: 0.191em solid #dfdfdf;
+      border: 0.191em solid #F5F5F5;
+      afont-family: monospace;
     }
 
     td {
@@ -190,9 +198,22 @@ Copyright (C) Shrumit Mehta 2016
     
     .select2-dropdown {
       font-size: 80%;
+      font-weight: lighter;
     }
-
     
+    .select2-container--default .select2-selection--single {
+      border-radius: 0px;
+      text-align: center;
+      border: 1px  black dashed;
+      aheight: 35px;
+      outline: none;
+      font-size: 80%;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+      color: black;
+    }
+        
     #fsmask {
       height: 100%;
       width: 100%;
@@ -280,6 +301,7 @@ Copyright (C) Shrumit Mehta 2016
         selc.splice(index, 1);
         console.log(selc);
         $(this).closest("li").remove();
+        return false;
       });
       
       // Expand sections div
@@ -289,7 +311,7 @@ Copyright (C) Shrumit Mehta 2016
         if ($('.section-div[data-id='+id+']').css("display") == "none")
           $('.section-div').css("display", "none");
         $('.section-div[data-id='+id+']').slideToggle(100);
-        
+        return false;
       });
 
       // Clear All button
@@ -369,7 +391,7 @@ Copyright (C) Shrumit Mehta 2016
     <li class="pure-menu-item" data-id="{{id}}">
       <div class="list-item">
         <a href="#" class="pure-menu-link list-title">
-          {{text}}
+          {{text}}{{id}}
         </a>
         <a href="#" class="pure-menu-link list-cross">
           X
@@ -379,11 +401,11 @@ Copyright (C) Shrumit Mehta 2016
         <table class="sections-table">
         {{#each components}}
         <tr>
-          <td style="font-style:italic; width: 100px; text-align: left">{{name}}</td>
+          <td style="font-style:italic; width: 75px; text-align: left">{{name}}</td>
           <td>
               {{#each sections}}           
-              <input type="checkbox" value={{@index}} id="c{{@../index}}s{{@index}}" checked>
-              <label for="c{{@../index}}s{{@index}}" class="checked-label">{{name}}</label>
+              <input type="checkbox" value={{@index}} id="c{{../../id}}s{{@index}}" checked>
+              <label for="c{{../../id}}s{{@index}}" class="checked-label">{{name}}</label>
               {{/each}}
           </td>
         </tr>
@@ -399,7 +421,7 @@ Copyright (C) Shrumit Mehta 2016
 <body>
 
     <header>
-        <h1>WESTERN TIMETABLE MAKER</h1>
+        <h1>Western Timetable Maker</h1>
     </header>
 
     <div id="instructions">
@@ -407,7 +429,7 @@ Copyright (C) Shrumit Mehta 2016
       <ol>
         <li>Select a semester first. This works one semester at a time.</li>
         <li>Search for and add courses to the list.</li>
-        <li>Click on a course in the list to select sections.</li>
+        <li>Click on a course in the list to deselect sections.</li>
         <li>Click "Compute!" to generate timetables.</li>
         <li>Timetables are sorted by preference. All possible conflict-free timetables will be produced.</li>
       </ol>
