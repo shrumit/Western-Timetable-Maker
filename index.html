@@ -10,16 +10,15 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
   <meta charset="utf-8">
   <title>Timetable Maker</title>
 
-  <!-- jQuery -->
-  <script src="jquery-2.2.4.min.js"></script>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Neuton" rel="stylesheet">
 
-  <!-- Pure CSS -->
+  <!-- PureCSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Neuton" rel="stylesheet">
-
+  <!-- jQuery -->
+  <script src="jquery-2.2.4.min.js"></script>
 
   <!-- Handlebars.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
@@ -29,16 +28,13 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   
 
-  <!-- Course Data -->
-  <script src="search.js"></script>
-
   <style>
-
+    
     html {
       background-color: #E6E6E6;
       min-height: 100%;
     }
-
+    
     body {
       width: 90%;
       height: 100%;
@@ -49,7 +45,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       overflow: auto;
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     }
-
+    
     html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
       font-family: 'Open Sans', sans-serif;
     }
@@ -57,23 +53,23 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     h1, h3 {
       font-family: 'Neuton', serif;
     }
-
+    
     header {
       text-align: center;
       border-bottom: 1px solid #4F2683;
     }
-
+    
     h1{
       font-weight: normal;
       color: #4F2683;
       atext-shadow: 2px 2px #E6E6E6;
       font-size: 3em;
-      margin: 0.1em auto; 
+      margin: 0.1em auto;
     }
-
+    
     h3 {
       font-weight: normal;
-      font-size: 1.4em;
+      font-size: 1.5em;
       color: black;
     }
     
@@ -82,18 +78,26 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       cursor: hand;
       
     }
-            
+    
+    li {
+      margin-bottom: 0.2em;
+    }
+    
+    #extra-text {
+      font-size: 80%;
+    }
+    
     ainput[type=radio] {
        width: 1.2em;
        height: 1.3em;
        vertical-align: top;
     }
     
-
+    
     .toggle {
       width: 100px;
     }
-
+    
     .right {
       amargin-top: 0.5em;
       amargin-bottom: 0.5em;
@@ -113,24 +117,20 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       background-color: #F2F2F2;
       color: #4F2683;
       color: black;
-      
     }
 
     .pure-button-hover, .pure-button:hover, .pure-button:focus {
       background-color: #F2F2F2;
       background-image: none;
-      
     }
 
     .pure-button-primary {
       background-color: #4F2683;
-      
     }
 
     .pure-button-primary:hover {
       background-color: #4F2683;
       font-weight: bolder;
-      
     }
 
     .pure-menu-list {
@@ -152,7 +152,6 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
       border-radius: 2px;
       margin: 2px;
-      
     }
     
     .list-title{
@@ -208,8 +207,9 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       aheight: 35px;
       outline: none;
       font-size: 80%;
+      cursor: text;
     }
-    
+        
     .select2-container--default .select2-selection--single .select2-selection__placeholder {
       color: black;
     }
@@ -223,44 +223,44 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       z-index:1 !important;
       background-color: black;
       opacity: 0.7;
-     }
+    }
 
   </style>
 
   <script>
-    var term = -1;                  // flag for term selected
-
-    var termNames = new Array(2);   // stores term names
-    termNames[0] = "first term";
-    termNames[1] = "second term";
-
-    var selc = [];         // selected courses id
     
+    var course_selc = [];
     $(document).ready(function(){
-      var url = window.location.origin + "/api/";
+      let term = -1;         // flag for term selected
+      let selc = [];         // selected courses id
+      
 
-      // Load search boxes and make hidden
-      function loadSelect(){
-        for (i = 0; i < 2; i++){
-          var selector = "select[data-id=" + i + "]";
-          console.log(selector);
-          $(selector).empty().append("<option></option>");
-          $(selector).select2({
-            data: search_data[i],
-            placeholder: "Search for " + termNames[i] + " and full year courses",
-            minimumInputLength: 2
-          })
-          $("#select-div"+i).hide();
-        }
-      }
-
+      let url = window.location.origin;
+      
       // Remove :focus from button
       $("button").click(function () {
         $(this).blur();
       });
       
       
+      // Load search boxes and make hidden
+      (function loadSelect(){
+         const termNames = ['first term', 'second term'];   // stores term names
 
+        for (i = 0; i < 2; i++){
+          let selector = `select[data-id=${i}]`;
+          $.getJSON(`${url}/search/${i}`, function(res) {
+            $(selector).empty().append("<option></option>");
+            $(selector).select2({
+              data: res,
+              placeholder: `Search for ${termNames[i]} and full year courses`,
+              minimumInputLength: 2
+            })
+            $("#select-div"+i).hide();
+          })
+        }
+      })()
+      
       // Toggle select2 visibility
       function toggleSelect() {
         $("#select-div"+term).show();
@@ -285,39 +285,39 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
             $("#fall").addClass("pure-button-active");
             break;
           case "1":
-            console.log('here');
             $("#fall").removeClass("pure-button-active");
             $("#winter").addClass("pure-button-active");
             break;
         }
 
       });
-
+      
+      // Set Fall as default term
+      $("#fall").click();
 
       // Remove course from list
       $('ul').on('click', '.list-cross', function() {
-        console.log(selc);
         index = selc.indexOf($(this).attr("data-id"));
         selc.splice(index, 1);
-        console.log(selc);
-        $(this).closest("li").remove();
+        course_selc.splice(index, 1);
+        $(this).closest('li').remove();
         return false;
       });
       
       // Expand sections div
       $('ul').on('click', '.list-title', function () {
         $(this).blur();
-        id = $(this).closest('li').attr("data-id");
-        if ($('.section-div[data-id='+id+']').css("display") == "none")
-          $('.section-div').css("display", "none");
-        $('.section-div[data-id='+id+']').slideToggle(100);
+        id = $(this).closest('li').attr('data-id');
+//        if ($(`.section-div[data-id=${id}]`).css('display') == 'none')
+//          $('.section-div').css('display', 'none');
+        $(`.section-div[data-id=${id}]`).slideToggle(100);
         return false;
       });
 
       // Clear All button
       $('#clear').on('click', function() {
-        $(this).blur();
-        selc = new Array();
+        selc = [];
+        course_selc = [];
         $('#list').empty();
       });
 
@@ -325,43 +325,227 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       $('#about').click(function(){
         $('footer').slideToggle(100);
       });
-
-      loadSelect();
-
-      // Set Fall as default term
-      $("#fall").click();
       
-      // Add button
-      $("#add").click(function() {
+      // Add course button
+      $('#add').click(function() {
         $(this).blur();
         
         // check for emptiness or duplicacy
-        id = $("#select"+term).select2('data')[0].id;
-        if (id == "")
+        id = $('#select'+term).select2('data')[0].id;
+        if ((id == "") || (selc.indexOf(id) != -1))
           return;
-        if(selc.indexOf(id) != -1)
-          return;
+
         selc.push(id);
-                
-        $.get(url+id, function(data){
-          //console.log(data);
-          data_obj = JSON.parse(data);
-          $('#list').append(sec_template(data_obj));
+        
+        $.getJSON(`${url}/api/${id}`, function(data){
+          $('#list').append(sec_template(data));
+          course_selc.push(data);
         });
         
       });
-
+      
+      // Compile Handlebars
       var template = $('#list-template').html();
       var sec_template = Handlebars.compile(template);
+
+      
+      // COMPUTE!
+      
+      $('#compute').click(function(){
+        if (course_selc.length == 0)
+          return;
+        
+        (function(){
+          $(this).prop('disabled', 'true');
+        })
+          function(){
+            var start = new Date().getTime();
+            $.when(computeEngine()).done(function(){
+              var end = new Date().getTime();
+              console.log(`Took ${end-start} ms.`);
+            });
+          }
+        );
+      });
+      
+            
+      // Compute Logic
+      function computeEngine(){
+        'use strict';
+  
+        // CREATE MASTER
+        let master = [];
+        for (let i = 0; i < course_selc.length; i++){
+          for (let j = 0; j < course_selc[i].components.length; j++)
+            master.push(JSON.parse(JSON.stringify(course_selc[i].components[j].sections)));
+        }
+        
+        // FILTER MASTER - remove disabled sections
+        master.forEach(function(comp){
+          comp = comp.filter(function(sec){
+            if (sec.hasOwnProperty("disabled") && sec["disabled"] == true)
+              return false;
+            else 
+              return true;
+          });
+        });
+        
+        // SORT MASTER - lowest # of sections first
+        master.sort(function (a, b){
+          return a.length - b.length;
+        })
+        
+        // HEURISTIC for score threshold
+        let bar = 0;
+        let maxperm = 1;
+        for (let i = 0; i < master.length; i++){
+          maxperm *= master[i].length;
+        }
+        if (maxperm > 5000000){
+          bar = 3.5;
+        }
+        console.log('maxp' + maxperm);
+        
+        // INITIALIZE
+        let stack = [];
+        let table = [0,0,0,0,0];
+        let solutions = [];
+        let index = 0;
+        let count = 0;
+
+        recurse();
+        
+        // HEURISTIC RE-RUN
+        while (solutions.length < 50 && bar > 0){
+          bar -= 0.5;
+          
+          stack = [];
+          table = [0,0,0,0,0];
+          solutions = [];
+          index = 0;
+          count = 0;
+          console.log('repeating with bar ' + bar);
+          recurse();
+        }
+        
+        // SORT SOLUTIONS
+        solutions.sort( function(a,b){
+          return a.score - b.score;
+        });
+        
+        print(solutions[solutions.length-1]);
+        console.log('solutions ' + solutions.length);
+        console.log('total perms ' + count);
+
+        // -----------------
+        function recurse() {
+          if (index === master.length){
+            snapshot();
+            return;
+          }
+          for (let i = 0; i < master[index].length; i++){
+            stack.push(master[index][i]);
+            if (isConflict()){
+              stack.pop();
+            }
+            else {
+              addToTable();
+              index += 1;
+              recurse();
+              index -= 1;
+              removeFromTable();
+              stack.pop();
+            }
+          }
+        }
+        
+        function snapshot(){
+          count++;
+          // compute score
+          let score = 1;
+          let total = 0;
+          for (var i = 0; i < 5; i++){
+            if (table[i] === 0){
+              score++;
+            } else {
+              total += Math.log(table[i]);
+            }
+          }
+          score += (total / 5 - score)/28;
+          
+          // test bar
+          if (score < bar)
+            return;
+
+          // push to solutions
+          let temp = [];
+          for (let i = 0; i < stack.length; i++){
+            for (let j = 0; j < stack[i].timeslots.length; j++){
+              let obj = stack[i].timeslots[j];
+              temp.push({
+                id: obj.id,
+                day: obj.day,
+                start: obj.start,
+                len: obj.len,
+                str1: obj.str1,
+                str2: obj.str2
+              });
+            }
+          }
+          solutions.push({score, temp});
+        }
+        
+        function isConflict(){
+          let section = stack[stack.length-1];
+          for (let j = 0; j < section.timeslots.length; j++){
+            if ((table[section.timeslots[j].day] & section.timeslots[j].timebit) > 0){
+              return true;
+            }
+          }
+          return false;
+        }
+        
+        function addToTable(){
+          let section = stack[stack.length-1];
+          for (let j = 0; j < section.timeslots.length; j++){
+            table[section.timeslots[j].day] = table[section.timeslots[j].day] ^ section.timeslots[j].timebit;
+          }
+        }
+        
+        function removeFromTable(){
+          let section = stack[stack.length-1];
+          for (let j = 0; j < section.timeslots.length; j++){
+            table[section.timeslots[j].day] = (~section.timeslots[j].timebit) & table[section.timeslots[j].day];
+          }
+        }
+      }
+      
       
     });//end of document.ready
+    
+    function checkboxChange(elem){
+      $elem = $(elem);
+      var index = ($elem.closest('li').index());
+      var mid = $elem.closest('td').attr('mid');
+      var sid = $elem.attr('sid');
+      
+      var value = $elem.is(':checked') ? false : true;
+      course_selc[index].components[mid].sections[sid]["disabled"] = value;
+      
+      console.log(JSON.stringify(course_selc));
+      
+      //console.log(`${index} ${mid} ${sid}`);
+      //console.log(JSON.stringify(course_selc[index].components[mid].sections[sid]["name"]));
+    }
+    
+    function print(obj){
+      console.log(JSON.stringify(obj));
+    }
+        
   </script>
-  <script id="test-template" type="text/x-handlebars-template">
-    <li>{{text}}</li>
-  </script>
-  
+    
   <!--  Sections Template -->
-  <script id="old-list-template" type="text/x-handlebars-template">
+  <script id="list-template" type="text/x-handlebars-template">
     <li class="pure-menu-item" data-id="{{id}}">
       <div class="list-item">
         <a href="#" class="pure-menu-link list-title">
@@ -371,41 +555,15 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
           X
         </a>
       </div>
-      <div class="pure-g section-div" data-id="{{id}}">
-        {{#each components}}
-        <div class="pure-u-1-3">
-          <p style="font-style:italic;">{{name}}</p>
-          <form data-id={{@index}}>
-            {{#each sections}}           
-            <input type="checkbox" value={{@index}} id="c{{@../index}}s{{@index}}" checked>
-            <label for="c{{@../index}}s{{@index}}" class="checked-label">{{name}}</label><br>
-            {{/each}}
-          </form>
-        </div>
-        {{/each}}
-      </div>
-    </li>
-  </script>
-  
-  <script id="list-template" type="text/x-handlebars-template">
-    <li class="pure-menu-item" data-id="{{id}}">
-      <div class="list-item">
-        <a href="#" class="pure-menu-link list-title">
-          {{text}}{{id}}
-        </a>
-        <a href="#" class="pure-menu-link list-cross">
-          X
-        </a>
-      </div>
-      <div class="pure-g section-div" data-id="{{id}}">
+      <div class="section-div" data-id="{{id}}">
         <table class="sections-table">
         {{#each components}}
         <tr>
           <td style="font-style:italic; width: 75px; text-align: left">{{name}}</td>
-          <td>
-              {{#each sections}}           
-              <input type="checkbox" value={{@index}} id="c{{../../id}}s{{@index}}" checked>
-              <label for="c{{../../id}}s{{@index}}" class="checked-label">{{name}}</label>
+          <td class="section-td" mid="{{@index}}">
+              {{#each sections}}
+              <input onchange="checkboxChange(this)" type="checkbox" sid="{{@index}}" id="c{{../../id}}m{{@../index}}s{{@index}}" checked>
+              <label for="c{{../../id}}m{{@../index}}s{{@index}}">{{name}}</label>
               {{/each}}
           </td>
         </tr>
@@ -415,24 +573,27 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     </li>
   </script>
 
-
 </head>
 
 <body>
 
     <header>
-        <h1>Western Timetable Maker</h1>
+        <h1>Western</h1>
     </header>
 
     <div id="instructions">
       <h3>Instructions</h3>
       <ol>
-        <li>Select a semester first. This works one semester at a time.</li>
-        <li>Search for and add courses to the list.</li>
-        <li>Click on a course in the list to deselect sections.</li>
+        <li>Select a semester, search for courses and add them to the list.</li>
+        <li>Click on a course in the list to see its sections.</li>
+        <li>Set your preferences. At this time, "Most days off" cannot be changed.</li>
         <li>Click "Compute!" to generate timetables.</li>
-        <li>Timetables are sorted by preference. All possible conflict-free timetables will be produced.</li>
+        <li>Timetables are sorted by preference. "Most days off" is given priority over "Early/Late classes".</li>
       </ol>
+      <ul id="extra-text">
+        <li>Some first year science/social-science courses have upwards of 30 lab/tutorial sections and timetables containing these courses can have <em>millions</em> of conflict-free permutations. Even though the algorithm is insanely optimized and is designed to handle such cases, it may take upto a minute to compute. Be patient!</li>
+        <li>For best stability use on Chrome, Chromium or Opera browsers.</li>
+      </ul>
     </div>
 
     <!-- Main Controls -->
@@ -449,21 +610,21 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
                 <div class="pure-u-1 pure-u-md-1-2 prefs">
                     <h4></h4>
                     <form>
-                        <input id="spread-off" type="radio" class="big-radio" name="spread" value="0" checked>
-                        <label for="spread-off" class="checked-label">Max days off</label>
+                        <input id="spread-off" type="radio" class="big-radio" name="spread" value="0" checked disabled>
+                        <label for="spread-off" class="checked-label" disabled>Most days off</label>
                         <br>
-                        <input id="spread-even" type="radio" class="big-radio" name="spread" value="1">
-                        <label for="spread-even">Even spread</label>
+                        <input id="spread-even" type="radio" class="big-radio" name="spread" value="1" disabled>
+                        <label for="spread-even" disabled>Even spread</label>
                     </form>
                 </div>
                 <div class="pure-u-1 pure-u-md-1-2 prefs">
                     <h4></h4>
                     <form>
-                        <input id="start-early" type="radio" name="late" value="0" checked>
-                        <label for="start-early" class="checked-label">Early starts</label>
+                        <input id="class-early" type="radio" name="late" value="0" checked>
+                        <label for="class-early" class="checked-label">Early classes</label>
                         <br>
-                        <input id="start-late" type="radio" name="late" value="1">
-                        <label for="start-late">Late starts</label>
+                        <input id="class-late" type="radio" name="late" value="1">
+                        <label for="class-late">Late classes</label>
                     </form>
                 </div>
             </div>
@@ -493,7 +654,9 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     <br>
 
     <button id="compute" class="pure-button pure-button-primary">Compute!</button>
-
+    <p id="notif">
+    </p>
+    
     <a href="#" id="about">About</a>
 
     <!-- Footer -->
