@@ -62,7 +62,6 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     h1{
       font-weight: normal;
       color: #4F2683;
-      atext-shadow: 2px 2px #E6E6E6;
       font-size: 3em;
       margin: 0.1em auto;
     }
@@ -87,13 +86,6 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       font-size: 80%;
     }
     
-    ainput[type=radio] {
-       width: 1.2em;
-       height: 1.3em;
-       vertical-align: top;
-    }
-    
-    
     .toggle {
       width: 100px;
     }
@@ -110,8 +102,6 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
      }
     
     .pure-button-active {
-      //box-shadow: 0 0 0 1px #4F2683 inset,0 0 6px rgba(0,0,0,.2) inset;
-      //box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
       font-weight: bold;
       atext-decoration: underline;
       background-color: #F2F2F2;
@@ -175,17 +165,15 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     .sections-table {
       text-align: left;
       letter-spacing: 0em;
-      afont-size: 80%;
       border: 0.191em solid #F5F5F5;
-      afont-family: monospace;
     }
 
-    td {
+    .sections-table td {
       padding: 0.1em 0.5em;
       border: 1px solid #dfdfdf;
     }
 
-    #compute {
+    .center-button {
       margin: 0 auto;
       display: flex;
       justify-content: center;
@@ -199,7 +187,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       font-size: 80%;
       font-weight: lighter;
     }
-    
+        
     .select2-container--default .select2-selection--single {
       border-radius: 0px;
       text-align: center;
@@ -213,17 +201,37 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     .select2-container--default .select2-selection--single .select2-selection__placeholder {
       color: black;
     }
-        
-    #fsmask {
-      height: 100%;
+    
+    #timetable-div {
       width: 100%;
-      position: fixed;
-      left: 0;
-      top: 0;
-      z-index:1 !important;
-      background-color: black;
-      opacity: 0.7;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
+    
+    .timetable-container {
+      overflow: auto;
+      text-align: center;
+      margin: 1em;
+    }
+    
+    .timetable {
+      border-collapse: collapse;
+      border: 1px solid black;
+      font-size: 80%;
+    }
+    
+    .timetable td, .timetable th {
+      border: 1px solid black;
+      padding: 0px 0.5em;
+      min-width: 50px;
+      white-space: nowrap;
+    }
+
+    .timetable tr:nth-child(even) {
+      background-color: #F2F2F2;
+    }
+
 
   </style>
 
@@ -246,14 +254,15 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       // Load search boxes and make hidden
       (function loadSelect(){
          const termNames = ['first term', 'second term'];   // stores term names
-
+        
         for (i = 0; i < 2; i++){
           let selector = `select[data-id=${i}]`;
+          let placeholdertext = `Search for ${termNames[i]} and full year courses`;
           $.getJSON(`${url}/search/${i}`, function(res) {
             $(selector).empty().append("<option></option>");
             $(selector).select2({
               data: res,
-              placeholder: `Search for ${termNames[i]} and full year courses`,
+              placeholder: placeholdertext,
               minimumInputLength: 2
             })
             $("#select-div"+i).hide();
@@ -295,9 +304,11 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       // Set Fall as default term
       $("#fall").click();
 
+      var solutions;
       // Remove course from list
       $('ul').on('click', '.list-cross', function() {
-        index = selc.indexOf($(this).attr("data-id"));
+        
+        index = selc.indexOf($(this).closest('li').attr("data-id"));
         selc.splice(index, 1);
         course_selc.splice(index, 1);
         $(this).closest('li').remove();
@@ -345,30 +356,28 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       });
       
       // Compile Handlebars
-      var template = $('#list-template').html();
-      var sec_template = Handlebars.compile(template);
+      let template = $('#list-template').html();
+      let sec_template = Handlebars.compile(template);
 
+      template = $('#timetable-template').html();
+      let table_template = Handlebars.compile(template);
+      
+      template = $('#row-template').html();
+      let row_template = Handlebars.compile(template);
+      
       
       // COMPUTE!
-      
       $('#compute').click(function(){
-        if (course_selc.length == 0)
-          return;
-        
-        (function(){
-          $(this).prop('disabled', 'true');
-        })
-          function(){
-            var start = new Date().getTime();
-            $.when(computeEngine()).done(function(){
-              var end = new Date().getTime();
-              console.log(`Took ${end-start} ms.`);
-            });
-          }
-        );
+        $('#timetable-div').html('');
+        if (course_selc.length > 0){
+          let start = new Date().getTime();
+          computeEngine();
+          let end = new Date().getTime();
+          console.log(`Took ${end-start} ms.`);
+        }
+        $(this).removeAttr('disabled'); 
       });
-      
-            
+        
       // Compute Logic
       function computeEngine(){
         'use strict';
@@ -401,24 +410,23 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
         for (let i = 0; i < master.length; i++){
           maxperm *= master[i].length;
         }
-        if (maxperm > 5000000){
-          bar = 3.5;
+        if (maxperm > 20000000){
+          bar = 3;
         }
-        console.log('maxp' + maxperm);
         
         // INITIALIZE
         let stack = [];
         let table = [0,0,0,0,0];
-        let solutions = [];
+        solutions = [];
         let index = 0;
         let count = 0;
-
+        
+        console.log('running with bar ' + bar);
         recurse();
         
         // HEURISTIC RE-RUN
         while (solutions.length < 50 && bar > 0){
-          bar -= 0.5;
-          
+          bar -= Math.log(bar)/Math.log(5);
           stack = [];
           table = [0,0,0,0,0];
           solutions = [];
@@ -429,20 +437,24 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
         }
         
         // SORT SOLUTIONS
-        solutions.sort( function(a,b){
+        solutions.sort(function(a,b){
           return a.score - b.score;
         });
         
         print(solutions[solutions.length-1]);
+        console.log('max perms ' + maxperm);
+        console.log('con-free perms ' + count);
         console.log('solutions ' + solutions.length);
-        console.log('total perms ' + count);
 
-        // -----------------
+        makeTimetables();
+        
+      // ------------------------------------------------------//
         function recurse() {
           if (index === master.length){
             snapshot();
-            return;
+            return
           }
+          
           for (let i = 0; i < master[index].length; i++){
             stack.push(master[index][i]);
             if (isConflict()){
@@ -457,6 +469,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
               stack.pop();
             }
           }
+          return;
         }
         
         function snapshot(){
@@ -464,14 +477,14 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
           // compute score
           let score = 1;
           let total = 0;
-          for (var i = 0; i < 5; i++){
+          for (let i = 0; i < 5; i++){
             if (table[i] === 0){
               score++;
             } else {
               total += Math.log(table[i]);
             }
           }
-          score += (total / 5 - score)/28;
+          score += (total / 5 - score)/20;
           
           // test bar
           if (score < bar)
@@ -517,6 +530,26 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
           for (let j = 0; j < section.timeslots.length; j++){
             table[section.timeslots[j].day] = (~section.timeslots[j].timebit) & table[section.timeslots[j].day];
           }
+        }
+      }
+      
+      function makeTimetables(){
+        const time_text =
+           ["8:00 am","8:30 am","9:00 am","9:30 am","10:00 am","10:30 am","11:00 am","11:30 am","12:00 pm","12:30 pm","1:00 pm","1:30 pm","2:00 pm","2:30 pm","3:00 pm","3:30 pm","4:00 pm","4:30 pm","5:00 pm","5:30 pm","6:00 pm","6:30 pm","7:00 pm","7:30 pm","8:00 pm","8:30 pm","9:00 pm","9:30 pm", "10:00 pm"];
+        let counter = 0;
+        while(counter < 10 && solutions.length > 0){
+          console.log('here');
+          let current = solutions.pop()
+          let index = solutions.length;
+          $('#timetable-div').append(table_template({id: index}));
+          for (let i = 0; i<28; i++){
+            console.log(1);
+            $(`table[data-id=${index}] > tbody`).append(row_template({time: time_text[i], rowindex: i}));
+          }
+          counter++;
+        }
+        if (solutions.length == 0){
+          //disable More button
         }
       }
       
@@ -572,7 +605,35 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       </div>
     </li>
   </script>
-
+  
+  <!-- Table Template -->
+  <script id="timetable-template" type="text/x-handlebars-template">
+    <div class="timetable-container">
+    <table class="timetable" data-id="{{id}}">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Mon</th>
+          <th>Tue</th>
+          <th>Wed</th>
+          <th>Thu</th>
+          <th>Fri</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    </div>
+    <br>
+  </script>
+  
+  <script id="row-template" type="text/x-handlebars-template">
+    <tr id="{{rowindex}}">
+      <td>{{time}}</td>
+      <td></td><td></td><td></td><td></td><td></td>
+    </tr>
+  </script>
+  
 </head>
 
 <body>
@@ -586,7 +647,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       <ol>
         <li>Select a semester, search for courses and add them to the list.</li>
         <li>Click on a course in the list to see its sections.</li>
-        <li>Set your preferences. At this time, "Most days off" cannot be changed.</li>
+        <li>Set your preferences. At this time, preferences cannot be changed.</li>
         <li>Click "Compute!" to generate timetables.</li>
         <li>Timetables are sorted by preference. "Most days off" is given priority over "Early/Late classes".</li>
       </ol>
@@ -611,7 +672,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
                     <h4></h4>
                     <form>
                         <input id="spread-off" type="radio" class="big-radio" name="spread" value="0" checked disabled>
-                        <label for="spread-off" class="checked-label" disabled>Most days off</label>
+                        <label for="spread-off" disabled>Most days off</label>
                         <br>
                         <input id="spread-even" type="radio" class="big-radio" name="spread" value="1" disabled>
                         <label for="spread-even" disabled>Even spread</label>
@@ -620,11 +681,11 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
                 <div class="pure-u-1 pure-u-md-1-2 prefs">
                     <h4></h4>
                     <form>
-                        <input id="class-early" type="radio" name="late" value="0" checked>
-                        <label for="class-early" class="checked-label">Early classes</label>
+                        <input id="class-late" type="radio" name="late" value="1" checked disabled>
+                        <label for="class-late" disabled>Late classes</label>
                         <br>
-                        <input id="class-late" type="radio" name="late" value="1">
-                        <label for="class-late">Late classes</label>
+                        <input id="class-early" type="radio" name="late" value="0" disabled>
+                        <label for="class-early" disabled>Early classes</label>
                     </form>
                 </div>
             </div>
@@ -653,13 +714,15 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     </div>
     <br>
 
-    <button id="compute" class="pure-button pure-button-primary">Compute!</button>
-    <p id="notif">
-    </p>
+    <button id="compute" class="pure-button pure-button-primary center-button" onclick="$(this).prop('disabled','true');">Compute!</button>
+    <br>
     
-    <a href="#" id="about">About</a>
+    <div id="timetable-div">
+    </div>
+    
 
     <!-- Footer -->
+    <a href="#" id="about">About</a>
     <footer style="display: none; border-top: 1px solid #4F2683; margin: 1em auto; text-align: center; color: #4F2683;">
       <p>Copyright © 2016 Shrumit Mehta</p>
     </footer>

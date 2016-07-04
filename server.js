@@ -28,5 +28,3 @@ app.use(express.static(__dirname + '/'));
 app.listen(3000, function () {
   console.log("Server started at 3000");
 });
-
-//C:\Program Files (x86)\Google\Chrome\Application\chrome.exe --disable-web-security --user-data-dir=$HOME
