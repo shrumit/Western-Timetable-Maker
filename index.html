@@ -33,16 +33,15 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     html {
       background-color: #E6E6E6;
       min-height: 100%;
+	  overflow: auto;
     }
     
     body {
       width: 90%;
-      height: 100%;
-      max-width: 900px;
+      max-width: 1080px;
       padding: 1% 2.5%;
       margin: 0.5rem auto 1rem auto;
       background:white;
-      overflow: auto;
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     }
     
@@ -93,12 +92,12 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     .right {
       amargin-top: 0.5em;
       amargin-bottom: 0.5em;
-      width: 100px;
       float: right;
     }
     
     .pure-button {
       box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	  min-width: 100px;
      }
     
     .pure-button-active {
@@ -119,8 +118,8 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     }
 
     .pure-button-primary:hover {
-      background-color: #4F2683;
-      font-weight: bolder;
+      background-color: #4F2689;
+      text-decoration: underline;
     }
 
     .pure-menu-list {
@@ -154,7 +153,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     
     .list-cross{
       max-width: 100px;
-      border-left: 2px dashed white;
+      border-left: 2px dashed #F5F5F5;
     }
     
     .section-div {
@@ -212,7 +211,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     .timetable-container {
       overflow: auto;
       text-align: center;
-      margin: 1em;
+      margin: 1em 0.25em;
     }
     
     .timetable {
@@ -232,349 +231,381 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       background-color: #F2F2F2;
     }
 
-
   </style>
 
   <script>
     
-    var course_selc = [];
-    $(document).ready(function(){
-      let term = -1;         // flag for term selected
-      let selc = [];         // selected courses id
-      
+	var course_selc = [];
+	$(document).ready(function() {
 
-      let url = window.location.origin;
-      
-      // Remove :focus from button
-      $("button").click(function () {
-        $(this).blur();
-      });
-      
-      
-      // Load search boxes and make hidden
-      (function loadSelect(){
-         const termNames = ['first term', 'second term'];   // stores term names
-        
-        for (i = 0; i < 2; i++){
-          let selector = `select[data-id=${i}]`;
-          let placeholdertext = `Search for ${termNames[i]} and full year courses`;
-          $.getJSON(`${url}/search/${i}`, function(res) {
-            $(selector).empty().append("<option></option>");
-            $(selector).select2({
-              data: res,
-              placeholder: placeholdertext,
-              minimumInputLength: 2
-            })
-            $("#select-div"+i).hide();
-          })
-        }
-      })()
-      
-      // Toggle select2 visibility
-      function toggleSelect() {
-        $("#select-div"+term).show();
-        // $("#select"+(1-term)).select2('val', null);
-        $("#select-div"+(1-term)).hide();
-      }
+		let term = -1; // flag for term selected
+		let selc = []; // selected courses id
 
-      // Toggle Fall/Winter terms
-      $(".toggle").click(function () {
 
-        var button = $(this).attr('data-id');
-        if (term == button)
-          return;
+		let url = window.location.origin;
 
-        term = button;
-        toggleSelect();
-        $('#clear').click();
+		// Remove :focus from button
+		$("button").click(function() {
+			$(this).blur();
+		});
 
-        switch(button) {
-          case "0":
-            $("#winter").removeClass("pure-button-active");
-            $("#fall").addClass("pure-button-active");
-            break;
-          case "1":
-            $("#fall").removeClass("pure-button-active");
-            $("#winter").addClass("pure-button-active");
-            break;
-        }
 
-      });
-      
-      // Set Fall as default term
-      $("#fall").click();
+		// Load search boxes and make hidden
+		(function loadSelect() {
+			const termNames = ['first term', 'second term']; // stores term names
 
-      var solutions;
-      // Remove course from list
-      $('ul').on('click', '.list-cross', function() {
-        
-        index = selc.indexOf($(this).closest('li').attr("data-id"));
-        selc.splice(index, 1);
-        course_selc.splice(index, 1);
-        $(this).closest('li').remove();
-        return false;
-      });
-      
-      // Expand sections div
-      $('ul').on('click', '.list-title', function () {
-        $(this).blur();
-        id = $(this).closest('li').attr('data-id');
-//        if ($(`.section-div[data-id=${id}]`).css('display') == 'none')
-//          $('.section-div').css('display', 'none');
-        $(`.section-div[data-id=${id}]`).slideToggle(100);
-        return false;
-      });
+			for (i = 0; i < 2; i++) {
+				let selector = `select[data-id=${i}]`;
+				let placeholdertext = `Search for ${termNames[i]} and full year courses`;
+				$.getJSON(`${url}/search/${i}`, function(res) {
+					$(selector).empty().append("<option></option>");
+					$(selector).select2({
+						data: res,
+						placeholder: placeholdertext,
+						minimumInputLength: 2
+					})
+					$("#select-div" + i).hide();
+				})
+			}
+		})()
 
-      // Clear All button
-      $('#clear').on('click', function() {
-        selc = [];
-        course_selc = [];
-        $('#list').empty();
-      });
+		// Toggle select2 visibility
+		function toggleSelect() {
+			$("#select-div" + term).show();
+			// $("#select"+(1-term)).select2('val', null);
+			$("#select-div" + (1 - term)).hide();
+		}
 
-      //About button to display footer
-      $('#about').click(function(){
-        $('footer').slideToggle(100);
-      });
-      
-      // Add course button
-      $('#add').click(function() {
-        $(this).blur();
-        
-        // check for emptiness or duplicacy
-        id = $('#select'+term).select2('data')[0].id;
-        if ((id == "") || (selc.indexOf(id) != -1))
-          return;
+		// Toggle Fall/Winter terms
+		$(".toggle").click(function() {
+			var button = $(this).attr('data-id');
+			if (term == button)
+				return;
 
-        selc.push(id);
-        
-        $.getJSON(`${url}/api/${id}`, function(data){
-          $('#list').append(sec_template(data));
-          course_selc.push(data);
-        });
-        
-      });
-      
-      // Compile Handlebars
-      let template = $('#list-template').html();
-      let sec_template = Handlebars.compile(template);
+			term = button;
+			toggleSelect();
+			$('#clear').click();
 
-      template = $('#timetable-template').html();
-      let table_template = Handlebars.compile(template);
-      
-      template = $('#row-template').html();
-      let row_template = Handlebars.compile(template);
-      
-      
-      // COMPUTE!
-      $('#compute').click(function(){
-        $('#timetable-div').html('');
-        if (course_selc.length > 0){
-          let start = new Date().getTime();
-          computeEngine();
-          let end = new Date().getTime();
-          console.log(`Took ${end-start} ms.`);
-        }
-        $(this).removeAttr('disabled'); 
-      });
-        
-      // Compute Logic
-      function computeEngine(){
-        'use strict';
-  
-        // CREATE MASTER
-        let master = [];
-        for (let i = 0; i < course_selc.length; i++){
-          for (let j = 0; j < course_selc[i].components.length; j++)
-            master.push(JSON.parse(JSON.stringify(course_selc[i].components[j].sections)));
-        }
-        
-        // FILTER MASTER - remove disabled sections
-        master.forEach(function(comp){
-          comp = comp.filter(function(sec){
-            if (sec.hasOwnProperty("disabled") && sec["disabled"] == true)
-              return false;
-            else 
-              return true;
-          });
-        });
-        
-        // SORT MASTER - lowest # of sections first
-        master.sort(function (a, b){
-          return a.length - b.length;
-        })
-        
-        // HEURISTIC for score threshold
-        let bar = 0;
-        let maxperm = 1;
-        for (let i = 0; i < master.length; i++){
-          maxperm *= master[i].length;
-        }
-        if (maxperm > 20000000){
-          bar = 3;
-        }
-        
-        // INITIALIZE
-        let stack = [];
-        let table = [0,0,0,0,0];
-        solutions = [];
-        let index = 0;
-        let count = 0;
-        
-        console.log('running with bar ' + bar);
-        recurse();
-        
-        // HEURISTIC RE-RUN
-        while (solutions.length < 50 && bar > 0){
-          bar -= Math.log(bar)/Math.log(5);
-          stack = [];
-          table = [0,0,0,0,0];
-          solutions = [];
-          index = 0;
-          count = 0;
-          console.log('repeating with bar ' + bar);
-          recurse();
-        }
-        
-        // SORT SOLUTIONS
-        solutions.sort(function(a,b){
-          return a.score - b.score;
-        });
-        
-        print(solutions[solutions.length-1]);
-        console.log('max perms ' + maxperm);
-        console.log('con-free perms ' + count);
-        console.log('solutions ' + solutions.length);
+			switch (button) {
+				case "0":
+					$("#winter").removeClass("pure-button-active");
+					$("#fall").addClass("pure-button-active");
+					break;
+				case "1":
+					$("#fall").removeClass("pure-button-active");
+					$("#winter").addClass("pure-button-active");
+					break;
+			}
 
-        makeTimetables();
-        
-      // ------------------------------------------------------//
-        function recurse() {
-          if (index === master.length){
-            snapshot();
-            return
-          }
-          
-          for (let i = 0; i < master[index].length; i++){
-            stack.push(master[index][i]);
-            if (isConflict()){
-              stack.pop();
-            }
-            else {
-              addToTable();
-              index += 1;
-              recurse();
-              index -= 1;
-              removeFromTable();
-              stack.pop();
-            }
-          }
-          return;
-        }
-        
-        function snapshot(){
-          count++;
-          // compute score
-          let score = 1;
-          let total = 0;
-          for (let i = 0; i < 5; i++){
-            if (table[i] === 0){
-              score++;
-            } else {
-              total += Math.log(table[i]);
-            }
-          }
-          score += (total / 5 - score)/20;
-          
-          // test bar
-          if (score < bar)
-            return;
+		});
 
-          // push to solutions
-          let temp = [];
-          for (let i = 0; i < stack.length; i++){
-            for (let j = 0; j < stack[i].timeslots.length; j++){
-              let obj = stack[i].timeslots[j];
-              temp.push({
-                id: obj.id,
-                day: obj.day,
-                start: obj.start,
-                len: obj.len,
-                str1: obj.str1,
-                str2: obj.str2
-              });
-            }
-          }
-          solutions.push({score, temp});
-        }
-        
-        function isConflict(){
-          let section = stack[stack.length-1];
-          for (let j = 0; j < section.timeslots.length; j++){
-            if ((table[section.timeslots[j].day] & section.timeslots[j].timebit) > 0){
-              return true;
-            }
-          }
-          return false;
-        }
-        
-        function addToTable(){
-          let section = stack[stack.length-1];
-          for (let j = 0; j < section.timeslots.length; j++){
-            table[section.timeslots[j].day] = table[section.timeslots[j].day] ^ section.timeslots[j].timebit;
-          }
-        }
-        
-        function removeFromTable(){
-          let section = stack[stack.length-1];
-          for (let j = 0; j < section.timeslots.length; j++){
-            table[section.timeslots[j].day] = (~section.timeslots[j].timebit) & table[section.timeslots[j].day];
-          }
-        }
-      }
-      
-      function makeTimetables(){
-        const time_text =
-           ["8:00 am","8:30 am","9:00 am","9:30 am","10:00 am","10:30 am","11:00 am","11:30 am","12:00 pm","12:30 pm","1:00 pm","1:30 pm","2:00 pm","2:30 pm","3:00 pm","3:30 pm","4:00 pm","4:30 pm","5:00 pm","5:30 pm","6:00 pm","6:30 pm","7:00 pm","7:30 pm","8:00 pm","8:30 pm","9:00 pm","9:30 pm", "10:00 pm"];
-        let counter = 0;
-        while(counter < 10 && solutions.length > 0){
-          console.log('here');
-          let current = solutions.pop()
-          let index = solutions.length;
-          $('#timetable-div').append(table_template({id: index}));
-          for (let i = 0; i<28; i++){
-            console.log(1);
-            $(`table[data-id=${index}] > tbody`).append(row_template({time: time_text[i], rowindex: i}));
-          }
-          counter++;
-        }
-        if (solutions.length == 0){
-          //disable More button
-        }
-      }
-      
-      
-    });//end of document.ready
-    
-    function checkboxChange(elem){
-      $elem = $(elem);
-      var index = ($elem.closest('li').index());
-      var mid = $elem.closest('td').attr('mid');
-      var sid = $elem.attr('sid');
-      
-      var value = $elem.is(':checked') ? false : true;
-      course_selc[index].components[mid].sections[sid]["disabled"] = value;
-      
-      console.log(JSON.stringify(course_selc));
-      
-      //console.log(`${index} ${mid} ${sid}`);
-      //console.log(JSON.stringify(course_selc[index].components[mid].sections[sid]["name"]));
-    }
-    
-    function print(obj){
-      console.log(JSON.stringify(obj));
-    }
-        
+		// Set Fall as default term
+		$("#fall").click();
+
+		var solutions;
+		// Remove course from list
+		$('ul').on('click', '.list-cross', function() {
+
+			index = selc.indexOf($(this).closest('li').attr("data-id"));
+			selc.splice(index, 1);
+			course_selc.splice(index, 1);
+			$(this).closest('li').remove();
+			return false;
+		});
+
+		// Expand sections div
+		$('ul').on('click', '.list-title', function() {
+			$(this).blur();
+			id = $(this).closest('li').attr('data-id');
+			//        if ($(`.section-div[data-id=${id}]`).css('display') == 'none')
+			//          $('.section-div').css('display', 'none');
+			$(`.section-div[data-id=${id}]`).slideToggle(100);
+			return false;
+		});
+
+		// Clear All button
+		$('#clear').on('click', function() {
+			selc = [];
+			course_selc = [];
+			$('#list').empty();
+		});
+
+		//About button to display footer
+		$('#about').click(function() {
+			$('footer').slideToggle(100);
+		});
+
+		// Add course button
+		$('#add').click(function() {
+			$(this).blur();
+
+			// check for emptiness or duplicacy
+			id = $('#select' + term).select2('data')[0].id;
+			if ((id == "") || (selc.indexOf(id) != -1))
+				return;
+
+			selc.push(id);
+
+			$.getJSON(`${url}/api/${id}`, function(data) {
+				$('#list').append(sec_template(data));
+				course_selc.push(data);
+			});
+
+		});
+
+		// Compile Handlebars
+		let template = $('#list-template').html();
+		let sec_template = Handlebars.compile(template);
+
+		template = $('#timetable-template').html();
+		let table_template = Handlebars.compile(template);
+
+		template = $('#row-template').html();
+		let row_template = Handlebars.compile(template);
+
+
+		// COMPUTE!
+		$('#compute').click(function() {
+			$('#timetable-div').html('');
+			$('#more').remove();
+			if (course_selc.length > 0) {
+				//$('#compute').prop('disabled');
+
+				var d = $.Deferred().resolve();
+				d = d.then(function() {
+					let start = new Date().getTime();
+					computeEngine();
+					let end = new Date().getTime();
+					console.log(`Took ${end-start} ms.`);
+				});
+
+				d = d.then(function() {
+					makeTimetables();
+				})
+
+			}
+		});
+
+		// Compute Logic
+		function computeEngine() {
+			'use strict';
+
+			// CREATE MASTER
+			let master = [];
+			for (let i = 0; i < course_selc.length; i++) {
+				for (let j = 0; j < course_selc[i].components.length; j++)
+					master.push(JSON.parse(JSON.stringify(course_selc[i].components[j].sections)));
+			}
+
+			// remove disabled sections
+			master.forEach(function(comp) {
+				comp = comp.filter(function(sec) {
+					if (sec.hasOwnProperty("disabled") && sec["disabled"] == true)
+						return false;
+					else
+						return true;
+				});
+			});
+
+			// SORT MASTER - lowest # of sections first
+			master.sort(function(a, b) {
+				return a.length - b.length;
+			})
+
+			// HEURISTIC for score threshold
+			let bar = 0;
+			let maxperm = 1;
+			for (let i = 0; i < master.length; i++) {
+				maxperm *= master[i].length;
+			}
+			if (maxperm > 20000000) {
+				bar = 3;
+			}
+
+			// INITIALIZE
+			let stack = [];
+			let table = [0, 0, 0, 0, 0];
+			solutions = [];
+			let index = 0;
+			let count = 0;
+
+			console.log('running with bar ' + bar);
+			recurse();
+
+			// HEURISTIC RE-RUN
+			while (solutions.length < 50 && bar > 0) {
+				bar -= Math.log(bar) / Math.log(5);
+				stack = [];
+				table = [0, 0, 0, 0, 0];
+				solutions = [];
+				index = 0;
+				count = 0;
+				console.log('repeating with bar ' + bar);
+				recurse();
+			}
+
+			// SORT SOLUTIONS
+			solutions.sort(function(a, b) {
+				return a.score - b.score;
+			});
+
+			print(solutions[solutions.length - 1]);
+			console.log('max perms ' + maxperm);
+			console.log('con-free perms ' + count);
+			console.log('solutions ' + solutions.length);
+
+			// ------------------------------------------------------//
+			function recurse() {
+				if (index === master.length) {
+					snapshot();
+					return
+				}
+				for (let i = 0; i < master[index].length; i++) {
+					stack.push(master[index][i]);
+					if (isConflict()) {
+						stack.pop();
+					} else {
+						addToTable();
+						index += 1;
+						recurse();
+						index -= 1;
+						removeFromTable();
+						stack.pop();
+					}
+				}
+				return;
+			}
+
+			function snapshot() {
+				count++;
+				// compute score
+				let score = 1;
+				let total = 0;
+				for (let i = 0; i < 5; i++) {
+					if (table[i] === 0) {
+						score++;
+					} else {
+						total += Math.log(table[i]);
+					}
+				}
+				score += (total / 5 - score) / 20;
+
+				// test bar
+				if (score < bar)
+					return;
+
+				// push to solutions
+				let slots = [];
+				for (let i = 0; i < stack.length; i++) {
+					for (let j = 0; j < stack[i].timeslots.length; j++) {
+						let obj = stack[i].timeslots[j];
+						slots.push({
+							id: obj.id,
+							day: obj.day,
+							start: obj.start,
+							len: obj.len,
+							str1: obj.str1,
+							str2: obj.str2
+						});
+					}
+				}
+				solutions.push({
+					score,
+					slots
+				});
+			}
+
+			function isConflict() {
+				let section = stack[stack.length - 1];
+				for (let j = 0; j < section.timeslots.length; j++) {
+					if ((table[section.timeslots[j].day] & section.timeslots[j].timebit) > 0) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			function addToTable() {
+				let section = stack[stack.length - 1];
+				for (let j = 0; j < section.timeslots.length; j++) {
+					table[section.timeslots[j].day] = table[section.timeslots[j].day] ^ section.timeslots[j].timebit;
+				}
+			}
+
+			function removeFromTable() {
+				let section = stack[stack.length - 1];
+				for (let j = 0; j < section.timeslots.length; j++) {
+					table[section.timeslots[j].day] = (~section.timeslots[j].timebit) & table[section.timeslots[j].day];
+				}
+			}
+		}
+
+		function makeTimetables() {
+			const time_text = ["8:00 am", "8:30 am", "9:00 am", "9:30 am", "10:00 am", "10:30 am", "11:00 am", "11:30 am", "12:00 pm", "12:30 pm", "1:00 pm", "1:30 pm", "2:00 pm", "2:30 pm", "3:00 pm", "3:30 pm", "4:00 pm", "4:30 pm", "5:00 pm", "5:30 pm", "6:00 pm", "6:30 pm", "7:00 pm", "7:30 pm", "8:00 pm", "8:30 pm", "9:00 pm", "9:30 pm", "10:00 pm"];
+			
+			// generate table
+			let counter = 0;
+			while (counter < 10 && solutions.length > 0) {
+				let current = solutions.pop()
+				let index = solutions.length;
+				$('#timetable-div').append(table_template({
+					id: index
+				}));
+				
+				// insert rows and time column
+				for (let i = 0; i < 28; i++) {
+					$(`table[data-id=${index}] > tbody`).append(row_template({
+						time: time_text[i],
+						rowindex: i,
+						index: index
+					}));
+				}
+				current.slots.forEach(function(slot){
+					let row = slot.start + i
+					for (let i = 0; i < slot.len; i++){
+						$cell = $(`#ttr-${index}-${slot.start+i} td:nth-child(${slot.day+2})`);
+						$cell.css('border-top', 'none');
+						$cell.css('border-bottom', 'none');
+						if (i === 0){
+							$cell.text(slot.str1);
+							$cell.css('border-top', '1px solid black');
+						}
+						else if (i == 1)
+							$cell.text(slot.str2);
+						else
+							$cell.text(" ");
+						
+						$cell.css('background-color', `rgb(${255-(slot.id*7)%151},${255-(slot.id*7)%101},${255-(slot.id*7)%53})`);
+					}
+				})
+				
+				print(current);
+				counter++;
+			}
+			
+			$('#timetable-div').after('<button id="more" class="pure-button center-button">More</button>');
+		}
+
+	}); //end of document.ready
+
+	function checkboxChange(elem) {
+		$elem = $(elem);
+		var index = ($elem.closest('li').index());
+		var mid = $elem.closest('td').attr('mid');
+		var sid = $elem.attr('sid');
+
+		var value = $elem.is(':checked') ? false : true;
+		course_selc[index].components[mid].sections[sid]["disabled"] = value;
+
+		console.log(JSON.stringify(course_selc));
+
+		//console.log(`${index} ${mid} ${sid}`);
+		//console.log(JSON.stringify(course_selc[index].components[mid].sections[sid]["name"]));
+	}
+
+	function print(obj) {
+		console.log(JSON.stringify(obj));
+	}
   </script>
     
   <!--  Sections Template -->
@@ -627,8 +658,9 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     <br>
   </script>
   
+	<!-- Row Template -->
   <script id="row-template" type="text/x-handlebars-template">
-    <tr id="{{rowindex}}">
+    <tr id="ttr-{{index}}-{{rowindex}}">
       <td>{{time}}</td>
       <td></td><td></td><td></td><td></td><td></td>
     </tr>
@@ -647,14 +679,11 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
       <ol>
         <li>Select a semester, search for courses and add them to the list.</li>
         <li>Click on a course in the list to see its sections.</li>
-        <li>Set your preferences. At this time, preferences cannot be changed.</li>
+        <li><del>Set your preferences.</del> At this time, preferences cannot be changed.</li>
         <li>Click "Compute!" to generate timetables.</li>
         <li>Timetables are sorted by preference. "Most days off" is given priority over "Early/Late classes".</li>
+				<li>Some first year science/social-science courses have upwards of 30 lab/tutorial sections and timetables containing these courses can have <em>millions</em> of conflict-free permutations. Even though the algorithm is insanely optimized and is designed to handle such cases, it may take upto a minute to compute. Be patient!</li>
       </ol>
-      <ul id="extra-text">
-        <li>Some first year science/social-science courses have upwards of 30 lab/tutorial sections and timetables containing these courses can have <em>millions</em> of conflict-free permutations. Even though the algorithm is insanely optimized and is designed to handle such cases, it may take upto a minute to compute. Be patient!</li>
-        <li>For best stability use on Chrome, Chromium or Opera browsers.</li>
-      </ul>
     </div>
 
     <!-- Main Controls -->
@@ -714,15 +743,12 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     </div>
     <br>
 
-    <button id="compute" class="pure-button pure-button-primary center-button" onclick="$(this).prop('disabled','true');">Compute!</button>
-    <br>
+    <button id="compute" class="pure-button pure-button-primary center-button">Compute!</button>
     
-    <div id="timetable-div">
-    </div>
-    
-
+    <div id="timetable-div"></div>
+	
     <!-- Footer -->
-    <a href="#" id="about">About</a>
+    <a href="#about" id="about">About</a>
     <footer style="display: none; border-top: 1px solid #4F2683; margin: 1em auto; text-align: center; color: #4F2683;">
       <p>Copyright © 2016 Shrumit Mehta</p>
     </footer>
