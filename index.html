@@ -240,7 +240,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 
 		let term = -1; // flag for term selected
 		let selc = []; // selected courses id
-
+		let timePref = 1; //late/early class preference; default: 1=late
 
 		let url = window.location.origin;
 
@@ -352,6 +352,17 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 			});
 
 		});
+		
+		$('#time-pref-form input').change(function(){
+			timePref =  $(this).val();
+		});
+		
+		$('#more').click(function(){
+			if (solutions.length > 0){
+				console.log('more clicked');
+				makeTimetables();
+			}
+		});
 
 		// Compile Handlebars
 		let template = $('#list-template').html();
@@ -367,22 +378,16 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		// COMPUTE!
 		$('#compute').click(function() {
 			$('#timetable-div').html('');
-			$('#more').remove();
+			$('#more').hide();
+			$('#info-text').text("");
 			if (course_selc.length > 0) {
 				//$('#compute').prop('disabled');
-
-				var d = $.Deferred().resolve();
-				d = d.then(function() {
-					let start = new Date().getTime();
-					computeEngine();
-					let end = new Date().getTime();
-					console.log(`Took ${end-start} ms.`);
-				});
-
-				d = d.then(function() {
-					makeTimetables();
-				})
-
+				let start = new Date().getTime();
+				let count = computeEngine();
+				let end = new Date().getTime();
+				console.log(`Took ${end-start} ms.`);
+				$('#info-text').text(`${count} conflict-free timetables possible. Computed in ${end-start}ms.`);
+				makeTimetables();
 			}
 		});
 
@@ -398,29 +403,38 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 			}
 
 			// remove disabled sections
-			master.forEach(function(comp) {
-				comp = comp.filter(function(sec) {
-					if (sec.hasOwnProperty("disabled") && sec["disabled"] == true)
+			for (let i = 0; i < master.length; i++) {
+				master[i] = master[i].filter(function(sec) {
+					print(sec);
+					if (sec.hasOwnProperty("disabled") && sec.disabled === true){
+						console.log('something removed');
 						return false;
-					else
+					}
+					else{
+						console.log('not removed');
 						return true;
+					}
 				});
-			});
+			}
 
 			// SORT MASTER - lowest # of sections first
 			master.sort(function(a, b) {
 				return a.length - b.length;
 			})
+			
 
 			// HEURISTIC for score threshold
-			let bar = 0;
+			let thresholds = [0, 3, 2.25, 1.7, 1.55, 1.3, 1.2, 1.05, 1]
+			let level = 0;
+			let bar;
 			let maxperm = 1;
 			for (let i = 0; i < master.length; i++) {
 				maxperm *= master[i].length;
 			}
-			if (maxperm > 20000000) {
-				bar = 3;
+			if (maxperm > 10000000) {
+				level = 1;
 			}
+			bar = thresholds[level];
 
 			// INITIALIZE
 			let stack = [];
@@ -434,7 +448,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 
 			// HEURISTIC RE-RUN
 			while (solutions.length < 50 && bar > 0) {
-				bar -= Math.log(bar) / Math.log(5);
+				bar = thresholds[++level];
 				stack = [];
 				table = [0, 0, 0, 0, 0];
 				solutions = [];
@@ -449,11 +463,12 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 				return a.score - b.score;
 			});
 
-			print(solutions[solutions.length - 1]);
+			//print(solutions[solutions.length - 1]);
+			//print(solutions);
 			console.log('max perms ' + maxperm);
 			console.log('con-free perms ' + count);
 			console.log('solutions ' + solutions.length);
-
+			return count;
 			// ------------------------------------------------------//
 			function recurse() {
 				if (index === master.length) {
@@ -488,8 +503,10 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 						total += Math.log(table[i]);
 					}
 				}
-				score += (total / 5 - score) / 20;
-
+				//console.log(total / (5 - score) / 28);
+				//timePref is used to swtch between early classes and late classes
+				score +=  timePref * ((total / (5 - score)) / 28);
+				
 				// test bar
 				if (score < bar)
 					return;
@@ -542,7 +559,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 
 		function makeTimetables() {
 			const time_text = ["8:00 am", "8:30 am", "9:00 am", "9:30 am", "10:00 am", "10:30 am", "11:00 am", "11:30 am", "12:00 pm", "12:30 pm", "1:00 pm", "1:30 pm", "2:00 pm", "2:30 pm", "3:00 pm", "3:30 pm", "4:00 pm", "4:30 pm", "5:00 pm", "5:30 pm", "6:00 pm", "6:30 pm", "7:00 pm", "7:30 pm", "8:00 pm", "8:30 pm", "9:00 pm", "9:30 pm", "10:00 pm"];
-			
+			console.log('making tt');
 			// generate table
 			let counter = 0;
 			while (counter < 10 && solutions.length > 0) {
@@ -562,15 +579,19 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 				}
 				current.slots.forEach(function(slot){
 					let row = slot.start + i
+					//get integer quotient of len/2 to adjust text to middle
+					let quotient = ((slot.len)/2 | 0) - 1;
 					for (let i = 0; i < slot.len; i++){
 						$cell = $(`#ttr-${index}-${slot.start+i} td:nth-child(${slot.day+2})`);
 						$cell.css('border-top', 'none');
 						$cell.css('border-bottom', 'none');
-						if (i === 0){
-							$cell.text(slot.str1);
+						
+						// Display slot text
+						if (i === 0)
 							$cell.css('border-top', '1px solid black');
-						}
-						else if (i == 1)
+						if (i === (0 + quotient))
+							$cell.text(slot.str1);
+						else if (i == (1 + quotient))
 							$cell.text(slot.str2);
 						else
 							$cell.text(" ");
@@ -579,11 +600,12 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 					}
 				})
 				
-				print(current);
+				//print(current);
 				counter++;
 			}
+			if (solutions.length > 0)
+				$('#more').show();
 			
-			$('#timetable-div').after('<button id="more" class="pure-button center-button">More</button>');
 		}
 
 	}); //end of document.ready
@@ -671,19 +693,22 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 <body>
 
     <header>
-        <h1>Western</h1>
+        <h1>Western Timetable Maker <span style="font-size: 1rem;">BETA</span></h1>
     </header>
 
+		<h3>Instructions</h3>
     <div id="instructions">
-      <h3>Instructions</h3>
       <ol>
         <li>Select a semester, search for courses and add them to the list.</li>
         <li>Click on a course in the list to see its sections.</li>
         <li><del>Set your preferences.</del> At this time, preferences cannot be changed.</li>
         <li>Click "Compute!" to generate timetables.</li>
         <li>Timetables are sorted by preference. "Most days off" is given priority over "Early/Late classes".</li>
-				<li>Some first year science/social-science courses have upwards of 30 lab/tutorial sections and timetables containing these courses can have <em>millions</em> of conflict-free permutations. Even though the algorithm is insanely optimized and is designed to handle such cases, it may take upto a minute to compute. Be patient!</li>
-      </ol>
+			</ol>
+			<ul>
+				<li>Some first year science and social-science courses have upwards of 30 lab/tutorial sections each. Timetables comprising of many such courses can have <em>millions</em> of conflict-free permutations. This might take very long to compute. Be patient!</li>
+				<li>Using Chrome, Chromium or Opera browsers is recommended for best stability, especially with first year timetables (see above).</li>
+      </ul>
     </div>
 
     <!-- Main Controls -->
@@ -709,12 +734,12 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
                 </div>
                 <div class="pure-u-1 pure-u-md-1-2 prefs">
                     <h4></h4>
-                    <form>
-                        <input id="class-late" type="radio" name="late" value="1" checked disabled>
-                        <label for="class-late" disabled>Late classes</label>
+                    <form id="time-pref-form">
+                        <input id="class-late" type="radio" name="late" value="1" checked>
+                        <label for="class-late">Late classes</label>
                         <br>
-                        <input id="class-early" type="radio" name="late" value="0" disabled>
-                        <label for="class-early" disabled>Early classes</label>
+                        <input id="class-early" type="radio" name="late" value="-1">
+                        <label for="class-early">Early classes</label>
                     </form>
                 </div>
             </div>
@@ -744,9 +769,9 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
     <br>
 
     <button id="compute" class="pure-button pure-button-primary center-button">Compute!</button>
-    
+    <p id="info-text"></p>
     <div id="timetable-div"></div>
-	
+		<button id="more" class="pure-button center-button" style="display: none;">More</button>
     <!-- Footer -->
     <a href="#about" id="about">About</a>
     <footer style="display: none; border-top: 1px solid #4F2683; margin: 1em auto; text-align: center; color: #4F2683;">
