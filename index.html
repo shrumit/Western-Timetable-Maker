@@ -1,240 +1,237 @@
 <!--
-
 Copyright (C) Shrumit Mehta 2016. All rights reserved.
-
 -->
 
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Timetable Maker</title>
+	<meta charset="utf-8">
+	<title>Timetable Maker</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Neuton" rel="stylesheet">
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans|Neuton" rel="stylesheet">
 
-  <!-- PureCSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+	<!-- PureCSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
 
-  <!-- jQuery -->
-  <script src="jquery-2.2.4.min.js"></script>
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 
-  <!-- Handlebars.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-  
-  <!-- Select2 -->
-  <link rel="stylesheet" type="text/css" href= "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-  
+	<!-- Handlebars.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+	
+	<!-- Select2 -->
+	<link rel="stylesheet" type="text/css" href= "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+	
 
-  <style>
-    
-    html {
-      background-color: #E6E6E6;
-      min-height: 100%;
-	  overflow: auto;
-    }
-    
-    body {
-      width: 90%;
-      max-width: 1080px;
-      padding: 1% 2.5%;
-      margin: 0.5rem auto 1rem auto;
-      background:white;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-    }
-    
-    html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
-      font-family: 'Open Sans', sans-serif;
-    }
-    
-    h1, h3 {
-      font-family: 'Neuton', serif;
-    }
-    
-    header {
-      text-align: center;
-      border-bottom: 1px solid #4F2683;
-    }
-    
-    h1{
-      font-weight: normal;
-      color: #4F2683;
-      font-size: 3em;
-      margin: 0.1em auto;
-    }
-    
-    h3 {
-      font-weight: normal;
-      font-size: 1.5em;
-      color: black;
-    }
-    
-    label {
-      cursor: pointer;
-      cursor: hand;
-      
-    }
-    
-    li {
-      margin-bottom: 0.2em;
-    }
-    
-    #extra-text {
-      font-size: 80%;
-    }
-    
-    .toggle {
-      width: 100px;
-    }
-    
-    .right {
-      amargin-top: 0.5em;
-      amargin-bottom: 0.5em;
-      float: right;
-    }
-    
-    .pure-button {
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-	  min-width: 100px;
-     }
-    
-    .pure-button-active {
-      font-weight: bold;
-      atext-decoration: underline;
-      background-color: #F2F2F2;
-      color: #4F2683;
-      color: black;
-    }
+	<style>
+		
+		html {
+			background-color: #E6E6E6;
+			min-height: 100%;
+		overflow: auto;
+		}
+		
+		body {
+			width: 90%;
+			max-width: 1080px;
+			padding: 1% 2.5%;
+			margin: 0.5rem auto 1rem auto;
+			background:white;
+			box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+		}
+		
+		html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
+			font-family: 'Open Sans', sans-serif;
+		}
+		
+		h1, h3 {
+			font-family: 'Neuton', serif;
+		}
+		
+		header {
+			text-align: center;
+			border-bottom: 1px solid #4F2683;
+		}
+		
+		h1{
+			font-weight: normal;
+			color: #4F2683;
+			font-size: 3em;
+			margin: 0.1em auto;
+		}
+		
+		h3 {
+			font-weight: normal;
+			font-size: 1.5em;
+			color: black;
+		}
+		
+		label {
+			cursor: pointer;
+			cursor: hand;
+			
+		}
+		
+		li {
+			margin-bottom: 0.2em;
+		}
+		
+		.toggle {
+			width: 100px;
+		}
+		
+		.right {
+			amargin-top: 0.5em;
+			amargin-bottom: 0.5em;
+			float: right;
+		}
+		
+		.pure-button {
+			box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+			min-width: 100px;
+		 }
+		
+		.pure-button-active {
+			font-weight: bold;
+			atext-decoration: underline;
+			background-color: #F2F2F2;
+			color: #4F2683;
+			color: black;
+		}
+		
+		.pure-button-hover, .pure-button:hover, .pure-button:focus {
+			background-color: #F2F2F2;
+			background-image: none;
+		}
 
-    .pure-button-hover, .pure-button:hover, .pure-button:focus {
-      background-color: #F2F2F2;
-      background-image: none;
-    }
+		.pure-button-primary {
+			background-color: #4F2683;
+		}
 
-    .pure-button-primary {
-      background-color: #4F2683;
-    }
+		.pure-button-primary:hover {
+			background-color: #4F2689;
+			text-decoration: underline;
+		}
+		
+		.pure-button-primary:active {
+			cursor: wait;
+		}
 
-    .pure-button-primary:hover {
-      background-color: #4F2689;
-      text-decoration: underline;
-    }
+		.pure-menu-list {
+			margin: 0.5em auto;
+			text-align: center;
+		}
 
-    .pure-menu-list {
-      margin: 0.5em auto;
-      text-align: center;
-    }
+		.pure-menu-link:hover {
+			atext-decoration: line-through;
+			background-color: #F5F5F5;
+			border-radius: 2px
+		}
+		
+		.list-item {
+			display: flex;
+			justify-content: flex-end;
+			aflex-grow: 1;
+			background: #E6E6E6;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+			border-radius: 2px;
+			margin: 2px;
+		}
+		
+		.list-title{
+			flex-grow: 1;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			display: block;
+			color: #2E2E2E;
+		}
+		
+		.list-cross{
+			max-width: 100px;
+			border-left: 2px dashed #F5F5F5;
+		}
+		
+		.section-div {
+			display: none;
+			acolor: #777777;
+		}
+		
+		.sections-table {
+			text-align: left;
+			letter-spacing: 0em;
+			border: 0.191em solid #F5F5F5;
+		}
 
-    .pure-menu-link:hover {
-      atext-decoration: line-through;
-      background-color: #F5F5F5;
-      border-radius: 2px
-    }
-    
-    .list-item {
-      display: flex;
-      justify-content: flex-end;
-      aflex-grow: 1;
-      background: #E6E6E6;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-      border-radius: 2px;
-      margin: 2px;
-    }
-    
-    .list-title{
-      flex-grow: 1;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      display: block;
-      color: #2E2E2E;
-    }
-    
-    .list-cross{
-      max-width: 100px;
-      border-left: 2px dashed #F5F5F5;
-    }
-    
-    .section-div {
-      display: none;
-      acolor: #777777;
-    }
-    
-    .sections-table {
-      text-align: left;
-      letter-spacing: 0em;
-      border: 0.191em solid #F5F5F5;
-    }
+		.sections-table td {
+			padding: 0.1em 0.5em;
+			border: 1px solid #dfdfdf;
+		}
 
-    .sections-table td {
-      padding: 0.1em 0.5em;
-      border: 1px solid #dfdfdf;
-    }
+		.center-button {
+			margin: 0 auto;
+			display: flex;
+			justify-content: center;
+		}
 
-    .center-button {
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-    }
+		.select2 {
+			margin: 0.5em auto;
+		}
+		
+		.select2-dropdown {
+			font-size: 80%;
+			font-weight: lighter;
+		}
+				
+		.select2-container--default .select2-selection--single {
+			border-radius: 0px;
+			text-align: center;
+			border: 1px	black dashed;
+			outline: none;
+			font-size: 80%;
+			cursor: text;
+		}
+				
+		.select2-container--default .select2-selection--single .select2-selection__placeholder {
+			color: black;
+		}
+		
+		#timetable-div {
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+		
+		.timetable-container {
+			overflow: auto;
+			text-align: center;
+			margin: 1em 0.25em;
+		}
+		
+		.timetable {
+			border-collapse: collapse;
+			border: 1px solid black;
+			font-size: 80%;
+		}
+		
+		.timetable td, .timetable th {
+			border: 1px solid black;
+			padding: 0px 0.5em;
+			min-width: 50px;
+			white-space: nowrap;
+		}
 
-    .select2 {
-      margin: 0.5em auto;
-    }
-    
-    .select2-dropdown {
-      font-size: 80%;
-      font-weight: lighter;
-    }
-        
-    .select2-container--default .select2-selection--single {
-      border-radius: 0px;
-      text-align: center;
-      border: 1px  black dashed;
-      aheight: 35px;
-      outline: none;
-      font-size: 80%;
-      cursor: text;
-    }
-        
-    .select2-container--default .select2-selection--single .select2-selection__placeholder {
-      color: black;
-    }
-    
-    #timetable-div {
-      width: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    
-    .timetable-container {
-      overflow: auto;
-      text-align: center;
-      margin: 1em 0.25em;
-    }
-    
-    .timetable {
-      border-collapse: collapse;
-      border: 1px solid black;
-      font-size: 80%;
-    }
-    
-    .timetable td, .timetable th {
-      border: 1px solid black;
-      padding: 0px 0.5em;
-      min-width: 50px;
-      white-space: nowrap;
-    }
+		.timetable tr:nth-child(even) {
+			background-color: #F2F2F2;
+		}
 
-    .timetable tr:nth-child(even) {
-      background-color: #F2F2F2;
-    }
+	</style>
 
-  </style>
-
-  <script>
-    
+	<script>
+		
 	var course_selc = [];
 	$(document).ready(function() {
 
@@ -248,7 +245,6 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		$("button").click(function() {
 			$(this).blur();
 		});
-
 
 		// Load search boxes and make hidden
 		(function loadSelect() {
@@ -317,8 +313,8 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		$('ul').on('click', '.list-title', function() {
 			$(this).blur();
 			id = $(this).closest('li').attr('data-id');
-			//        if ($(`.section-div[data-id=${id}]`).css('display') == 'none')
-			//          $('.section-div').css('display', 'none');
+			// if ($(`.section-div[data-id=${id}]`).css('display') == 'none')
+			// $('.section-div').css('display', 'none');
 			$(`.section-div[data-id=${id}]`).slideToggle(100);
 			return false;
 		});
@@ -354,12 +350,11 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		});
 		
 		$('#time-pref-form input').change(function(){
-			timePref =  $(this).val();
+			timePref =	$(this).val();
 		});
 		
 		$('#more').click(function(){
 			if (solutions.length > 0){
-				console.log('more clicked');
 				makeTimetables();
 			}
 		});
@@ -407,11 +402,9 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 				master[i] = master[i].filter(function(sec) {
 					print(sec);
 					if (sec.hasOwnProperty("disabled") && sec.disabled === true){
-						console.log('something removed');
 						return false;
 					}
 					else{
-						console.log('not removed');
 						return true;
 					}
 				});
@@ -505,7 +498,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 				}
 				//console.log(total / (5 - score) / 28);
 				//timePref is used to swtch between early classes and late classes
-				score +=  timePref * ((total / (5 - score)) / 28);
+				score +=	timePref * ((total / (5 - score)) / 28);
 				
 				// test bar
 				if (score < bar)
@@ -619,165 +612,164 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		var value = $elem.is(':checked') ? false : true;
 		course_selc[index].components[mid].sections[sid]["disabled"] = value;
 
-		console.log(JSON.stringify(course_selc));
+		//print(course_selc));
 
-		//console.log(`${index} ${mid} ${sid}`);
-		//console.log(JSON.stringify(course_selc[index].components[mid].sections[sid]["name"]));
 	}
 
 	function print(obj) {
 		console.log(JSON.stringify(obj));
 	}
-  </script>
-    
-  <!--  Sections Template -->
-  <script id="list-template" type="text/x-handlebars-template">
-    <li class="pure-menu-item" data-id="{{id}}">
-      <div class="list-item">
-        <a href="#" class="pure-menu-link list-title">
-          {{text}}
-        </a>
-        <a href="#" class="pure-menu-link list-cross">
-          X
-        </a>
-      </div>
-      <div class="section-div" data-id="{{id}}">
-        <table class="sections-table">
-        {{#each components}}
-        <tr>
-          <td style="font-style:italic; width: 75px; text-align: left">{{name}}</td>
-          <td class="section-td" mid="{{@index}}">
-              {{#each sections}}
-              <input onchange="checkboxChange(this)" type="checkbox" sid="{{@index}}" id="c{{../../id}}m{{@../index}}s{{@index}}" checked>
-              <label for="c{{../../id}}m{{@../index}}s{{@index}}">{{name}}</label>
-              {{/each}}
-          </td>
-        </tr>
-        {{/each}}
-        </table>
-      </div>
-    </li>
-  </script>
-  
-  <!-- Table Template -->
-  <script id="timetable-template" type="text/x-handlebars-template">
-    <div class="timetable-container">
-    <table class="timetable" data-id="{{id}}">
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Mon</th>
-          <th>Tue</th>
-          <th>Wed</th>
-          <th>Thu</th>
-          <th>Fri</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    </div>
-    <br>
-  </script>
-  
+	</script>
+		
+	<!-- Sections Template -->
+	<script id="list-template" type="text/x-handlebars-template">
+		<li class="pure-menu-item" data-id="{{id}}">
+			<div class="list-item">
+				<a href="#" class="pure-menu-link list-title">
+					{{text}}
+				</a>
+				<a href="#" class="pure-menu-link list-cross">
+					X
+				</a>
+			</div>
+			<div class="section-div" data-id="{{id}}">
+				<table class="sections-table">
+				{{#each components}}
+				<tr>
+					<td style="font-style:italic; width: 75px; text-align: left">{{name}}</td>
+					<td class="section-td" mid="{{@index}}">
+							{{#each sections}}
+							<input onchange="checkboxChange(this)" type="checkbox" sid="{{@index}}" id="c{{../../id}}m{{@../index}}s{{@index}}" checked>
+							<label for="c{{../../id}}m{{@../index}}s{{@index}}">{{name}}</label>
+							{{/each}}
+					</td>
+				</tr>
+				{{/each}}
+				</table>
+			</div>
+		</li>
+	</script>
+	
+	<!-- Table Template -->
+	<script id="timetable-template" type="text/x-handlebars-template">
+		<div class="timetable-container">
+		<table class="timetable" data-id="{{id}}">
+			<thead>
+				<tr>
+					<th>Time</th>
+					<th>Mon</th>
+					<th>Tue</th>
+					<th>Wed</th>
+					<th>Thu</th>
+					<th>Fri</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+		</div>
+		<br>
+	</script>
+	
 	<!-- Row Template -->
-  <script id="row-template" type="text/x-handlebars-template">
-    <tr id="ttr-{{index}}-{{rowindex}}">
-      <td>{{time}}</td>
-      <td></td><td></td><td></td><td></td><td></td>
-    </tr>
-  </script>
-  
+	<script id="row-template" type="text/x-handlebars-template">
+		<tr id="ttr-{{index}}-{{rowindex}}">
+			<td>{{time}}</td>
+			<td></td><td></td><td></td><td></td><td></td>
+		</tr>
+	</script>
+	
 </head>
 
 <body>
 
-    <header>
-        <h1>Western Timetable Maker <span style="font-size: 1rem;">BETA</span></h1>
-    </header>
+	<header>
+		<h1>Western Timetable Maker <span style="font-size: 1rem;">BETA</span></h1>
+	</header>
 
-		<h3>Instructions</h3>
-    <div id="instructions">
-      <ol>
-        <li>Select a semester, search for courses and add them to the list.</li>
-        <li>Click on a course in the list to see its sections.</li>
-        <li><del>Set your preferences.</del> At this time, preferences cannot be changed.</li>
-        <li>Click "Compute!" to generate timetables.</li>
-        <li>Timetables are sorted by preference. "Most days off" is given priority over "Early/Late classes".</li>
-			</ol>
-			<ul>
-				<li>Some first year science and social-science courses have upwards of 30 lab/tutorial sections each. Timetables comprising of many such courses can have <em>millions</em> of conflict-free permutations. This might take very long to compute. Be patient!</li>
-				<li>Using Chrome, Chromium or Opera browsers is recommended for best stability, especially with first year timetables (see above).</li>
-      </ul>
-    </div>
+	<h3>Instructions</h3>
+	<div id="instructions">
+		<ol>
+			<li>Select a semester, search for a course and add it to the list.</li>
+			<li>Click on a course in the list to select its sections.</li>
+			<li>Set your preferences. At this time, <em>Most days off</em> cannot be changed. <em>Most days off</em> is given precedence over <em>Late/Early classes</em>.</li>
+			<li>Click "Compute!" to generate timetables.</li>
+			<li>Timetables appear sorted by preference.</li>
+		</ol>
+		<ul style="font-size: 80%;">
+			<li>Some first year science and social-science courses have upwards of 30 lab/tutorial sections each. Timetables comprising of many such courses can have millions of conflict-free permutations. These might take some time to compute. Be patient!</li>
+			<li>Using Chrome, Chromium or Opera is recommended for best stability, especially with first year timetables (see above).</li>
+		</ul>
+	</div>
 
-    <!-- Main Controls -->
-    <div class="pure-g first-grid">
-        <!-- Left Panel -->
-        <div class="pure-u-1 pure-u-sm-1-3">
-            <h3>Semester</h3>
-            <button id="fall" class="toggle pure-button" data-id=0>Fall</button>
-            <button id="winter" class="toggle pure-button" data-id=1>Winter</button>
-            <br>
-            <br>
-            <h3 style="margin-bottom: 0;">Preferences</h3>
-            <div class="pure-g">
-                <div class="pure-u-1 pure-u-md-1-2 prefs">
-                    <h4></h4>
-                    <form>
-                        <input id="spread-off" type="radio" class="big-radio" name="spread" value="0" checked disabled>
-                        <label for="spread-off" disabled>Most days off</label>
-                        <br>
-                        <input id="spread-even" type="radio" class="big-radio" name="spread" value="1" disabled>
-                        <label for="spread-even" disabled>Even spread</label>
-                    </form>
-                </div>
-                <div class="pure-u-1 pure-u-md-1-2 prefs">
-                    <h4></h4>
-                    <form id="time-pref-form">
-                        <input id="class-late" type="radio" name="late" value="1" checked>
-                        <label for="class-late">Late classes</label>
-                        <br>
-                        <input id="class-early" type="radio" name="late" value="-1">
-                        <label for="class-early">Early classes</label>
-                    </form>
-                </div>
-            </div>
-            <br>
-        </div>
+	<!-- Main Controls -->
+	<div class="pure-g first-grid">
+		<!-- Left Panel -->
+		<div class="pure-u-1 pure-u-sm-1-3">
+			
+			<!-- Semester -->
+			<h3>Semester</h3>
+			<button id="fall" class="toggle pure-button" data-id=0>Fall</button>
+			<button id="winter" class="toggle pure-button" data-id=1>Winter</button>
+			<br>
+			<br>
+			
+			<!-- Preferences -->
+			<h3 style="margin-bottom: 0;">Preferences</h3>
+			<div class="pure-g">
+				<div class="pure-u-1 pure-u-md-1-2 prefs">
+					<form>
+						<input id="spread-off" type="radio" class="big-radio" name="spread" value="0" checked disabled>
+						<label for="spread-off" disabled>Most days off</label>
+						<br>
+						<input id="spread-even" type="radio" class="big-radio" name="spread" value="1" disabled>
+						<label for="spread-even" disabled>Even spread</label>
+					</form>
+				</div>
+				<div class="pure-u-1 pure-u-md-1-2 prefs">
+					<form id="time-pref-form">
+						<input id="class-late" type="radio" name="late" value="1" checked>
+						<label for="class-late">Late classes</label>
+						<br>
+						<input id="class-early" type="radio" name="late" value="-1">
+						<label for="class-early">Early classes</label>
+					</form>
+				</div>
+			</div>
+			
+			<br>
+		</div>
 
-        <!-- Right Panel -->
-        <div class="pure-u-1 pure-u-sm-2-3">
-            <h3>Courses</h3>
+			<!-- Right Panel -->
+		<div class="pure-u-1 pure-u-sm-2-3">
+			
+			<h3>Courses</h3>
+			<ul id="list" class="pure-menu-list">
+			</ul>
 
-            <ul id="list" class="pure-menu-list">
-            </ul>
+			<button id="clear" class="pure-button right">Clear All</button>
+			<div id="select-div0">
+				<select style="width: 100%;" id="select0" data-id=0><option></option>
+				</select>
+			</div>
+			<div id="select-div1">
+				<select style="width: 100%;" id="select1" data-id=1><option></option>
+				</select>
+			</div>
+			<button id="add" class="pure-button right">Add</button>
+		</div>
+	</div>
+	<br>
 
-            <!--<button id="sections" class="pure-button" style="float: left;">Sections</button> -->
-            <button id="clear" class="pure-button right">Clear All</button>
-            <div id="select-div0">
-                <select style="width: 100%;" id="select0" data-id=0><option></option>
-                </select>
-            </div>
-            <div id="select-div1">
-                <select style="width: 100%;" id="select1" data-id=1><option></option>
-                </select>
-            </div>
-            <button id="add" class="pure-button right">Add</button>
-        </div>
-    </div>
-    <br>
-
-    <button id="compute" class="pure-button pure-button-primary center-button">Compute!</button>
-    <p id="info-text"></p>
-    <div id="timetable-div"></div>
-		<button id="more" class="pure-button center-button" style="display: none;">More</button>
-    <!-- Footer -->
-    <a href="#about" id="about">About</a>
-    <footer style="display: none; border-top: 1px solid #4F2683; margin: 1em auto; text-align: center; color: #4F2683;">
-      <p>Copyright © 2016 Shrumit Mehta</p>
-    </footer>
-
-    <div id="fsmask" style="display: none;"></div>
+	<button id="compute" class="pure-button pure-button-primary center-button">Compute!</button>
+	<p id="info-text"></p>
+	<div id="timetable-div"></div>
+	<button id="more" class="pure-button center-button" style="display: none;">More</button>
+	
+	<!-- Footer -->
+	<a href="#about" id="about">About</a>
+	<footer style="display: none; border-top: 1px solid #4F2683; margin: 1em auto; text-align: center; color: #4F2683;">
+		<p>Copyright © 2016 Shrumit Mehta</p>
+	</footer>
 
 </body>
