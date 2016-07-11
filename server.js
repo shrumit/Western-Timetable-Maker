@@ -6,13 +6,15 @@ var search = require('./search.json');
 
 app.use(compression());
 
+/*
 app.use(function(req,res,next){
   //console.log(req.ip);
   //fs.appendFile('iplog.txt', req.ip)
   next();
 });
+*/
 
-app.use(express.static('public/'));
+app.use(express.static('.'));
 
 app.get('/api/:id', function(req, res){
   res.send(JSON.stringify(courses[req.params.id]));

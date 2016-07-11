@@ -6,7 +6,10 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Timetable Maker</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Western Timetable Maker</title>
+   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
 	<!-- Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans|Neuton" rel="stylesheet">
@@ -31,7 +34,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		html {
 			background-color: #E6E6E6;
 			min-height: 100%;
-		overflow: auto;
+		   overflow: auto;
 		}
 		
 		body {
@@ -126,7 +129,6 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		}
 
 		.pure-menu-link:hover {
-			atext-decoration: line-through;
 			background-color: #F5F5F5;
 			border-radius: 2px
 		}
@@ -378,10 +380,9 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 			if (course_selc.length > 0) {
 				//$('#compute').prop('disabled');
 				let start = new Date().getTime();
-				let count = computeEngine();
+				computeEngine();
 				let end = new Date().getTime();
-				console.log(`Took ${end-start} ms.`);
-				$('#info-text').text(`${count} conflict-free timetables possible. Computed in ${end-start}ms.`);
+				$('#info-text').append(` Computed in ${end-start}ms.`);
 				makeTimetables();
 			}
 		});
@@ -400,7 +401,6 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 			// remove disabled sections
 			for (let i = 0; i < master.length; i++) {
 				master[i] = master[i].filter(function(sec) {
-					print(sec);
 					if (sec.hasOwnProperty("disabled") && sec.disabled === true){
 						return false;
 					}
@@ -458,10 +458,13 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 
 			//print(solutions[solutions.length - 1]);
 			//print(solutions);
-			console.log('max perms ' + maxperm);
-			console.log('con-free perms ' + count);
-			console.log('solutions ' + solutions.length);
+			//console.log('max perms ' + maxperm);
+			//console.log('con-free perms ' + count);
+			//console.log('solutions ' + solutions.length);
+			$('#info-text').text(`${count} conflict-free timetables out of ${maxperm} total permutations.`);
 			return count;
+			
+			
 			// ------------------------------------------------------//
 			function recurse() {
 				if (index === master.length) {
@@ -687,18 +690,14 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		<h1>Western Timetable Maker <span style="font-size: 1rem;">BETA</span></h1>
 	</header>
 
-	<h3>Instructions</h3>
+   <br>	   
 	<div id="instructions">
-		<ol>
-			<li>Select a semester, search for a course and add it to the list.</li>
-			<li>Click on a course in the list to select its sections.</li>
-			<li>Set your preferences. At this time, <em>Most days off</em> cannot be changed. <em>Most days off</em> is given precedence over <em>Late/Early classes</em>.</li>
-			<li>Click "Compute!" to generate timetables.</li>
-			<li>Timetables appear sorted by preference.</li>
-		</ol>
-		<ul style="font-size: 80%;">
-			<li>Some first year science and social-science courses have upwards of 30 lab/tutorial sections each. Timetables comprising of many such courses can have millions of conflict-free permutations. These might take some time to compute. Be patient!</li>
-			<li>Using Chrome, Chromium or Opera is recommended for best stability, especially with first year timetables (see above).</li>
+		<ul style="list-style-type: circle;">
+			<li>This tool automatically generates conflict-free timetables based on your courses.</li>
+			<li>Timetables appear sorted by preference. At this time, <em>Most days off</em> cannot be changed.</li>
+			<li><em>Most days off</em> is given precedence over <em>Late/Early classes</em>.</li>
+			<li>Some first year courses have >20 lab/tutorial sections. Timetables comprising of many such courses can have millions of conflict-free permutations and might take some time to compute.</li>
+			<li>Chrome, Chromium or Opera is recommended for best stability, especially with first year timetables (see above).</li>
 		</ul>
 	</div>
 
@@ -716,6 +715,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 			
 			<!-- Preferences -->
 			<h3 style="margin-bottom: 0;">Preferences</h3>
+			<br>
 			<div class="pure-g">
 				<div class="pure-u-1 pure-u-md-1-2 prefs">
 					<form>
@@ -762,6 +762,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 	<br>
 
 	<button id="compute" class="pure-button pure-button-primary center-button">Compute!</button>
+	<br>
 	<p id="info-text"></p>
 	<div id="timetable-div"></div>
 	<button id="more" class="pure-button center-button" style="display: none;">More</button>
