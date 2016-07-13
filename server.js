@@ -6,14 +6,6 @@ var search = require('./search.json');
 
 app.use(compression());
 
-/*
-app.use(function(req,res,next){
-  //console.log(req.ip);
-  //fs.appendFile('iplog.txt', req.ip)
-  next();
-});
-*/
-
 app.use(express.static('.'));
 
 app.get('/api/:id', function(req, res){
@@ -25,6 +17,7 @@ app.get('/search/:id', function(req, res){
 })
 
 
-app.listen(3000, 'localhost', function(){
-  console.log("Server started at 3000");
+var port = process.argv[2] || 3000;
+app.listen(port, 'localhost', function(){
+  console.log("Server started at " + port);
 });
