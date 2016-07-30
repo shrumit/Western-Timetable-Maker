@@ -99,7 +99,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		
 		.pure-button-active {
 			font-weight: bold;
-			atext-decoration: underline;
+			text-decoration: underline;
 			background-color: #F2F2F2;
 			color: #4F2683;
 			color: black;
@@ -594,7 +594,7 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 						else
 							$cell.text(" ");
 						
-						$cell.css('background-color', "rgb("+(255-(c.id%11*20))+","+(255-(c.id%7*20))+","+(255-(c.id%5*20))+")");
+						$cell.css('background-color', "rgb("+(255-(slot.id%11*20))+","+(255-(slot.id%7*20))+","+(255-(slot.id%5*20))+")");
 					}
 				})
 				
@@ -692,29 +692,22 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 		<h1>Western Timetable Maker <span style="font-size: 1rem;">BETA</span></h1>
 	</header>
 
-   <br>	   
-	<div id="instructions">
-		<ul style="list-style-type: circle;">
-			<li>This tool automatically generates conflict-free timetables based on your courses!</li>
-			<li><strong>Instructions:</strong> Select a semester, add your courses, click on a course to deselect sections, then Compute!
-			<li>Timetables appear sorted by preference. At this time, "Most days off" cannot be changed.</li>
-			<li>"Most days off" is given precedence over "Late/Early classes".</li>
-			<li>Some first year courses have >20 lab/tutorial sections. Timetables comprising of many such courses can have millions of conflict-free permutations and might take some time to compute.</li>
-			<li>Chrome, Chromium, Opera or other V8-Engine browsers are recommended for best stability, especially with first year timetables.</li>
-		</ul>
-	</div>
-
-	<!-- Main Controls -->
-	<div class="pure-g first-grid">
-		<!-- Left Panel -->
+   <br>
+   
+   <!-- Main container -->
+	<div class="pure-g">
+		<!-- Left 1/3 -->
 		<div class="pure-u-1 pure-u-sm-1-3">
 			
-			<!-- Semester -->
-			<h3>Semester</h3>
-			<button id="fall" class="toggle pure-button" data-id=0>Fall</button>
-			<button id="winter" class="toggle pure-button" data-id=1>Winter</button>
-			<br>
-			<br>
+			<!-- Instructions -->
+			<h3>Instructions</h3>
+			<ol>
+				<li>Select a semester</li>
+				<li>Add courses</li>
+				<li>Deselect unwanted sections</li>
+				<li>Set your preferences</li>
+				<li>Compute!</li>
+			</ol>
 			
 			<!-- Preferences -->
 			<h3 style="margin-bottom: 0;">Preferences</h3>
@@ -739,16 +732,20 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 					</form>
 				</div>
 			</div>
-			
-			<br>
-		</div>
 
-			<!-- Right Panel -->
+		</div>
+		
+		<!-- Right 2/3 -->
 		<div class="pure-u-1 pure-u-sm-2-3">
+
+			<!-- Semester -->
+			<h3>Semester</h3>
+			<button id="fall" class="toggle pure-button" data-id=0>Fall</button>
+			<button id="winter" class="toggle pure-button" data-id=1>Winter</button>
 			
+			<!--Courses-->			
 			<h3>Courses</h3>
-			<ul id="list" class="pure-menu-list">
-			</ul>
+			<ul id="list" class="pure-menu-list"></ul>
 
 			<button id="clear" class="pure-button right">Clear All</button>
 			<div id="select-div0">
@@ -760,18 +757,21 @@ Copyright (C) Shrumit Mehta 2016. All rights reserved.
 				</select>
 			</div>
 			<button id="add" class="pure-button right">Add</button>
+
 		</div>
 	</div>
+	
+	<!-- Compute -->
 	<br>
-
 	<button id="compute" class="pure-button pure-button-primary center-button">Compute!</button>
 	<br>
+	
+	<!-- Timetables -->
 	<p id="info-text"></p>
 	<div id="timetable-div"></div>
 	<button id="more" class="pure-button center-button" style="display: none;">More</button>
 	
 	<!-- Footer -->
-   <!-- <a href="#about" id="about">About</a> -->
 	<footer style="border-top: 1px solid #4F2683; margin: 1em auto; text-align: center; color: #4F2683; font-size: 80%;">
 		<p>Copyright © 2016 Shrumit Mehta. Ad-free forever.</p>
 	</footer>
