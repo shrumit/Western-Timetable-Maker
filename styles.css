@@ -1,0 +1,201 @@
+/* Copyright (c) Shrumit Mehta 2016. All rights reserved. */
+
+html {
+	background-color: #E6E6E6;
+	min-height: 100%;
+	overflow: auto;
+}
+
+body {
+	width: 90%;
+	max-width: 1080px;
+	padding: 1% 2.5%;
+	margin: 0.5rem auto 1rem auto;
+	background:white;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
+	font-family: 'Open Sans', sans-serif;
+}
+
+h1, h3 {
+	font-family: 'Neuton', serif;
+}
+
+header {
+	text-align: center;
+	border-bottom: 1px solid #4F2683;
+}
+
+h1{
+	font-weight: normal;
+	color: #4F2683;
+	font-size: 3em;
+	margin: 0.1em auto;
+}
+
+h3 {
+	font-weight: normal;
+	font-size: 1.5em;
+	color: black;
+}
+
+label {
+	cursor: pointer;
+	cursor: hand;
+	
+}
+
+li {
+	margin-bottom: 0.2em;
+}
+
+.toggle {
+	width: 100px;
+}
+
+.right {
+	amargin-top: 0.5em;
+	amargin-bottom: 0.5em;
+	float: right;
+}
+
+.pure-button {
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	min-width: 100px;
+ }
+
+.pure-button-active {
+	font-weight: bold;
+	text-decoration: underline;
+	background-color: #F2F2F2;
+	color: #4F2683;
+	color: black;
+}
+
+.pure-button-hover, .pure-button:hover, .pure-button:focus {
+	background-color: #F2F2F2;
+	background-image: none;
+}
+
+.pure-button-primary {
+	background-color: #4F2683;
+}
+
+.pure-button-primary:hover {
+	background-color: #4F2689;
+	text-decoration: underline;
+}
+
+.pure-button-primary:active {
+	cursor: wait;
+}
+
+.pure-menu-list {
+	margin: 0.5em auto;
+	text-align: center;
+}
+
+.pure-menu-link:hover {
+	background-color: #F5F5F5;
+	border-radius: 2px
+}
+
+.list-item {
+	display: flex;
+	justify-content: flex-end;
+	aflex-grow: 1;
+	background: #E6E6E6;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	border-radius: 2px;
+	margin: 2px;
+}
+
+.list-title{
+	flex-grow: 1;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: block;
+	color: #2E2E2E;
+}
+
+.list-cross{
+	max-width: 100px;
+	border-left: 2px dashed #F5F5F5;
+}
+
+.section-div {
+	display: none;
+	acolor: #777777;
+}
+
+.sections-table {
+	text-align: left;
+	letter-spacing: 0em;
+	border: 0.191em solid #F5F5F5;
+}
+
+.sections-table td {
+	padding: 0.1em 0.5em;
+	border: 1px solid #dfdfdf;
+}
+
+.center-button {
+	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+}
+
+.select2 {
+	margin: 0.5em auto;
+}
+
+.select2-dropdown {
+	font-size: 80%;
+	font-weight: lighter;
+}
+		
+.select2-container--default .select2-selection--single {
+	border-radius: 0px;
+	text-align: center;
+	border: 1px	black dashed;
+	outline: none;
+	font-size: 80%;
+	cursor: text;
+}
+		
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+	color: black;
+}
+
+#timetable-div {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.timetable-container {
+	overflow: auto;
+	text-align: center;
+	margin: 1em 0.25em;
+}
+
+.timetable {
+	border-collapse: collapse;
+	border: 1px solid black;
+	font-size: 80%;
+}
+
+.timetable td, .timetable th {
+	border: 1px solid black;
+	padding: 0px 0.5em;
+	min-width: 50px;
+	white-space: nowrap;
+}
+
+.timetable tr:nth-child(even) {
+	background-color: #F2F2F2;
+}
+
