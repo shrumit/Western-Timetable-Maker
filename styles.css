@@ -14,7 +14,7 @@ header {
 	text-align: center;
 	background: #4F2683;
 	color: white;
-	padding: 0.5rem;
+	padding: 0.7rem;
 }
 
 main {
@@ -23,7 +23,7 @@ main {
 	padding: 0 2.5% 1.5% 2.5%;
 	margin: 0.5rem auto;
 	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
-	background: white;
+	background: #fafafa;
 }
 
 footer {
@@ -82,10 +82,12 @@ li {
 
 .pure-button-active {
 	font-weight: bold;
-	text-decoration: underline;
+	atext-decoration: underline;
+	text-transform: uppercase;
 	background-color: #F5F5F5;
-	color: #4F2683;
 	color: black;
+	abox-shadow: none;
+	aborder: 1px solid black;
 }
 
 .pure-button-hover, .pure-button:hover, .pure-button:focus {
@@ -123,7 +125,7 @@ li {
 	background: #E6E6E6;
 	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 	border-radius: 0px;
-	margin: 2px;
+	margin: 7px 0;
 }
 
 .list-title {
@@ -141,13 +143,12 @@ li {
 
 .section-div {
 	display: none;
-	acolor: #777777;
 }
 
 .sections-table {
 	text-align: left;
 	letter-spacing: 0em;
-	border: 0.191em solid #F5F5F5;
+	border: 1px solid #F5F5F5;
 }
 
 .sections-table td {
