@@ -69,10 +69,11 @@ $(document).ready(function() {
 	var solutions;
 	// Remove course from list
 	$('ul').on('click', '.list-cross', function() {
-
 		index = selc.indexOf($(this).closest('li').attr("data-id"));
 		selc.splice(index, 1);
 		course_selc.splice(index, 1);
+		if (course_selc.length == 0)
+			$('#clear').hide();
 		$(this).closest('li').remove();
 		return false;
 	});
@@ -104,12 +105,13 @@ $(document).ready(function() {
 	// Add course button
 	$('#add').click(function() {
 		$(this).blur();
-
+		
 		// check for emptiness or duplicacy
 		id = $('#select' + term).select2('data')[0].id;
 		if ((id == "") || (selc.indexOf(id) != -1))
 			return;
-
+		
+		$('#clear').show();
 		selc.push(id);
 
 		$.getJSON(`${url}/api/${id}`, function(data) {

@@ -6,45 +6,60 @@ html {
 	overflow: auto;
 }
 
-body {
-	width: 90%;
-	max-width: 1080px;
-	padding: 1% 2.5%;
-	margin: 0.5rem auto 1rem auto;
-	background:white;
-	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-}
-
 html, button, input, select, textarea, .pure-g [class *= "pure-u"] {
 	font-family: 'Open Sans', sans-serif;
+}
+
+header {
+	text-align: center;
+	background: #4F2683;
+	color: white;
+	padding: 0.5rem;
+}
+
+main {
+	width: 93%;
+	max-width: 1080px;
+	padding: 0 2.5% 1.5% 2.5%;
+	margin: 0.5rem auto;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+	background: white;
+}
+
+footer {
+	width: 93%;
+	max-width: 1080px;
+	text-align: center;
+	padding: 1% 2.5%;
+	margin: 0.5rem auto 1rem auto;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+	background: white;
+	color: #4F2683;
 }
 
 h1, h3 {
 	font-family: 'Neuton', serif;
 }
 
-header {
-	text-align: center;
-	border-bottom: 1px solid #4F2683;
-}
-
-h1{
+h1 {
 	font-weight: normal;
-	color: #4F2683;
-	font-size: 3em;
-	margin: 0.1em auto;
+	font-size: 2.5rem;
+	margin: 0;
 }
 
 h3 {
 	font-weight: normal;
-	font-size: 1.5em;
+	font-size: 1.7em;
 	color: black;
+}
+
+p {
+	margin: 0px;
 }
 
 label {
 	cursor: pointer;
-	cursor: hand;
-	
+	cursor: hand;	
 }
 
 li {
@@ -56,26 +71,25 @@ li {
 }
 
 .right {
-	amargin-top: 0.5em;
-	amargin-bottom: 0.5em;
 	float: right;
 }
 
 .pure-button {
-	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 	min-width: 100px;
+	border-radius: 0px;
  }
 
 .pure-button-active {
 	font-weight: bold;
 	text-decoration: underline;
-	background-color: #F2F2F2;
+	background-color: #F5F5F5;
 	color: #4F2683;
 	color: black;
 }
 
 .pure-button-hover, .pure-button:hover, .pure-button:focus {
-	background-color: #F2F2F2;
+	background-color: #F5F5F5;
 	background-image: none;
 }
 
@@ -99,7 +113,7 @@ li {
 
 .pure-menu-link:hover {
 	background-color: #F5F5F5;
-	border-radius: 2px
+	border-radius: 0px
 }
 
 .list-item {
@@ -107,12 +121,12 @@ li {
 	justify-content: flex-end;
 	aflex-grow: 1;
 	background: #E6E6E6;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-	border-radius: 2px;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+	border-radius: 0px;
 	margin: 2px;
 }
 
-.list-title{
+.list-title {
 	flex-grow: 1;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -120,7 +134,7 @@ li {
 	color: #2E2E2E;
 }
 
-.list-cross{
+.list-cross {
 	max-width: 100px;
 	border-left: 2px dashed #F5F5F5;
 }
@@ -196,6 +210,5 @@ li {
 }
 
 .timetable tr:nth-child(even) {
-	background-color: #F2F2F2;
+	background-color: #E6E6E6;
 }
-
