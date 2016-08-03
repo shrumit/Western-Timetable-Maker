@@ -2,6 +2,7 @@ dump/
 node_modules/
 public/
 temp/
+lib
 
 jquery*
 master*
