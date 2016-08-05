@@ -6,16 +6,15 @@ var search = require('./search.json');
 
 app.use(compression());
 
-app.use(express.static('.'));
+app.use(express.static('public'));
 
 app.get('/api/:id', function(req, res){
-  res.send(JSON.stringify(courses[req.params.id]));
+  res.send(courses[req.params.id]);
 });
 
 app.get('/search/:id', function(req, res){
-  res.send(JSON.stringify(search[req.params.id]));
+  res.send(search[req.params.id]);
 })
-
 
 var port = process.argv[2] || 3000;
 app.listen(port, 'localhost', function(){
