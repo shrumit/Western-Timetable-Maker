@@ -113,7 +113,7 @@ $(document).ready(function() {
 		
 		$('#clear').show();
 		selc.push(id);
-
+		
 		$.getJSON(`${url}/api/${id}`, function(data) {
 			$('#list').append(sec_template(data));
 			course_selc.push(data);
