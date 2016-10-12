@@ -10,7 +10,7 @@ Creating a conflict-free course timetable is a tedious and time-consuming proces
 2. Generating an optimal course timetable based on constraints and preferences.
 
 ## Algorithm
-The problem of timetable generation is similar to the better-known [N-queens problem](https://en.wikipedia.org/wiki/Eight_queens_puzzle), which is NP-hard. Western Timetable Maker uses a backtracking depth-first search algorithm to generate conflict-free solutions. The implementation is optimized enough to generate timetables in a reasonable amount of time for most course combinations.
+The problem of timetable generation is similar to the [N-queens problem](https://en.wikipedia.org/wiki/Eight_queens_puzzle), differing in that all possible solutions have to be determined.  Western Timetable Maker uses a backtracking depth-first search algorithm to generate conflict-free solutions. The implementation is optimized enough to generate timetables in a reasonable amount of time for most course combinations.
 
 ## Implementation
 Algorithm: JavaScript
