@@ -7,3 +7,6 @@ lib
 jquery*
 master*
 search*
+
+*.exe
+*.out
