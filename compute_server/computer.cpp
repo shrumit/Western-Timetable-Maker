@@ -3,27 +3,16 @@
 #include <cstdint>
 #include <vector>
 
+#include "Week.h"
+#include "WeekendEval.h"
+
 using namespace std;
 
-struct Week {
-  uint32_t mon;
-  uint32_t tue;
-  uint32_t wed;
-  uint32_t thu;
-  uint32_t fri;
-  Week()
-  {
-    mon = 0;
-    tue = 0;
-    wed = 0;
-    thu = 0;
-    fri = 0;
-  }
-};
+WeekendEval weekend;
 
 void snapshot(const Week& table, const vector<int>& solution)
 {
-  cout << "Bruh" << endl;
+	weekend.evaluate(table, solution);
 }
 
 bool isConflict(const Week& table, const Week& section)
@@ -40,20 +29,20 @@ bool isConflict(const Week& table, const Week& section)
 
 void addToTable(Week& table, const Week& section)
 {
-  table.mon = table.mon | section.mon;
-  table.tue = table.tue | section.tue;
-  table.wed = table.wed | section.wed;
-  table.thu = table.thu | section.thu;
-  table.fri = table.fri | section.fri;
+  table.mon |= section.mon;
+  table.tue |= section.tue;
+  table.wed |= section.wed;
+  table.thu |= section.thu;
+  table.fri |= section.fri;
 }
 
 void removeFromTable(Week& table, const Week& section)
 {
-  table.mon = table.mon ^ section.mon;
-  table.tue = table.tue ^ section.tue;
-  table.wed = table.wed ^ section.wed;
-  table.thu = table.thu ^ section.thu;
-  table.fri = table.fri ^ section.fri;  
+  table.mon ^= section.mon;
+  table.tue ^= section.tue;
+  table.wed ^= section.wed;
+  table.thu ^= section.thu;
+  table.fri ^= section.fri;  
 }
 
 void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& components, int depth = 0)
