@@ -16,5 +16,3 @@ void Evaluator::emit()
     	cout << i << ' ';
     cout << endl;
 }
-
-

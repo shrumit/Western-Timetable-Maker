@@ -17,32 +17,23 @@ void snapshot(const Week& table, const vector<int>& solution)
 
 bool isConflict(const Week& table, const Week& section)
 {
-  if ((table.mon & section.mon > 0) ||
-      (table.tue & section.tue > 0) ||
-      (table.wed & section.wed > 0) ||
-      (table.thu & section.thu > 0) ||
-      (table.fri & section.fri > 0))
-    return true;
-  else
-    return false;
+	for (int i = 0; i < WEEK_SIZE; i++) {
+		if ((table.day[i] & section.day[i]) > 0)
+			return true;
+	}
+	return false;
 }
 
 void addToTable(Week& table, const Week& section)
 {
-  table.mon |= section.mon;
-  table.tue |= section.tue;
-  table.wed |= section.wed;
-  table.thu |= section.thu;
-  table.fri |= section.fri;
+	for (int i = 0; i < WEEK_SIZE; i++)
+  	table.day[i] |= section.day[i];
 }
 
 void removeFromTable(Week& table, const Week& section)
 {
-  table.mon ^= section.mon;
-  table.tue ^= section.tue;
-  table.wed ^= section.wed;
-  table.thu ^= section.thu;
-  table.fri ^= section.fri;  
+	for (int i = 0; i < WEEK_SIZE; i++)
+		table.day[i] ^= section.day[i];
 }
 
 void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& components, int depth = 0)
@@ -69,7 +60,7 @@ void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& co
 
 
 int main (int argc, char* argv[])
-{  
+{
   int comp_size;
   cin >> comp_size;
   
@@ -85,11 +76,8 @@ int main (int argc, char* argv[])
     for (int j = 0; j < sect_size; j++)
     {
       Week section;
-      cin >> section.mon;
-      cin >> section.tue;
-      cin >> section.wed;
-      cin >> section.thu;
-      cin >> section.fri;
+			for (int k = 0; k < WEEK_SIZE; k++)
+				cin >> section.day[k];
       components[i].push_back(section);
     }
   }
