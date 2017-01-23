@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=gnu++11
+CFLAGS = -std=gnu++11 -Wall -Wextra -pedantic
 OBJS = Computer.o Evaluator.o Evals.o
 
 main: $(OBJS)
