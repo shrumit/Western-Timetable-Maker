@@ -18,7 +18,7 @@ void snapshot(const Week& table, const vector<int>& solution)
 bool isConflict(const Week& table, const Week& section)
 {
 	for (int i = 0; i < WEEK_SIZE; i++) {
-		if ((table.day[i] & section.day[i]) > 0)
+		if (table.day[i] & section.day[i])
 			return true;
 	}
 	return false;
@@ -36,7 +36,7 @@ void removeFromTable(Week& table, const Week& section)
 		table.day[i] ^= section.day[i];
 }
 
-void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& components, int depth = 0)
+void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& components, size_t depth = 0)
 {
   cout << "Level " << depth << endl;
   if (depth == components.size())
@@ -46,7 +46,7 @@ void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& co
   }
   
   cout << "components[depth].size():" << components[depth].size() << endl;
-  for (int i = 0; i < components[depth].size(); i++)
+  for (size_t i = 0; i < components[depth].size(); i++)
   {
     if (isConflict(table, components[depth][i]))
       continue;
@@ -59,7 +59,7 @@ void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& co
 }
 
 
-int main (int argc, char* argv[])
+int main ()
 {
   int comp_size;
   cin >> comp_size;

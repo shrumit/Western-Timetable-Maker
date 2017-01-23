@@ -4,13 +4,20 @@ using namespace std;
 
 void WeekendEval::evaluate(const Week& table, const vector<int>& solution)
 {
-	int score = 0;
+	double score = computeScore(table);
+		
+	if (score > maxScore)
+		save(solution);
+
+}
+
+double WeekendEval::computeScore(const Week& table)
+{
+	double score = 0;
 	if (table.day[MON] == 0)
 		score++;
 	if (table.day[FRI] == 0)
 		score++;
-	
-	if (score > maxScore) {
-		save(solution);
-	}
+		
+	return score;
 }
