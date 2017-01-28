@@ -1,4 +1,4 @@
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <iostream>
 #include <cstdint>
 #include <vector>
@@ -38,14 +38,14 @@ void removeFromTable(Week& table, const Week& section)
 
 void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& components, size_t depth = 0)
 {
-  cout << "Level " << depth << endl;
+  // cout << "Level " << depth << endl;
   if (depth == components.size())
   {
     snapshot(table, solution);
     return;
   }
   
-  cout << "components[depth].size():" << components[depth].size() << endl;
+  // cout << "components[depth].size():" << components[depth].size() << endl;
   for (size_t i = 0; i < components[depth].size(); i++)
   {
     if (isConflict(table, components[depth][i]))
@@ -59,29 +59,56 @@ void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& co
 }
 
 
-int main ()
+int main (int argc, char** argv)
 {
-  int comp_size;
-  cin >> comp_size;
-  
-  vector<vector<Week>> components(comp_size);
-
-  // for every component
-  for (int i = 0; i < comp_size; i++)
-  {
-    int sect_size;
-    cin >> sect_size;
-    
-    // for every section
-    for (int j = 0; j < sect_size; j++)
-    {
-      Week section;
-			for (int k = 0; k < WEEK_SIZE; k++)
-				cin >> section.day[k];
-      components[i].push_back(section);
-    }
-  }
-
+	int comp_size;
+	vector<vector<Week>> components;
+	
+	/* get input from args */
+	if (argc > 1) // input from arguments
+	{
+		int index = 0;
+		comp_size = stoi(argv[++index]);
+		components.resize(comp_size);
+		
+		// for every component
+		for (int i = 0; i < comp_size; i++)
+		{
+			int sect_size = stoi(argv[++index]);
+			
+			// for every section
+			for (int j = 0; j < sect_size; j++)
+			{
+				Week section;
+				for (int k = 0; k < WEEK_SIZE; k++)
+					section.day[k] = stoi(argv[++index]);
+				components[i].push_back(section);
+			}
+		}
+	}
+	
+	/* get input from stdin */
+	else
+	{
+		cin >> comp_size;
+		components.resize(comp_size);
+		// for every component
+		for (int i = 0; i < comp_size; i++)
+		{
+			int sect_size;
+			cin >> sect_size;
+			
+			// for every section
+			for (int j = 0; j < sect_size; j++)
+			{
+				Week section;
+				for (int k = 0; k < WEEK_SIZE; k++)
+					cin >> section.day[k];
+				components[i].push_back(section);
+			}
+		}
+	}
+	
   Week table;
   vector<int> solution(comp_size);
   recurse(table, solution, components);
