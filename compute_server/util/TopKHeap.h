@@ -96,7 +96,7 @@ public:
         delete[] heap;
     }
 
-    bool offer(double score, T payload)
+    bool offer(double score, const T& payload)
     {
         if (count < capacity) {
             heap[count] = make_pair(score, payload);
