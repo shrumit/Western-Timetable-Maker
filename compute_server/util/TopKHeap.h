@@ -88,31 +88,28 @@ private:
 public:
     std::pair<double, T>* heap; // Top of heap is the Kth largest element from stream.
 
-    TopKHeap(int capacity = 7)
-    {
-        this->capacity = capacity;
-        heap = new std::pair<double, T>[capacity];
-    }
+    TopKHeap(int capacity = 7) : capacity(capacity) , heap(new std::pair<double, T>[capacity])
+    { }
 
     ~TopKHeap()
     {
         delete[] heap;
     }
 
-    bool insert(std::pair<double, T> element)
+    bool offer(double score, T payload)
     {
         if (count < capacity) {
-            heap[count] = element;
+            heap[count] = make_pair(score, payload);
             bubbleUp(count++);
             return true;
         }
-        else if (element.first > heap[0].first) {
-            heap[0] = element;
+        else if (score > heap[0].first) {
+            heap[0] = make_pair(score, payload);
             bubbleDown(0);
             return true;
         }
-        else
-            return false;
+        
+        return false;
     }
 
     int getCapacity()

@@ -19,40 +19,40 @@ int main()
     cout << "test0.getCapacity():" << test0.getCapacity() << endl;
 
     TopKHeap<int> test1(7);
-    test1.insert(make_pair(1.0, 1));
-    test1.insert(make_pair(1.0, 2));
-    test1.insert(make_pair(1.0, 3));
-    test1.insert(make_pair(1.0, 4));
-    test1.insert(make_pair(1.0, 5));
-    test1.insert(make_pair(1.0, 6));
-    test1.insert(make_pair(2.0, 7));
-    test1.insert(make_pair(2.0, 8));
-    test1.insert(make_pair(1.0, 9));
-    test1.insert(make_pair(2.0, 10));
-    test1.insert(make_pair(2.0, 11));
-    test1.insert(make_pair(3.0, 12));
-    test1.insert(make_pair(2.0, 13));
-    test1.insert(make_pair(1.0, 14));
+    test1.offer(1.0, 1);
+    test1.offer(1.0, 2);
+    test1.offer(1.0, 3);
+    test1.offer(1.0, 4);
+    test1.offer(1.0, 5);
+    test1.offer(1.0, 6);
+    test1.offer(2.0, 7);
+    test1.offer(2.0, 8);
+    test1.offer(1.0, 9);
+    test1.offer(2.0, 10);
+    test1.offer(2.0, 11);
+    test1.offer(3.0, 12);
+    test1.offer(2.0, 13);
+    test1.offer(1.0, 14);
 
     for (int i = 0; i < test1.getCount(); i++)
         cout << test1.heap[i].first << "," << test1.heap[i].second << " ; ";
     cout << endl;
 
     TopKHeap<int> test2(6);
-    test2.insert(make_pair(1.0, 1));
-    test2.insert(make_pair(14.0, 14));
-    test2.insert(make_pair(2.0, 2));
-    test2.insert(make_pair(7.0, 7));
-    test2.insert(make_pair(3.0, 3));
-    test2.insert(make_pair(4.0, 4));
-    test2.insert(make_pair(9.0, 9));
-    test2.insert(make_pair(10.0, 10));
-    test2.insert(make_pair(5.0, 5));
-    test2.insert(make_pair(8.0, 8));
-    test2.insert(make_pair(13.0, 13));
-    test2.insert(make_pair(11.0, 11));
-    test2.insert(make_pair(12.0, 12));
-    test2.insert(make_pair(6, 6));
+    test2.offer(1.0, 1);
+    test2.offer(14.0, 14);
+    test2.offer(2.0, 2);
+    test2.offer(7.0, 7);
+    test2.offer(3.0, 3);
+    test2.offer(4.0, 4);
+    test2.offer(9.0, 9);
+    test2.offer(10.0, 10);
+    test2.offer(5.0, 5);
+    test2.offer(8.0, 8);
+    test2.offer(13.0, 13);
+    test2.offer(11.0, 11);
+    test2.offer(12.0, 12);
+    test2.offer(6, 6);
 
 
     for (int i = 0; i < test2.getCount(); i++)
@@ -65,16 +65,16 @@ int main()
     vector<int> v;
 
     v.push_back(1);
-    test3.insert(make_pair(2,v));
+    test3.offer(2,v);
     
     v.push_back(2);
-    test3.insert(make_pair(3,v));
+    test3.offer(3,v);
 
     v.push_back(3);
-    test3.insert(make_pair(4,v));
+    test3.offer(4,v);
 
     v.push_back(4);
-    test3.insert(make_pair(1,v));
+    test3.offer(1,v);
 
     for (int i = 0; i < test3.getCount(); i++)
         cout << test3.heap[i].first << "," << vecToString(test3.heap[i].second) << " ; ";
