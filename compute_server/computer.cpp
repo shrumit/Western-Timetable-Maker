@@ -2,32 +2,37 @@
 #include <iostream>
 #include <cstdint>
 #include <vector>
+#include <climits>
+//#include <cilk/cilk.h>
+//#include <cilk/cilk_api.h>
 
 #include "Week.h"
-#include "WeekendEval.h"
+#include "Evaluator.h"
 
 using namespace std;
 
-WeekendEval weekend;
+vector<Evaluator*> evals;
 
 void snapshot(const Week& table, const vector<int>& solution)
 {
-	weekend.evaluate(table, solution);
+	for (size_t i = 0; i < evals.size(); i++) {
+		evals[i]->evaluate(table, solution);
+	}
 }
 
 bool isConflict(const Week& table, const Week& section)
 {
-	for (int i = 0; i < WEEK_SIZE; i++) {
+	for (int i = 0; i < WEEK_SIZE; i++)
 		if (table.day[i] & section.day[i])
 			return true;
-	}
+	
 	return false;
 }
 
 void addToTable(Week& table, const Week& section)
 {
 	for (int i = 0; i < WEEK_SIZE; i++)
-  	table.day[i] |= section.day[i];
+		table.day[i] |= section.day[i];
 }
 
 void removeFromTable(Week& table, const Week& section)
@@ -38,24 +43,26 @@ void removeFromTable(Week& table, const Week& section)
 
 void recurse (Week& table, vector<int>& solution, const vector<vector<Week>>& components, size_t depth = 0)
 {
-  // cout << "Level " << depth << endl;
-  if (depth == components.size())
-  {
-    snapshot(table, solution);
-    return;
-  }
-  
-  // cout << "components[depth].size():" << components[depth].size() << endl;
-  for (size_t i = 0; i < components[depth].size(); i++)
-  {
-    if (isConflict(table, components[depth][i]))
-      continue;
-    
-    solution[depth] = i;
-    addToTable(table, components[depth][i]);
-    recurse (table, solution, components, depth+1);
-    removeFromTable(table, components[depth][i]);
-  }
+
+	if (depth == components.size())
+	{
+		snapshot(table, solution);
+		return;
+	}
+
+	// levelcount[depth]++;
+
+	size_t n = components[depth].size();
+	for (size_t i = 0; i < n; i++)
+	{
+		if (!isConflict(table, components[depth][i]))
+		{
+			solution[depth] = i;
+			addToTable(table, components[depth][i]);
+			recurse (table, solution, components, depth+1);
+			removeFromTable(table, components[depth][i]);
+		}
+	}
 }
 
 
@@ -92,6 +99,7 @@ int main (int argc, char** argv)
 	{
 		cin >> comp_size;
 		components.resize(comp_size);
+		
 		// for every component
 		for (int i = 0; i < comp_size; i++)
 		{
@@ -108,8 +116,14 @@ int main (int argc, char** argv)
 			}
 		}
 	}
-	
-  Week table;
-  vector<int> solution(comp_size);
-  recurse(table, solution, components);
+  
+  	evals = Evaluator::createEvaluators(1);
+	Week table;
+	vector<int> solution(comp_size);
+	recurse(table, solution, components);
+
+	for (size_t i = 0; i < evals.size(); i++) {
+		cout << evals[i]->toString() << endl;
+	}
+	return 0;
 }

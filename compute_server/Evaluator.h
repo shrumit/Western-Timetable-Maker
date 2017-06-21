@@ -1,21 +1,22 @@
 #pragma once
+#include <string>
+#include <vector>
 
 #include "Week.h"
-#include <vector>
-#include <string>
+#include "util/TopKHeap.h"
 
 class Evaluator
 {
 public:
-	virtual void evaluate(const Week&, const std::vector<int>&) = 0;
+    static std::vector<Evaluator*> createEvaluators(int capacity = 7);
+    void evaluate(const Week&, const std::vector<int>&);
+    std::string toString();
 	virtual double computeScore(const Week&) = 0;
-	void emit();
 
 protected:
-	Evaluator(std::string idName, double maxScore = -1) : idName(idName), maxScore(maxScore) {}
-	void save(const std::vector<int>&);
-
 	std::string idName;
-	double maxScore;
-	std::vector<int> savedSolution;
+    TopKHeap<std::vector<int>> store;
+    
+    Evaluator(std::string idName, int capacity);
+    ~Evaluator();
 };
