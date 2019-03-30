@@ -1,9 +1,0 @@
-{
-  "name": "ttmaker-site",
-  "version": "0.0.5",
-  "author": "shrumit",
-  "dependencies": {
-    "compression": "^1.6.2",
-    "express": "^4.14.0"
-  }
-}
