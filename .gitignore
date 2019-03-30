@@ -4,6 +4,9 @@ public/
 temp/
 lib
 
+
 jquery*
 master*
 search*
+
+*.out
