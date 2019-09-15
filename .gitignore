@@ -10,3 +10,4 @@ master*
 search*
 
 *.out
+*.o
