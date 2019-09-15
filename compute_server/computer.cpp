@@ -12,9 +12,11 @@
 using namespace std;
 
 vector<Evaluator*> evals;
+size_t validCount;
 
 void snapshot(const Week& table, const vector<int>& solution)
 {
+  validCount++;
   for (size_t i = 0; i < evals.size(); i++) {
     evals[i]->evaluate(table, solution);
   }
@@ -75,6 +77,8 @@ int main (int argc, char** argv)
   int comp_size;
   vector<vector<Week>> components;
   
+  // cout << "argc:" << argc << endl;
+  // return 0;
   /* get input from args */
   if (argc > 1) // input from arguments
   {
@@ -121,11 +125,13 @@ int main (int argc, char** argv)
     }
   }
   
-  evals = Evaluator::createEvaluators(1);
+  evals = Evaluator::createEvaluators(5); // number signifies top k desired timetables to be stored, per Evaluator
   Week table;
   vector<int> solution(comp_size);
   recurse(table, solution, components);
 
+  // Output is in the format <idname> <num_timetables> comp_size*<section-idx>...
+  cout << "info " << to_string(validCount) << endl;
   for (size_t i = 0; i < evals.size(); i++) {
     cout << evals[i]->toString() << endl;
   }

@@ -17,7 +17,7 @@ along with Western Timetable Maker.  If not, see <http://www.gnu.org/licenses/>.
  *  This data structure stores the topmost K inserted pair entries <double, T>, ranked by the first component (double).
  *
  *  It is implemented using a modified array min-heap and offers O(logK) insertion time.
- *  Thus, getting the topmost K elements going through a list of N elements using this data 
+ *  Thus, getting the topmost K elements going through a list of N elements using this data
  *  structure is of O(N*logK) time complexity.
  *
  */
@@ -86,7 +86,7 @@ private:
     }
 
 public:
-    std::pair<double, T>* heap; // Top of heap is the Kth largest element from stream.
+    std::pair<double, T>* heap; // Top of heap (index 0) is the Kth largest element from stream.
 
     TopKHeap(int capacity = 7) : capacity(capacity) , heap(new std::pair<double, T>[capacity])
     { }
@@ -111,7 +111,7 @@ public:
         
         return false;
     }
-
+    
     int getCapacity()
     {
         return capacity;

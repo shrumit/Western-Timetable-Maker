@@ -2,13 +2,13 @@
 
 #include <stdint.h>
 
-enum WeekIndex { 
+enum WeekIndex {
     MON,
     TUE,
     WED,
     THU,
     FRI,
-    WEEK_SIZE 
+    WEEK_SIZE
 };
 
 struct Week {
