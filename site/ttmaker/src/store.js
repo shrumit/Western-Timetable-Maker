@@ -1,36 +1,56 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VuexPersist from 'vuex-persist'
 import axios from 'axios'
+
+const vuexPersist = new VuexPersist({
+  key: 'my-app',
+  storage: window.localStorage
+})
 
 const courseData = require('./master.json');
 const searchData = require('./search.json');
 
-const URL='http://localhost:8081/'
-const COMPUTE_URL='http://localhost:3100/compute'
+// const URL='http://localhost:8081/'
+const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:3100/compute' : window.location.origin + '/compute'
 
 Vue.use(Vuex)
 
-function test(input) {
-  console.log('test' + input);
-}
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 export default new Vuex.Store({
-  
+  plugins: [vuexPersist.plugin],
   state: {
     curSemester: 0,
     semester: [
       {
         searchList: [],
         courseList:[],
-        computeLoading: false
+        computeLoading: false,
+        computeData: [],
+        coursecomp: [],
+        demoReelActive: false
       },
       {
         searchList: [],
         courseList:[],
-        computeLoading: false
+        computeLoading: false,
+        computeData: [],
+        coursecomp: [],
+        demoReelActive: false
       }
     ],
-    masterCourseList:[]
+    emptySemester:
+    {
+      searchList: [],
+      courseList:[],
+      computeLoading: false,
+      computeData: [],
+      coursecomp: [],
+      demoReelActive: false
+    }
   },
   
   mutations: {
@@ -47,7 +67,9 @@ export default new Vuex.Store({
           sArray[sIndex].selected = true
         })
       })
+      
       state.semester[payload.semesterId].courseList.push(payload.course)
+      // Vue.set(state.semester, payload.semesterId, state.semester[payload.semesterId])
     },
     
     removeCourse(state, payload) {
@@ -68,6 +90,13 @@ export default new Vuex.Store({
       Vue.set(state.semester[semesterId].courseList, courseIndex, state.semester[semesterId].courseList[courseIndex])
     },
     
+    setAllSelectedInComponent(state, {semesterId, courseIndex, compIndex, selected}) {
+      state.semester[semesterId].courseList[courseIndex].components[compIndex].sections.forEach(function(s, idx, sArray){
+        sArray[idx].selected = selected;
+      })
+      Vue.set(state.semester[semesterId].courseList, courseIndex, state.semester[semesterId].courseList[courseIndex])
+    },
+    
     changeSemester(state, semesterId) {
       state.curSemester = semesterId
     },
@@ -77,75 +106,94 @@ export default new Vuex.Store({
       state.semester[semesterId].computeLoading = status
     },
     setCoursecomp(state, {semesterId, coursecomp}) {
+      // Vue.set(state.semester[semesterId].coursecomp, coursecomp)
       state.semester[semesterId].coursecomp = coursecomp
+    },
+    addComputeData(state, {semesterId, data}) {
+      state.semester[semesterId].computeData = data
+    },
+    resetSemester(state, semesterId) {
+      console.log('here')
+      // state.semester[semesterId] = JSON.parse(JSON.stringify(state.emptySemester))
+      Vue.set(state.semester, semesterId, JSON.parse(JSON.stringify(state.emptySemester)))
+      // state.semester[semesterId] = Object.assign(state.emptySemester)
+    },
+    setDemoReel(state, {semesterId, value}) {
+      state.semester[semesterId].demoReelActive = value
     }
   },
   
   actions: {
-    fetchCourse({commit, state}, payload) {
-      if ( payload.courseId != null && payload.courseId >= 0 && !state.semester[payload.semesterId].courseList.some( item => item['id'] === payload.courseId)) {
-        payload.course = courseData[payload.courseId];
-        
-        commit('addCourseToList', payload);
+    resetSemester({commit, dispatch}, semesterId) {
+      commit('resetSemester', semesterId)
+      dispatch('loadSearch')
+    },
+    loadTest({dispatch}, {semesterId}) {
+      dispatch('fetchCourse',{semesterId: semesterId, courseId: 142})
+      dispatch('fetchCourse',{semesterId: semesterId, courseId: 2038})
+      dispatch('fetchCourse',{semesterId: semesterId, courseId: 224})
+      dispatch('fetchCourse',{semesterId: semesterId, courseId: 395})
+      // dispatch('fetchCourse',{semesterId: semesterId, courseId: 691})
+    },
+    fetchCourse({commit, state}, {courseId, semesterId}) {
+      if ( courseId != null && courseId >= 0 && !state.semester[semesterId].courseList.some( item => item['id'] === courseId)) {
+        console.log('addCourseToList:'+courseId)
+        commit('addCourseToList', {course: courseData[courseId], semesterId: semesterId});
       }
     },
     loadSearch( {commit} ) {
-      test('world')
       commit('addSearchList', {semesterId: 0, data: searchData[0]});
       commit('addSearchList', {semesterId: 1, data: searchData[1]});
     },
     compute({commit, state}, semesterId) {
-      // commit('setComputeLoading', {semesterId: semesterId, status: true});
-      console.log(JSON.stringify(state.semester[semesterId].courseList));
+      commit('setComputeLoading', {semesterId: semesterId, status: true});
+      // console.log(JSON.stringify(state.semester[semesterId].courseList));
       let courseList = state.semester[semesterId].courseList
       
-      // produce coursecomp, which is a flattening of course:components[] with 'selected' components and sections only
+      // produce coursecomp, which is a flattening of course:components[] containing 'selected' components and sections only
       let coursecomp = []
       courseList.forEach(function(course) {
         course.components.forEach(function(comp){
           if (comp.selected != true) return;
-          comp.sections = comp.sections.filter(section => section.selected == true)
-          if (comp.sections.length == 0) return
+          let filteredComp = JSON.parse(JSON.stringify(comp))
+          filteredComp.sections = filteredComp.sections.filter(section => section.selected == true)
+          if (filteredComp.sections.length == 0) return
           // comp.sections = comp.sections.map(section => section.timebits)
-          comp.courseId = course.id
-          comp.courseName = course.name
-          coursecomp.push(comp)
+          filteredComp.courseId = course.id
+          filteredComp.courseName = course.name
+          coursecomp.push(filteredComp)
         })
       })
-      commit('setCoursecomp', {semesterId: semesterId, coursecomp: coursecomp})
       
-      console.log(JSON.stringify(coursecomp))
-      console.log(coursecomp)
-      // let req = {}
-      // courseList.forEach(function(c) {
-      //   c.components.forEach(function(comp, compIdx){
-      //     if (comp.selected == true) {
-      //       let secArr = []
-      //       comp.sections.forEach(function(sec,secIdx) {
-      //         if (sec.selected == true) {
-      //           secArr.push(sec.timebits);
-      //         }
-      //       })
-      //       if (secArr.length > 0) {
-      //         req[c.id+'-'+compIdx] = secArr
-      //       }
-      //     }
-      //   })
-      // })
       let req = []
-      coursecomp.forEach(function(comp){
+      coursecomp.forEach(function(comp){ // remove everything but timebits
         req.push(comp.sections.map(sec => sec.timebits))
       })
-      console.log(JSON.stringify(req))
+      let startTime = performance.now()
       axios.post(COMPUTE_URL,req).then((res) => {
-        console.log(res)
-        // commit
-        // commit('setComputeLoading', {semesterId: semesterId, status: false});
+        let endTime = performance.now()
+        let timeTaken = (endTime-startTime)
+        res.data.info.timeTaken = timeTaken
+        console.log("TIME TAKEN:" + timeTaken + "ms")
+        
+        commit('setCoursecomp', {semesterId: semesterId, coursecomp: coursecomp})
+        commit('setComputeLoading', {semesterId: semesterId, status: false});
+        commit('addComputeData', {semesterId: semesterId, data: res.data})
       })
-      // setTimeout(function(){
-      //   commit('setComputeLoading', {semesterId: semesterId, status: false});
-      // }, 2000)
     }
+    // async demoReel({commit, dispatch, state}, semesterId) {
+    //   commit('setDemoReel',{semesterId: semesterId, value: true})
+    //   await sleep(500)
+    //   dispatch('fetchCourse',{semesterId: semesterId, courseId: 142})
+    //   await sleep(500)
+    //   dispatch('fetchCourse',{semesterId: semesterId, courseId: 2038})
+    //   await sleep(500)
+    //   dispatch('fetchCourse',{semesterId: semesterId, courseId: 224})
+    //   await sleep(500)
+    //   dispatch('fetchCourse',{semesterId: semesterId, courseId: 395})
+    //   await sleep(500)
+    //   commit('setDemoReel',{semesterId: semesterId, value: false})
+    // }
   }
 })
 

@@ -1,60 +1,60 @@
 <template>
-  <div class="t_bodyContainer container box">
+<div>
+  <div id="t_bodyContainer" class="container box" :class="{'cursorNotAllowed': demoReelActive}">
+    <div style="text-align:center">
     <h1 class="title is-2">Western Timetable Maker</h1>
-    <!-- Semester tab -->
-    <div class="tabs is-centered">
-      <ul>
-        <li v-bind:class="{'is-active' : curSemester === 0 }" v-on:click="changeSemester(0)"><a>Fall 2019</a></li>
-        <li v-bind:class="{'is-active' : curSemester === 1 }" v-on:click="changeSemester(1)"><a>Winter 2020</a></li>
-      </ul>
-    </div>
-    <div class="columns">
-      <CourseSelection class="column is-7"/>
-      <ComputePreferences class="column"/>
     </div>
     
-    <!-- Compute button -->
-    <hr class="hr">
-    <div style="text-align: center;">
-      <button
-      class="button is-large t_computeButton"
-      v-bind:class="{'is-loading': computeLoading}"
-      v-on:click="compute()"
-      v-bind:disabled="disableCompute"> Compute!
-      </button>
+    <!-- Semester tab -->
+    <div class="tabs is-boxed">
+      <ul>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>Fall 2019</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>Winter 2020</a></li>
+      </ul>
     </div>
-
+    <!-- <button @click="runDemoReel()" class="button">Demo</button> -->
+    <div class="columns" :class="{'t_lowerFall': curSemester == 0, 't_lowerWinter': curSemester == 1}">
+      <CourseSelection class="column is-6"/>
+      <Results class="column"/>
+    </div>
+    <footer id="footer">
+      <strong>Western Timetable Maker</strong> is free and <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank">open-source</a>.
+    </footer>
   </div>
+</div>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
 import CourseSelection from './components/CourseSelection.vue'
-import ComputePreferences from './components/ComputePreferences.vue'
+import Results from './components/Results.vue'
 
 export default {
   name: 'app',
   components: {
-    ComputePreferences,
-    CourseSelection
+    CourseSelection,
+    Results
   },
   computed: {
     curSemester() {
       return this.$store.state.curSemester
     },
-    disableCompute() {
-      return this.$store.state.semester[this.curSemester].courseList.length == 0;
+    hasComputeData(){
+      return this.$store.state.semester[this.curSemester].computeData && this.$store.state.semester[this.curSemester].computeData.length > 0
     },
-    computeLoading() {
-      return this.$store.state.semester[this.curSemester].computeLoading
+    computeData(){
+      return {tables: this.$store.state.semester[this.curSemester].computeData}
+    },
+    demoReelActive() {
+      return this.$store.state.semester[this.curSemester].demoReelActive
     }
   },
   methods: {
     changeSemester(semesterId) {
       this.$store.commit('changeSemester', semesterId)
     },
-    compute() {
-      this.$store.dispatch('compute', this.curSemester)
+    runDemoReel() {
+      this.$store.dispatch('demoReel', this.curSemester)
     }
   }
 }
@@ -64,31 +64,53 @@ export default {
 @import '../node_modules/bulma/css/bulma.css';
 
 html {
-  background: aliceblue;
-  /* background: mintcream; */
-  /* background: linear-gradient(#e66465, #9198e5); */
-  /* background: linear-gradient(lightpink, lightsteelblue);
-  background-repeat: no-repeat;
-  background-attachment: fixed; */
+  background: lightslategray;
+  /* background: #4F2683; */
 }
 
-.t_bodyContainer {
+.cursorNotAllowed {
+  cursor: not-allowed;
+}
+
+html, body, button, input {
+  font-family: 'Open Sans', sans-serif;
+}
+
+input {
+}
+
+#t_bodyContainer {
+  max-width: 90%;
+  margin-top: 10px;
+  padding: 2rem;
+  /* min-height: 1000px; */
+}
+.title {
+  text-align: center;
+  /* font-weight: normal !important; */
+  /* font-size: 3rem !important; */
+  font-family: 'Neuton', serif;
+}
+
+.subtitle {
+  color: lightslategrey;
+}
+
+.t_semesterTab {
   
 }
 
-.title {
-  text-align: center;
-  /* color: #807F83; */
+#footer{
+  text-align:center;
+  padding-top: 5rem;
+  font-size: 0.8rem;
 }
 
-.t_computeButton {
-  color: #4F2683;
-  border-color: #4F2683;
-  background-color: white;
-  /* background-color: #807F83; */
-}
-.t_computeButton:hover {
-  color: white;
-  background-color: #4F2683;
+@media (max-width: 1200px) {
+  #t_bodyContainer {
+    max-width: 98%;
+    padding: 0.5rem;
+    transition: 0.5s;
+  }
 }
 </style>
