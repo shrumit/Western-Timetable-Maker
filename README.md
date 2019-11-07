@@ -1,21 +1,22 @@
 # Western Timetable Maker
-*Optimal and conflict-free undergraduate course timetable generator for [UWO](http://www.uwo.ca/).*
+*Conflict-free and optimal undergraduate course timetable generator for [UWO](http://www.uwo.ca/).*
 
-### [Site](https://www.ttmaker.ca/)
+[https://western.ttmaker.ca](https://western.ttmaker.ca/)
 
 ## Getting started
 
     .
-    ├── compute_server                   # backend server that processes "compute" requests
-    ├── site/ttmaker                     # frontend application
+    ├── compute_server                   # backend Node/C++ npm project root
+    ├── site/ttmaker                     # frontend npm project root
+	│   └── src                          # Vue app
     ├── LICENSE
     └── README.md
 
 ### Problem basis
 
-There is a set of courses that a student wishes to enroll in. Every course is offered in one or more sections (divisions) and the student must select one section for each course. A section occupies some interval(s) of time. A valid weekly timetable is one where none of the selected sections overlap. A fitness function can be applied to a valid timetable to evaluate its desirability based on the student's preferences.
+A student wishes to enroll in some set of courses (classes). Every course is offered in one or more sections (divisions) and the student must select one section for each course. A section occupies some intervals of time in the week. A valid weekly timetable is one where none of the selected sections overlap. A fitness function can be applied to a valid timetable to evaluate its desirability based on the student's preferences. The k most optimal valid timetables are to be produced.
 
-This problem is a relatively simple instance of a broad category of combinatorial optimization problems known as timetable scheduling. Most problems of this class do not have a (known) polynomial-time exact solution. In practice, as in this case, there are natural limits to the input size due to which a highly-optimized implementation is feasible.
+This problem is a relatively simple instance in a broad category of combinatorial optimization problems known as "timetable scheduling". Most problems of this class do not have (known) polynomial-time exact solution. In practice, as in this case, there are natural limits to the input size due to which a highly-optimized implementation is still feasible.
 
 In this application, the timetabling problem is solved using [backtracking](https://en.wikipedia.org/wiki/Backtracking) and only the k best solutions are stored in a heap. The efficiency of this implementation comes from using bits to represent timeslots, allowing the use of bitwise operations to detect conflicts and evaluate fitness. Naturally, this portion is implemented in C++.
 
@@ -25,7 +26,7 @@ In this application, the timetabling problem is solved using [backtracking](http
 
 * The frontend is a Vue.js/Vuex single-page application.
 
-* The `compute_server` contains the pure function C++ program to compute and evaluate valid timetables. It is wrapped by a small Node.js script to create a RESTful API.
+* `compute_server/` contains a C++ program that computes and evaluates valid timetables. It is wrapped by a small Node.js script to create a RESTful API.
 
 * Flow of data:
 
@@ -64,11 +65,7 @@ Frontend
 
 ## Contributing
 
-1. Fork the repo. 
-
-2. Push changes to the `develop` branch of your fork. 
-
-3. Open a Pull Request to the main repo when ready.
+Fork the repo > Push changes to the `develop` branch of your fork > Open a Pull Request to this repo
 
 ## License
 
