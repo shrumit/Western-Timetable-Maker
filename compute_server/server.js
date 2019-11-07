@@ -1,5 +1,5 @@
 /*
-Copyright (C) Shrumit Mehta 2016
+Copyright (C) Shrumit Mehta 2019
 
 This file is part of Western Timetable Maker.
 
@@ -61,7 +61,7 @@ app.post('/compute', function(req, res) {
       res = res.status(500)
       res.send(error)
     } else {
-      console.log(stdout.split('\n'))
+      # console.log(stdout.split('\n'))
       let result = []
       let info = {}
       stdout.split('\n').forEach(function(line) {
