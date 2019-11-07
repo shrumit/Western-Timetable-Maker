@@ -4,6 +4,7 @@ public/
 temp/
 lib
 
+compute_server/main
 
 jquery*
 master*
