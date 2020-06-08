@@ -4,7 +4,7 @@ import VuexPersist from 'vuex-persist'
 import axios from 'axios'
 
 const vuexPersist = new VuexPersist({
-  key: 'my-app',
+  key: 'ttmaker-2020',
   storage: window.localStorage
 })
 
@@ -113,7 +113,6 @@ export default new Vuex.Store({
       state.semester[semesterId].computeData = data
     },
     resetSemester(state, semesterId) {
-      console.log('here')
       // state.semester[semesterId] = JSON.parse(JSON.stringify(state.emptySemester))
       Vue.set(state.semester, semesterId, JSON.parse(JSON.stringify(state.emptySemester)))
       // state.semester[semesterId] = Object.assign(state.emptySemester)
