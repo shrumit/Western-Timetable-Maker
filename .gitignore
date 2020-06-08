@@ -6,8 +6,9 @@ lib
 compute_server/main
 
 jquery*
-master*
-search*
+master.json*
+search.json*
+compute.json*
 
 *.out
 *.o

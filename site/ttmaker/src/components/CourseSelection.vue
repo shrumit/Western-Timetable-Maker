@@ -3,6 +3,8 @@
     <h2 class="subtitle">Course Search</h2>
     <!-- <button class="button" @click="loadTest">Load Test</button> -->
     
+    <p>Courses and sections without timeslots will not appear</p>
+
     <!-- Search bar -->
     <div class="">
       <v-select
@@ -183,6 +185,6 @@ export default {
 <style>
 .v-select .vs__dropdown-toggle {
   height:3rem;
-  background-color: mintcream;
+  background-color: snow;
 }
 </style>
