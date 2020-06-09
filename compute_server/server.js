@@ -61,7 +61,7 @@ app.post('/compute', function(req, res) {
       res = res.status(500)
       res.send(error)
     } else {
-      console.log(stdout.split('\n'))
+      // console.log(stdout.split('\n'))
       let result = []
       let info = {}
       stdout.split('\n').forEach(function(line) {
@@ -95,7 +95,7 @@ app.post('/compute', function(req, res) {
   // res.send(req.body)
 })
 
-var port = process.argv[2] || 3100;
+var port = process.argv[2] || 3200;
 app.listen(port, 'localhost', function(){
   console.log("Compute server started at " + port);
 });
