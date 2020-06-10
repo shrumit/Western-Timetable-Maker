@@ -60,25 +60,21 @@ export default {
 }
 </script>
 
-<style>
-@import '../node_modules/bulma/css/bulma.css';
+<style lang="scss">
+@import './styles.scss';
 
 html {
   background: lightslategray;
-  /* background: #4F2683; */
+  background: #4F2683;
 }
-
 .cursorNotAllowed {
   cursor: not-allowed;
 }
-
 html, body, button, input {
   font-family: 'Open Sans', sans-serif;
 }
-
 input {
 }
-
 #t_bodyContainer {
   max-width: 90%;
   margin-top: 10px;
@@ -91,21 +87,17 @@ input {
   /* font-size: 3rem !important; */
   font-family: 'Neuton', serif;
 }
-
 .subtitle {
   color: lightslategrey;
 }
-
 .t_semesterTab {
   
 }
-
 #footer{
   text-align:center;
   padding-top: 5rem;
   font-size: 0.8rem;
 }
-
 @media (max-width: 1200px) {
   #t_bodyContainer {
     max-width: 98%;

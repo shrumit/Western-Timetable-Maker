@@ -12,7 +12,7 @@ const courseData = require('./master.json');
 const searchData = require('./search.json');
 
 // const URL='http://localhost:8081/'
-const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:3100/compute' : window.location.origin + '/compute'
+const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:3200/compute' : window.location.origin + '/compute'
 
 Vue.use(Vuex)
 
