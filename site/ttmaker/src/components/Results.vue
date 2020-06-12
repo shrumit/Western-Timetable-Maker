@@ -8,12 +8,12 @@
     <p v-if="validCount == 0" class="t_nonePossible">No conflict-free timetables exist!</p>
     <p v-if="computeData.info">Actual time to compute: {{ timeTaken | toLocaleString }}s</p> -->
 
-    <article v-if="validCount != null" class="message is-dark">
+    <article v-if="validCount != null" class="message is-dark is-marginless">
       <div class="message-body">
         Conflict-free timetables: {{ validCount | toLocaleString }}
         <span v-if="validCount == 0" style="color: red;">
           <br>
-          No conflict-free timetables exist (^-^*)
+          No conflict-free timetables exist.
         </span>
         <br>
         Processed in: {{ timeTaken | toLocaleString }}s

@@ -1,9 +1,9 @@
 <template>
-    <div class="message is-unselectable t_courseBox">
+    <div class="message is-marginless is-dark t_courseBox">
       <!-- Accordian title -->
       <div class="message-header t_courseTitle" @click="toggleExpand">
-        <p v-show="!expanded">➕</p>
-        <p v-show="expanded">➖</p>
+        <p class="t_openSymbol" v-show="!expanded">+</p>
+        <p class="t_openSymbol" v-show="expanded">−</p>
         {{ this.course.name }}
         <a class="delete is-medium t_courseRemove" @click="remove"></a>
       </div>
@@ -33,10 +33,13 @@
               <table class="table t_sectionTable">
                 <tr class="t_sectionRowHeader" :class="{'t_sectionRowDisable': !comp.selected}">
                   <th>
+                    Section
+                    <br>
                     <button @click="selectAllInComp(compIndex)" class="button is-small is-text">Select All</button>
+                    <br>
                     <button @click="deselectAllInComp(compIndex)" class="button is-small is-text">Deselect All</button>
                   </th>
-                  <th>Section</th>
+                  <!-- <th>Section</th> -->
                   <th>Class Nbr</th>
                   <th>Location</th>
                   <th>Instructor</th>
@@ -50,8 +53,8 @@
                 :key="sectionIndex"
                 @click="toggleSection(compIndex, sectionIndex)"
                 >
-                  <td><input type="checkbox" class="checkbox" :checked="section.selected"></td>
-                  <td>{{ section.name }}</td>
+                  <td><input type="checkbox" class="checkbox" :checked="section.selected"> {{ section.name }}</td>
+                  <!-- <td></td> -->
                   <td>{{ section.number }}</td>
                   <td>{{ section.location }}</td>
                   <td>{{ section.instructor }}</td>
@@ -148,96 +151,64 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
+@import '../styles.scss';
+
 .t_courseRemove:hover {
-  background: red;
-}
-.t_courseBox {
-  margin-bottom: 5px !important;
-  margin-top: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-}
-.t_courseTitle {
-  font-weight: normal;
-  cursor: pointer;
-  background: silver;
-  color: black;
-  max-height: 40px;
-  border-radius: 4px 4px 4px 4px;
+  background: $danger;
 }
 
+.message {
+  margin-bottom: 3px !important;
+}
+
+.t_courseTitle {
+  cursor: pointer;
+  border-radius: 4px 4px 4px 4px;
+}
 .t_courseTitle:hover {
-  opacity: 0.93;
+  background: darken($dark,2.5%) !important;
 }
-.t_courseTitle:hover p {
-  color:limegreen;
+
+.t_openSymbol {
+  font-weight: $tt-bold-weight;
 }
-.t_courseTitle p {
-  /* font-weight: bold; */
-}
-.t_courseBody {
-  background: whitesmoke;
-  border-radius: 0 0 4px 4px;
-}
+// .t_courseTitle:hover .t_openSymbol {
+//   color:limegreen !important;
+// }
 
 .t_comp {
   text-decoration: line-through;
+  cursor:pointer;
 }
-
 .t_compSelected {
   text-decoration: none;
   background: azure;
 }
 
-.t_sectionName {
-  padding-left: 10px;
-  text-decoration: underline;
-}
-
 .t_sectionRow {
-  opacity: 0.7;
   cursor: pointer;
-  background: beige;
-  /* text-decoration: line-through; */
-}
-
-.t_sectionRowSelected:hover {
-  opacity: 0.8;
-  /* text-decoration: line-through; */
+  background:$tt-section-row;
+  opacity: 0.6;
 }
 
 .t_sectionRowSelected, .t_sectionRowHeader {
   opacity: 1;
-  background: beige;
-  color: #363636;
-  text-decoration: none;
+  background: $tt-section-row;
+}
+.t_sectionRow:hover {
+  background: darken($tt-section-row, 2.5%);
 }
 
 .t_sectionRowDisable {
-  opacity: 0.2;
+  opacity: 0.3;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-.t_sectionTable {
-  border-collapse:separate;
+.t_sectionTable, .t_sectionTable td, .t_sectionTable th {
   border:solid lightgrey 1px;
-  border-radius:6px;
-  -moz-border-radius:6px;
-}
-
-.t_sectionTable td, .t_sectionTable th {
-  padding: 0.3em !important;
-  border-left: solid lightgrey 1px;
-  border-top: solid lightgrey 1px;
-}
-
-.t_sectionTable th {
-  border-top: none;
-}
-
-.t_sectionTable td:first-child, .t_sectionTable th:first-child {
-  border-left: none;
+  padding: 3px !important;
 }
 
 </style>

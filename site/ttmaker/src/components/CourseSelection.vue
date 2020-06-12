@@ -3,7 +3,7 @@
     <h2 class="subtitle">Course Search</h2>
     <!-- <button class="button" @click="loadTest">Load Test</button> -->
     
-    <p>Courses and sections without timeslots will not appear</p>
+    <!-- <p>Courses and sections without timeslots will not appear</p> -->
 
     <!-- Search bar -->
     <div class="">
@@ -16,19 +16,18 @@
       label="name"
       placeholder="Search for courses..."
       selectOnTab
+      @input="focusOnAdd()"
       >
       </v-select>
     </div>
     
     <!-- Add button -->
     <div style="text-align: right;">
-    <button class="button is-info t_addBtn" @click="fetchCourse">Add</button>
+      <button id="t_addBtn" class="button is-dark is-rounded" @click="fetchCourse">Add</button>
     </div>
     
-    <hr class="hr">
-    
     <!-- Message box -->
-    <article v-if="selectedCourses.length > 0" class="message is-dark" :class="{'is-danger': combinationsNum > 10000000000 }">
+    <article  class="message is-dark is-marginless" :class="{'is-danger': combinationsNum > 10000000000 }">
       <div class="message-body">
         Potential timetables: {{ combinationsNum | toLocaleString }}
         <span v-if="combinationsNum > 10000000000">
@@ -38,8 +37,8 @@
       </div>
     </article>
     
-    <!-- Reset button -->
-    <button class="button is-warning" @click="removeAll" style="margin:5px 0 5px 0;">Remove All</button>
+    <!-- Remove All button -->
+    <button id="t_removeBtn" class="button is-danger is-small is-outlined" @click="removeAll">Remove All</button>
     
     <!-- List of added courses -->
     <Course
@@ -51,7 +50,8 @@
     <!-- Compute button -->
     <div style="text-align: center;">
       <button
-      class="button is-large is-rounded t_computeButton"
+      id="t_computeButton"
+      class="button is-link is-rounded"
       :class="{'is-loading': computeLoading}"
       :disabled="disableCompute"
       @click="compute()"
@@ -83,6 +83,9 @@ export default {
       return this.$store.state.semester[this.curSemester].courseList
     },
     combinationsNum(){
+      if (!this.$store.state.semester[this.curSemester].courseList || this.$store.state.semester[this.curSemester].courseList.length == 0) 
+        return 0;
+
       let n = 1;
       this.$store.state.semester[this.curSemester].courseList.forEach(function(course) {
         course.components.forEach(function(comp){
@@ -120,6 +123,10 @@ export default {
     this.$store.dispatch('loadSearch');
   },
   methods: {
+    focusOnAdd() {
+      console.log('foa');
+      // document.getElementById('t_addBtn').focus();
+    },
     fetchCourse() {
       // console.log('fetchCourse:' + this.selected)
       this.$store.dispatch('fetchCourse', {
@@ -157,34 +164,20 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.t_addBtn {
-  /* margin-left: 5px; */
-  margin-top: 5px;
-  width: 7em;
-}
-.t_computeButton {
-  color: #4F2683;
-  border-color: #4F2683 !important;
-  background-color: white;
-  margin-top: 1rem;
-}
 
-.t_computeButton:hover {
-  color: white;
-  background-color: #4F2683;
+button {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 8em;
 }
 
 #patience {
   opacity: 0;
 }
+
 #patience.is-loading {
   opacity: 1;
-  transition: opacity 2s;
+  transition: opacity 4s;
 }
-</style>
-<style>
-.v-select .vs__dropdown-toggle {
-  height:3rem;
-  background-color: snow;
-}
+
 </style>

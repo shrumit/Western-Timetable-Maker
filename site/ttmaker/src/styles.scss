@@ -1,29 +1,35 @@
 @charset "utf-8";
 
-/*
-@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+$tt-western-purple:#4F2683;
+$tt-western-grey: #807F83;
+$tt-section-row: aliceblue;
 
-/*
-// Set your brand colors
-$purple: #8A4D76;
-$pink: #FA7C91;
-$brown: #757763;
-$beige-light: #D0D1CD;
-$beige-lighter: #EFF0EB;
+// Colours
+$link: $tt-western-purple;
+$danger: darkorange;
+$dark: $tt-western-grey;
 
-// Update Bulma's global variables
-$family-sans-serif: "Nunito", sans-serif;
-$grey-dark: $brown;
-$grey-light: $beige-light;
-$primary: $purple;
-$link: $pink;
-$widescreen-enabled: false;
-$fullhd-enabled: false;
+// Typography
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
+$family-sans-serif: "Open Sans", sans-serif;
+$tt-bold-weight: 600;
 
-// Update some of Bulma's component variables
-$body-background-color: $beige-lighter;
-$control-border-width: 2px;
-$input-border-color: transparent;
-$input-shadow: none;
-*/
+$title-weight: $tt-bold-weight;
+$title-family: "Open Sans", serif;
+$title-color: $tt-western-purple;
+
+$subtitle-weight: $tt-bold-weight;
+
+$message-header-weight: regular;
+// Colors
+$scheme-main: #fefefe;
+$body-background-color: #eeeef3;
+
+// vue-select
+$vs-component-line-height: 2;
+$vs-state-active-bg: $tt-western-purple;
+$vs-border-color:$tt-western-purple;
+
+
 @import "../node_modules/bulma/bulma.sass";
+@import '../node_modules/vue-select/src/scss/vue-select.scss';

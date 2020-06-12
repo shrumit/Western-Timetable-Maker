@@ -30,16 +30,14 @@ export default new Vuex.Store({
         courseList:[],
         computeLoading: false,
         computeData: [],
-        coursecomp: [],
-        demoReelActive: false
+        coursecomp: []
       },
       {
         searchList: [],
         courseList:[],
         computeLoading: false,
         computeData: [],
-        coursecomp: [],
-        demoReelActive: false
+        coursecomp: []
       }
     ],
     emptySemester:
@@ -48,8 +46,7 @@ export default new Vuex.Store({
       courseList:[],
       computeLoading: false,
       computeData: [],
-      coursecomp: [],
-      demoReelActive: false
+      coursecomp: []
     }
   },
   
