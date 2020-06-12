@@ -94,8 +94,8 @@ export default {
 .t_tablesWrapper {
   /* float:right; */
   /* text-align: center; */
-  /* display: block;
-  margin: 0 auto; */
+  /* display: block; */
+  /* margin: 0 auto; */
   /* border: 1px solid red; */
   /* padding: auto; */
 }

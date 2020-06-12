@@ -9,7 +9,7 @@
     <!-- Semester selection tab -->
     <div class="tabs is-boxed">
       <ul>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL  2020</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL 2020</a></li>
         <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2021</a></li>
       </ul>
     </div>

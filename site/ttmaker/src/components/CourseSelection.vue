@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="subtitle">Course Search</h2>
+    <h2 class="subtitle">Courses</h2>
     <!-- <button class="button" @click="loadTest">Load Test</button> -->
     
     <!-- <p>Courses and sections without timeslots will not appear</p> -->
