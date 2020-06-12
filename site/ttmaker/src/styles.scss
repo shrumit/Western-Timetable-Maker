@@ -1,13 +1,15 @@
 @charset "utf-8";
 
+// Colours
 $tt-western-purple:#4F2683;
 $tt-western-grey: #807F83;
 $tt-section-row: aliceblue;
 
-// Colours
 $link: $tt-western-purple;
 $danger: darkorange;
 $dark: $tt-western-grey;
+$scheme-main: #fefefe;
+$body-background-color: #eeeef3;
 
 // Typography
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600');
@@ -15,15 +17,12 @@ $family-sans-serif: "Open Sans", sans-serif;
 $tt-bold-weight: 600;
 
 $title-weight: $tt-bold-weight;
-$title-family: "Open Sans", serif;
+$title-family: "Open Sans", sans-serif;
 $title-color: $tt-western-purple;
 
 $subtitle-weight: $tt-bold-weight;
-
 $message-header-weight: regular;
-// Colors
-$scheme-main: #fefefe;
-$body-background-color: #eeeef3;
+$strong-weight: $tt-bold-weight;
 
 // vue-select
 $vs-component-line-height: 2;

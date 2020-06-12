@@ -113,13 +113,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 table {
-  /* border: 1px solid black; */
+  border: 1px solid gainsboro;
   width: 100%;
   /* margins: 0 auto; */
   /* max-width: 1000px; */
+  border-collapse: collapse;
 }
 td {
-  border: 1px solid gainsboro;
+  border-top: 1px solid gainsboro;
+  border-right: 1px solid gainsboro;
   padding: 0 0.5em 0 0.5em;
   width: 8em;
 }
