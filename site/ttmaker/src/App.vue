@@ -1,22 +1,26 @@
 <template>
 <div>
-  <div id="t_bodyContainer" class="container box" :class="{'cursorNotAllowed': demoReelActive}">
+  <div id="t_bodyContainer" class="container box">
+    <!-- Title -->
     <div style="text-align:center">
-    <h1 class="title is-2">Western Timetable Maker</h1>
+      <h1 class="title">Western Timetable Maker</h1>
     </div>
     
-    <!-- Semester tab -->
+    <!-- Semester selection tab -->
     <div class="tabs is-boxed">
       <ul>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>Fall 2020</a></li>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>Winter 2021</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL  2020</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2021</a></li>
       </ul>
     </div>
-    <!-- <button @click="runDemoReel()" class="button">Demo</button> -->
+
+    <!-- Body -->
     <div class="columns" :class="{'t_lowerFall': curSemester == 0, 't_lowerWinter': curSemester == 1}">
-      <CourseSelection class="column is-6"/>
+      <CourseSelection class="column is-5"/>
       <Results class="column"/>
     </div>
+
+    <!-- Footer -->
     <footer id="footer">
       <strong>Western Timetable Maker</strong> is free and <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank">open-source</a>.
     </footer>
@@ -44,9 +48,6 @@ export default {
     },
     computeData(){
       return {tables: this.$store.state.semester[this.curSemester].computeData}
-    },
-    demoReelActive() {
-      return this.$store.state.semester[this.curSemester].demoReelActive
     }
   },
   methods: {
@@ -60,44 +61,30 @@ export default {
 }
 </script>
 
-<style>
-@import '../node_modules/bulma/css/bulma.css';
+<style lang="scss">
+@import './styles.scss';
 
-html {
-  background: lightslategray;
-  /* background: #4F2683; */
-}
+// html {
+// 	background-color: #eeeeee;
+// 	animation-name: bgChange;
+// 	animation-duration: 30s;
+// 	animation-direction: alternate;
+// 	animation-iteration-count: infinite;
+// 	animation-timing-function: ease;
+// 	animation-delay: 2s;
+// }
 
-.cursorNotAllowed {
-  cursor: not-allowed;
-}
-
-html, body, button, input {
-  font-family: 'Open Sans', sans-serif;
-}
-
-input {
-}
+// @keyframes bgChange {
+// 	0% {background-color: #eeeeee}
+// 	100% {background-color: $tt-western-purple}
+// }
 
 #t_bodyContainer {
-  max-width: 90%;
+  max-width: 98%;
   margin-top: 10px;
   padding: 2rem;
-  /* min-height: 1000px; */
-}
-.title {
-  text-align: center;
-  /* font-weight: normal !important; */
-  /* font-size: 3rem !important; */
-  font-family: 'Neuton', serif;
-}
-
-.subtitle {
-  color: lightslategrey;
-}
-
-.t_semesterTab {
-  
+  // min-height: 1000px;
+  border-radius: 0px;
 }
 
 #footer{
@@ -106,9 +93,9 @@ input {
   font-size: 0.8rem;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1300px) {
   #t_bodyContainer {
-    max-width: 98%;
+    max-width: 100%;
     padding: 0.5rem;
     transition: 0.5s;
   }
