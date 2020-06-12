@@ -7,11 +7,12 @@
       <tr>
         <td></td><td>Mon</td><td>Tue</td><td>Wed</td><td>Thu</td><td>Fri</td>
       </tr>
-      <tr v-for="row in 30">
+      <tr v-for="row in 30" v-bind:key=row>
         <td>{{ labels[row-1] }}</td>
+        <!-- v-if="day[row-1]" -->
         <td
-        v-if="day[row-1]"
-        v-for="day in daysArray"
+        v-for="(day, dayIdx) in daysArray"
+        v-bind:key=dayIdx
         class="t_weekSlot"
         :class="{ 't_lab': day[row-1].type==='LAB', 't_tut': day[row-1].type==='TUT', 't_firstCell': day[row-1].firstCell }"
         :style="{'background-color': day[row-1].color, 'border-color':day[row-1].color}"
@@ -20,9 +21,9 @@
           {{ day[row-1].text }}
           <!-- {{ day[row-1] }} -->
         </td>
-        <td v-else>
+        <!-- <td v-else>
           
-        </td>
+        </td> -->
       </tr>
     </table>
     <br>
@@ -73,11 +74,17 @@ export default {
     },
     daysArray() {
       let days = new Array(5);
-      days[0] = new Array(32).fill(null)
-      days[1] = new Array(32).fill(null)
-      days[2] = new Array(32).fill(null)
-      days[3] = new Array(32).fill(null)
-      days[4] = new Array(32).fill(null)
+      let cellDummy = {
+        text: '',
+        color: 'inherit',
+        tooltip: '',
+        type: ''
+      }
+      days[0] = new Array(32).fill(cellDummy)
+      days[1] = new Array(32).fill(cellDummy)
+      days[2] = new Array(32).fill(cellDummy)
+      days[3] = new Array(32).fill(cellDummy)
+      days[4] = new Array(32).fill(cellDummy)
       this.table.sections.forEach(function(section, ccIdx) {
         this.coursecomp[ccIdx].sections[section].timeslots.forEach(function(ts, tsIdx) { // for each day
           for (let i = 0; i < ts[1]; i++) { // loop as many times as the length
@@ -89,7 +96,7 @@ export default {
               type:  this.coursecomp[ccIdx].name
             }
             if (i == 0) {
-              cell.text = courseShortForm(this.coursecomp[ccIdx].courseName) // BIO 1001A
+              cell.text = courseShortForm(this.coursecomp[ccIdx].courseName) // BIOL 1001A
               cell.firstCell = true
             }
             else if (i == 1)
