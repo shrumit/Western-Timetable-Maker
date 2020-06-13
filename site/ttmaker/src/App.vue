@@ -14,6 +14,12 @@
       </ul>
     </div>
 
+    <article id="disclaimer" class="message is-info">
+      <div class="message-body">
+        Although efforts have been made to ensure accuracy, this website is non-authoritative, provided without any warranty, and <strong>you must verify the validity of anything appearing on this website yourself</strong>.
+      </div>
+    </article>
+
     <!-- Body -->
     <div class="columns" :class="{'t_lowerFall': curSemester == 0, 't_lowerWinter': curSemester == 1}">
       <CourseSelection class="column is-5"/>
@@ -85,6 +91,11 @@ export default {
   padding: 2rem;
   // min-height: 1000px;
   border-radius: 0px;
+}
+
+#disclaimer {
+  font-size: 0.8rem;
+  // text-align: center;
 }
 
 #footer{
