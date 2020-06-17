@@ -8,14 +8,12 @@
     <p v-if="validCount == 0" class="t_nonePossible">No conflict-free timetables exist!</p>
     <p v-if="computeData.info">Actual time to compute: {{ timeTaken | toLocaleString }}s</p> -->
 
-    <article class="message is-dark is-marginless">
+    <article v-if="validCount != null" class="message is-dark is-marginless">
       <div class="message-body">
         Conflict-free timetables: {{ validCount | toLocaleString }}
-        <span style="color: red;">
+        <span v-if="validCount == 0" class="t_nonePossible">
           <br>
-          No conflict-free timetables exist. 
-          <br>
-          NB: Classes without time slots such as distance-learning have not been considered.
+          No conflict-free timetables found.
         </span>
         <br>
         Processed in: {{ timeTaken | toLocaleString }}s
@@ -92,17 +90,9 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.t_tablesWrapper {
-  /* float:right; */
-  /* text-align: center; */
-  /* display: block; */
-  /* margin: 0 auto; */
-  /* border: 1px solid red; */
-  /* padding: auto; */
-}
+<style lang="scss">
+@import '../styles.scss';
 .t_nonePossible {
-  color: red;
-  /* font-weight: bold; */
+  color: $danger;
 }
 </style>
