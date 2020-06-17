@@ -10,9 +10,10 @@ const vuexPersist = new VuexPersist({
 
 const courseData = require('./master.json');
 const searchData = require('./search.json');
+const metadata = require('./metadata.json');
 
 // const URL='http://localhost:8081/'
-const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:3200/compute' : window.location.origin + '/compute'
+const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:3300/compute' : window.location.origin + '/compute'
 
 Vue.use(Vuex)
 
@@ -23,6 +24,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   plugins: [vuexPersist.plugin],
   state: {
+    metadata: {
+      time: ""
+    },
     curSemester: 0,
     semester: [
       {
@@ -67,6 +71,11 @@ export default new Vuex.Store({
       
       state.semester[payload.semesterId].courseList.push(payload.course)
       // Vue.set(state.semester, payload.semesterId, state.semester[payload.semesterId])
+    },
+
+    addMetadata(state, metadata) {
+      console.log(metadata)
+      state.metadata = metadata;
     },
     
     removeCourse(state, payload) {
@@ -140,6 +149,9 @@ export default new Vuex.Store({
     loadSearch( {commit} ) {
       commit('addSearchList', {semesterId: 0, data: searchData[0]});
       commit('addSearchList', {semesterId: 1, data: searchData[1]});
+    },
+    loadMetadata( {commit} ) {
+      commit('addMetadata', metadata);
     },
     compute({commit, state}, semesterId) {
       commit('setComputeLoading', {semesterId: semesterId, status: true});

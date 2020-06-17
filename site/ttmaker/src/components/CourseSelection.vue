@@ -14,9 +14,10 @@
       :options="options"
       :reduce="item => item.id"
       label="name"
-      placeholder="Search for courses..."
+      :placeholder="searchPlaceholder"
       selectOnTab
       @input="focusOnAdd()"
+      transition=""
       >
       </v-select>
     </div>
@@ -29,6 +30,8 @@
     <!-- Message box -->
     <article  class="message is-dark is-marginless" :class="{'is-danger': combinationsNum > 10000000000 }">
       <div class="message-body">
+        Classes without an assigned time slot will not appear. This includes online sections and distance courses.
+        <br>
         Potential timetables: {{ combinationsNum | toLocaleString }}
         <span v-if="combinationsNum > 10000000000">
           <br>
@@ -37,9 +40,30 @@
       </div>
     </article>
     
-    <!-- Remove All button -->
-    <button id="t_removeBtn" class="button is-danger is-small is-outlined" @click="removeAll">Remove All</button>
-    
+    <div class="columns is-vcentered">
+      <div class="column is-one-fifth">
+        <!-- Remove All button -->
+        <button id="t_removeBtn" class="button is-danger is-small is-outlined" @click="removeAll">Remove All</button>
+      </div>
+      <!--
+      <div class="column" style="text-align: right">
+        <strong>Campus: </strong>
+        <label class="checkbox campusLabel">
+          <input type="checkbox"> Main
+        </label>
+        <label class="checkbox campusLabel">
+          <input type="checkbox"> Huron
+        </label>
+        <label class="checkbox campusLabel">
+          <input type="checkbox"> Brescia
+        </label>
+        <label class="checkbox campusLabel">
+          <input type="checkbox"> King's
+        </label>
+      </div>
+      -->
+    </div>
+
     <!-- List of added courses -->
     <Course
     v-for="(course, index) in selectedCourses"
@@ -75,6 +99,11 @@ export default {
   computed: {
     curSemester() {
       return this.$store.state.curSemester
+    },
+    searchPlaceholder() {
+      if (this.$store.state.curSemester == 0) return 'Search for Fall and full year courses...'
+      else if (this.$store.state.curSemester == 1) return 'Search for Winter and full year courses...'
+      else return "Error"
     },
     options() {
       return this.$store.state.semester[this.curSemester].searchList
@@ -177,7 +206,12 @@ button {
 
 #patience.is-loading {
   opacity: 1;
+  transition-delay: 2s;
   transition: opacity 4s;
+}
+
+.campusLabel {
+  margin-right: 5px;
 }
 
 </style>

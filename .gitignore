@@ -9,6 +9,7 @@ jquery*
 master.json*
 search.json*
 compute.json*
+metadata.json*
 
 *.out
 *.o

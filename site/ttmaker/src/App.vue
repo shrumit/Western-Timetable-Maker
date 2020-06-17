@@ -16,7 +16,7 @@
 
     <article id="disclaimer" class="message is-info">
       <div class="message-body">
-        Although efforts have been made to ensure accuracy, this website is non-authoritative, provided without any warranty, and <strong>you must verify the validity of anything appearing on this website yourself</strong>.
+        Data updated on {{ scrapeTime }}. <strong>Western Timetable Maker is not affiliated with the university.</strong>
       </div>
     </article>
 
@@ -28,7 +28,7 @@
 
     <!-- Footer -->
     <footer id="footer">
-      <strong>Western Timetable Maker</strong> is free and <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank">open-source</a>.
+      <strong>Western Timetable Maker</strong> is free and <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank" style="text-decoration: underline;">open-source</a>.
     </footer>
   </div>
 </div>
@@ -45,6 +45,9 @@ export default {
     CourseSelection,
     Results
   },
+  created() {
+    this.$store.dispatch('loadMetadata');
+  },
   computed: {
     curSemester() {
       return this.$store.state.curSemester
@@ -54,6 +57,9 @@ export default {
     },
     computeData(){
       return {tables: this.$store.state.semester[this.curSemester].computeData}
+    },
+    scrapeTime() {
+      return this.$store.state.metadata.time
     }
   },
   methods: {

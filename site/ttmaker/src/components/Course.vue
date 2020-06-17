@@ -13,9 +13,9 @@
         <tbody>
           <tr>
             <td></td>
-            <td style="text-align:center;">
-              <a :href="timetableLink" target="_blank">See in Academic Timetable🡵</a>&emsp;
-              <a :href="calendarLink" target="_blank">See in Academic Calendar🡵</a>
+            <td style="display:flex; justify-content: space-around;">
+              <a :href="timetableLink" target="_blank">View in Academic Timetable</a>&emsp;
+              <a :href="calendarLink" target="_blank">View in Academic Calendar</a>
             </td>
           </tr>
           <tr v-for="(comp, compIndex) in this.course.components" :key="compIndex">
@@ -43,6 +43,7 @@
                   <th>Class Nbr</th>
                   <th>Location</th>
                   <th>Instructor</th>
+                  <th>Campus</th>
                   <th>Time</th>
                 </tr>
                 <tr
@@ -58,6 +59,7 @@
                   <td>{{ section.number }}</td>
                   <td>{{ section.location }}</td>
                   <td>{{ section.instructor }}</td>
+                  <td>{{ section.campus }}</td>
                   <td>{{ section.timeShort }}</td>
                 </tr>
               </table>
@@ -99,6 +101,7 @@ export default {
     },
     calendarLink() {
       let sub = this.course.name.split(' ')[0]
+      // let num = this.course.name.split(' ')[1]
       return 'http://www.westerncalendar.uwo.ca/Courses.cfm?Subject='
       + sub
       + '&SelectedCalendar=Live&ArchiveID='
