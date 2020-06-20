@@ -25,7 +25,7 @@ export default new Vuex.Store({
   plugins: [vuexPersist.plugin],
   state: {
     metadata: {
-      time: ""
+      time: ''
     },
     curSemester: 0,
     semester: [
@@ -34,14 +34,16 @@ export default new Vuex.Store({
         courseList:[],
         computeLoading: false,
         computeData: [],
-        coursecomp: []
+        coursecomp: [],
+        errorMsg: ''
       },
       {
         searchList: [],
         courseList:[],
         computeLoading: false,
         computeData: [],
-        coursecomp: []
+        coursecomp: [],
+        errorMsg: ''
       }
     ],
     emptySemester:
@@ -50,7 +52,8 @@ export default new Vuex.Store({
       courseList:[],
       computeLoading: false,
       computeData: [],
-      coursecomp: []
+      coursecomp: [],
+      errorMsg: ''
     }
   },
   
@@ -118,6 +121,10 @@ export default new Vuex.Store({
     addComputeData(state, {semesterId, data}) {
       state.semester[semesterId].computeData = data
     },
+    setComputeError(state, {semesterId, errorMsg}) {
+      console.log(errorMsg)
+      state.semester[semesterId].errorMsg = errorMsg
+    },
     resetSemester(state, semesterId) {
       // state.semester[semesterId] = JSON.parse(JSON.stringify(state.emptySemester))
       Vue.set(state.semester, semesterId, JSON.parse(JSON.stringify(state.emptySemester)))
@@ -154,6 +161,7 @@ export default new Vuex.Store({
       commit('addMetadata', metadata);
     },
     compute({commit, state}, semesterId) {
+      commit('setComputeError', {semesterId: semesterId, errorMsg: ''})
       commit('setComputeLoading', {semesterId: semesterId, status: true});
       // console.log(JSON.stringify(state.semester[semesterId].courseList));
       let courseList = state.semester[semesterId].courseList
@@ -178,34 +186,22 @@ export default new Vuex.Store({
         req.push(comp.sections.map(sec => sec.timebits))
       })
       let startTime = performance.now()
-      axios.post(COMPUTE_URL,req).then((res) => {
+      axios.post(COMPUTE_URL, req)
+      .then((res) => {
         let endTime = performance.now()
         let timeTaken = (endTime-startTime)
         res.data.info.timeTaken = timeTaken
-        console.log("TIME TAKEN:" + timeTaken + "ms")
-        
-        commit('setCoursecomp', {semesterId: semesterId, coursecomp: coursecomp})
-        commit('setComputeLoading', {semesterId: semesterId, status: false});
+        console.log('TIME TAKEN:' + timeTaken + 'ms')        
+        commit('setCoursecomp', {semesterId: semesterId, coursecomp: coursecomp}) // coursecomp required by Table.vue for display      
         commit('addComputeData', {semesterId: semesterId, data: res.data})
       })
+      .catch((error) => {
+        console.log(JSON.stringify(error))
+        commit('setComputeError', {semesterId: semesterId, errorMsg: error.message})
+      })
+      .finally(() => {
+        commit('setComputeLoading', {semesterId: semesterId, status: false});
+      })
     }
-    // async demoReel({commit, dispatch, state}, semesterId) {
-    //   commit('setDemoReel',{semesterId: semesterId, value: true})
-    //   await sleep(500)
-    //   dispatch('fetchCourse',{semesterId: semesterId, courseId: 142})
-    //   await sleep(500)
-    //   dispatch('fetchCourse',{semesterId: semesterId, courseId: 2038})
-    //   await sleep(500)
-    //   dispatch('fetchCourse',{semesterId: semesterId, courseId: 224})
-    //   await sleep(500)
-    //   dispatch('fetchCourse',{semesterId: semesterId, courseId: 395})
-    //   await sleep(500)
-    //   commit('setDemoReel',{semesterId: semesterId, value: false})
-    // }
   }
 })
-
-
-// axios.get(URL+'search.json').then((response) => {
-//   commit('addSearchList', response.data)
-// })
