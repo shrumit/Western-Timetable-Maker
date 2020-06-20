@@ -16,7 +16,6 @@
       label="name"
       :placeholder="searchPlaceholder"
       selectOnTab
-      @input="focusOnAdd()"
       transition=""
       >
       </v-select>
@@ -82,6 +81,7 @@
       >
         Compute!
       </button>
+      <p v-if="errorMsg.length" id="errorMsg">Error: {{ errorMsg }}</p>
       <p :class="{'is-loading': computeLoading}" id="patience">Patience is a virtue.</p>
     </div>
 
@@ -126,21 +126,15 @@ export default {
       return n
       // return JSON.stringify(this.$store.state.semester[this.curSemester].courseList)
     },
-    // disableAdd() {
-    //   return this.selected[this.curSemester] == null
-    // },
-    // addButtonTitle() {
-    //   if (this.selected[this.curSemester] == null)
-    //     return "Please select a course."
-    //   else
-    //     return ""
-    // },
     disableCompute() {
       return this.$store.state.semester[this.curSemester].courseList.length == 0 ||
         this.combinationsNum > 10000000000;
     },
     computeLoading() {
       return this.$store.state.semester[this.curSemester].computeLoading
+    },
+    errorMsg() {
+      return this.$store.state.semester[this.curSemester].errorMsg
     }
   },
   data() {
@@ -152,10 +146,6 @@ export default {
     this.$store.dispatch('loadSearch');
   },
   methods: {
-    focusOnAdd() {
-      console.log('foa');
-      // document.getElementById('t_addBtn').focus();
-    },
     fetchCourse() {
       // console.log('fetchCourse:' + this.selected)
       this.$store.dispatch('fetchCourse', {
@@ -206,8 +196,12 @@ button {
 
 #patience.is-loading {
   opacity: 1;
-  transition-delay: 2s;
   transition: opacity 4s;
+  transition-delay: 2s;
+}
+
+#errorMsg {
+  color: darkorange;
 }
 
 .campusLabel {
