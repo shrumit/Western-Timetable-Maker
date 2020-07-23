@@ -13,7 +13,7 @@ const searchData = require('./search.json');
 const metadata = require('./metadata.json');
 
 // const URL='http://localhost:8081/'
-const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:3300/compute' : window.location.origin + '/compute'
+const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:3100/compute' : window.location.origin + '/compute'
 
 Vue.use(Vuex)
 
@@ -77,7 +77,7 @@ export default new Vuex.Store({
     },
 
     addMetadata(state, metadata) {
-      console.log(metadata)
+      // console.log(metadata)
       state.metadata = metadata;
     },
     
