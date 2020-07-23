@@ -28,7 +28,7 @@
 
     <!-- Footer -->
     <footer id="footer">
-      <strong>Western Timetable Maker</strong> is free and <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank" style="text-decoration: underline;">open-source</a>.
+      <strong>Western Timetable Maker</strong> is made with 🍕 by <a href="https://shrumit.com" target="_blank">Shrumit&nbsp;Mehta</a> and is <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank">open-source</a>.
     </footer>
   </div>
 </div>
@@ -106,15 +106,20 @@ export default {
 
 #footer{
   text-align:center;
-  padding-top: 5rem;
+  padding-top: 4rem;
   font-size: 0.8rem;
+}
+
+#footer a {
+  text-decoration: underline;
+  white-space: nowrap;
 }
 
 @media (max-width: 1300px) {
   #t_bodyContainer {
     max-width: 100%;
     padding: 0.5rem;
-    transition: 0.5s;
+    // transition: 0.5s;
   }
 }
 </style>
