@@ -29,11 +29,13 @@
     <!-- Message box -->
     <article  class="message is-dark is-marginless" :class="{'is-danger': combinationsNum > 10000000000 }">
       <div class="message-body">
-        - Classes without an assigned timeslot will not appear.
+        · Classes without an assigned timeslot will not appear.
         <br>
-        - Remove and re-add courses to get updated section data.
-        <br>
-        Potential timetables: {{ combinationsNum | toLocaleString }}
+        · Remove and re-add courses to get updated section data.
+        <span v-if="combinationsNum > 0">
+          <br>
+          · Potential timetables: {{ combinationsNum | toLocaleString }}
+        </span>
         <span v-if="combinationsNum > 10000000000">
           <br>
           Too many to compute! Reduce the number of selected sections.
