@@ -4,4 +4,4 @@
 
 2. Clone this repo and create a feature branch from `master`. Push your changes to that branch.
 
-3. When you're ready, open a Pull Request!
+3. When you're ready, open a Pull Request from your branch to `master`!
