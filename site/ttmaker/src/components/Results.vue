@@ -10,13 +10,13 @@
 
     <article v-if="validCount != null" class="message is-dark is-marginless">
       <div class="message-body">
-        Conflict-free timetables: {{ validCount | toLocaleString }}
+        · Conflict-free timetables: {{ validCount | toLocaleString }}
         <span v-if="validCount == 0" class="t_nonePossible">
           <br>
-          No conflict-free timetables found. Remember that online/distance sections haven't been considered.
+          · No conflict-free timetables found. Remember that online/distance sections haven't been considered.
         </span>
         <br>
-        Processed in: {{ timeTaken | toLocaleString }}s
+        · Processed in: {{ timeTaken | toLocaleString }}s
       </div>
     </article>
 

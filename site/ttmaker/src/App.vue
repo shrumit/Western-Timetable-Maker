@@ -115,6 +115,10 @@ export default {
   white-space: nowrap;
 }
 
+.t_semesterTab.is-active {
+  font-weight: 600;
+}
+
 @media (max-width: 1300px) {
   #t_bodyContainer {
     max-width: 100%;

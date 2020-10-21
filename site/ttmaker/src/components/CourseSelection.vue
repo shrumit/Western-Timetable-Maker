@@ -29,11 +29,11 @@
     <!-- Message box -->
     <article  class="message is-dark is-marginless" :class="{'is-danger': combinationsNum > 10000000000 }">
       <div class="message-body">
-        - Classes without an assigned timeslot will not appear.
+        · Classes without an assigned timeslot will not appear.
         <br>
-        - Remove and re-add courses to get updated section data.
+        · Remove and re-add courses to get updated section data.
         <br>
-        Potential timetables: {{ combinationsNum | toLocaleString }}
+        · Potential timetables: {{ combinationsNum | toLocaleString }}
         <span v-if="combinationsNum > 10000000000">
           <br>
           Too many to compute! Reduce the number of selected sections.
@@ -81,7 +81,7 @@
       :disabled="disableCompute"
       @click="compute()"
       >
-        Compute!
+        Generate Timetables
       </button>
       <p v-if="errorMsg.length" id="errorMsg">Error: {{ errorMsg }}</p>
       <p :class="{'is-loading': computeLoading}" id="patience">Patience is a virtue.</p>
@@ -103,8 +103,8 @@ export default {
       return this.$store.state.curSemester
     },
     searchPlaceholder() {
-      if (this.$store.state.curSemester == 0) return 'Search for Fall and full year courses...'
-      else if (this.$store.state.curSemester == 1) return 'Search for Winter and full year courses...'
+      if (this.$store.state.curSemester == 0) return 'Search for fall semester courses...'
+      else if (this.$store.state.curSemester == 1) return 'Search for winter semester courses...'
       else return "Error"
     },
     options() {
@@ -189,7 +189,7 @@ export default {
 button {
   margin-top: 10px;
   margin-bottom: 10px;
-  width: 8em;
+  min-width: 8em;
 }
 
 #patience {
