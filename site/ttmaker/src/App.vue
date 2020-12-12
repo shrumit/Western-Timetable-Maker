@@ -16,7 +16,7 @@
 
     <article id="disclaimer" class="message is-info">
       <div class="message-body">
-        Data updated on {{ scrapeTime }}. <strong>Western Timetable Maker is not affiliated with the university.</strong>
+        Data updated on <strong>{{ scrapeTime }}</strong>. Western Timetable Maker is not affiliated with the university.
       </div>
     </article>
 
