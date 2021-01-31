@@ -58,9 +58,9 @@ Frontend
 
 2. Run `npm install` to download dependencies
 
-3. Run `npm serve` to serve site on localhost with hot-reload. Make sure `search.json` and `master.json` have been generated and placed in `site/ttmaker/src/`.
+3. Run `npm run serve` to serve site on localhost with hot-reload. Make sure `search.json` and `master.json` have been generated and placed in `site/ttmaker/src/`.
 
-4. Run `npm build` to package everything for production. Files will be created in `dist/`.
+4. Run `npm run build` to package everything for production. Files will be created in `dist/`.
 
 
 ## Contributing
