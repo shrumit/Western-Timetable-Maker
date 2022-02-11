@@ -1,0 +1,54 @@
+upstream compute {
+    server 127.0.0.1:3200;
+}
+
+server {
+    server_name western.ttmaker.ca;
+
+    root /var/www/ttmaker.ca;
+    index index.html;
+    expires 1h;
+
+    location /compute {
+        proxy_pass http://compute;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/western.ttmaker.ca/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/western.ttmaker.ca/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    if ($host = western.ttmaker.ca) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    listen [::]:80;
+
+    server_name western.ttmaker.ca;
+    return 404; # managed by Certbot
+}
+
+# redirect to western. subdomain
+server {
+    listen 80;
+    listen [::]:80;
+    listen 443;
+    listen [::]:443;
+
+    server_name ttmaker.ca;
+
+    location / {
+        return 301 https://western.ttmaker.ca$request_uri;
+    }
+}
