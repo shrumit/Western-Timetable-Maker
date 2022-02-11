@@ -9,8 +9,8 @@
     <!-- Semester selection tab -->
     <div class="tabs is-boxed">
       <ul>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL 2020</a></li>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2021</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL 2021</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2022</a></li>
       </ul>
     </div>
 
@@ -28,7 +28,7 @@
 
     <!-- Footer -->
     <footer id="footer">
-      <strong>Western Timetable Maker</strong> is made with 🍕 by <a href="https://shrumit.com" target="_blank">Shrumit&nbsp;Mehta</a> and is <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank">open-source</a>.
+      <strong>Western Timetable Maker</strong> is <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank">open-source</a>.
     </footer>
   </div>
 </div>
