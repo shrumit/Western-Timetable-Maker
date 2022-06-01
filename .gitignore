@@ -4,6 +4,7 @@ temp/
 lib
 
 compute_server/main
+site/ttmaker/deploy.sh
 
 jquery*
 master.json*
