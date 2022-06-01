@@ -13,7 +13,7 @@
         · Conflict-free timetables: {{ validCount | toLocaleString }}
         <span v-if="validCount == 0" class="t_nonePossible">
           <br>
-          · No conflict-free timetables found. Remember that online/distance sections haven't been considered.
+          · Sorry, no conflict-free timetables found!
         </span>
         <br>
         · Processed in: {{ timeTaken | toLocaleString }}s

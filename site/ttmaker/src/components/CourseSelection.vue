@@ -31,12 +31,12 @@
       <div class="message-body">
         · Classes without an assigned timeslot will not appear.
         <br>
-        · Remove and re-add courses to get updated section data.
-        <br>
-        · Potential timetables: {{ combinationsNum | toLocaleString }}
+        · Please remove and re-add courses to get updated data.
+        <!-- <br> -->
+        <!-- · Potential timetables: {{ combinationsNum | toLocaleString }} -->
         <span v-if="combinationsNum > 10000000000">
           <br>
-          Too many to compute! Reduce the number of selected sections.
+          Too many potential timetables to compute! Please select fewer sections or courses.
         </span>
       </div>
     </article>

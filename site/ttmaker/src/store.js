@@ -4,7 +4,7 @@ import VuexPersist from 'vuex-persist'
 import axios from 'axios'
 
 const vuexPersist = new VuexPersist({
-  key: 'ttmaker-2020',
+  key: 'ttmaker-2022',
   storage: window.localStorage
 })
 

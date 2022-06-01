@@ -9,14 +9,14 @@
     <!-- Semester selection tab -->
     <div class="tabs is-boxed">
       <ul>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL 2021</a></li>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2022</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL 2022</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2023</a></li>
       </ul>
     </div>
 
     <article id="disclaimer" class="message is-info">
       <div class="message-body">
-        Data updated on <strong>{{ scrapeTime }}</strong>. Western Timetable Maker is not affiliated with the university.
+        <span class="red">Updated for 2022/2023!</span> Data updated on <strong>{{ scrapeTime }}</strong>. Western Timetable Maker is not affiliated with the university.
       </div>
     </article>
 
@@ -96,7 +96,7 @@ export default {
   margin-top: 10px;
   padding: 2rem;
   // min-height: 1000px;
-  border-radius: 0px;
+  border-radius: 3px;
 }
 
 #disclaimer {
@@ -117,6 +117,11 @@ export default {
 
 .t_semesterTab.is-active {
   font-weight: 600;
+}
+
+.red {
+  color: red;
+  font-weight: bold;
 }
 
 @media (max-width: 1300px) {
