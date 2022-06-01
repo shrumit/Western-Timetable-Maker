@@ -27,7 +27,7 @@ fi
 # clone and build Western-Timetable-maker using outputs from timetable-scraper-java
 cd ..
 git clone https://github.com/shrumit/Western-Timetable-Maker.git wtm
-cp -a "tsj/coutput"*/ wtm/site/ttmaker/src
+cp -a tsj/coutput*/* wtm/site/ttmaker/src/
 cd wtm/site/ttmaker
 
 npm ci
