@@ -7,7 +7,8 @@ server {
 
     root /var/www/ttmaker.ca;
     index index.html;
-    expires 1h;
+
+    add_header Cache-Control "no-cache";
 
     location /compute {
         proxy_pass http://compute;
