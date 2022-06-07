@@ -107,7 +107,7 @@ export default {
 #footer{
   text-align:center;
   padding-top: 4rem;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 #footer a {

@@ -157,6 +157,10 @@ export default {
 <style lang="scss" scoped>
 @import '../styles.scss';
 
+.t_courseBox {
+  overflow: auto;
+}
+
 .t_courseRemove:hover {
   background: $danger;
 }
@@ -199,6 +203,7 @@ export default {
   opacity: 1;
   background: $tt-section-row;
 }
+
 .t_sectionRow:hover {
   background: darken($tt-section-row, 2.5%);
 }

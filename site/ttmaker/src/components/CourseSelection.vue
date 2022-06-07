@@ -3,8 +3,7 @@
     <h2 class="subtitle">Courses</h2>
     <!-- <button class="button" @click="loadTest">Load Test</button> -->
     
-    <!-- <p>Courses and sections without timeslots will not appear</p> -->
-
+    
     <!-- Search bar -->
     <div class="">
       <v-select
@@ -23,46 +22,49 @@
     
     <!-- Add button -->
     <div style="text-align: right;">
-      <button id="t_addBtn" class="button is-dark is-rounded" @click="fetchCourse">Add</button>
+      <button id="t_addBtn"
+        class="button is-dark is-rounded"
+        @click="fetchCourse"
+        :disabled="courseAlreadyAdded"
+        >
+          Add
+      </button>
+      <p v-if="courseAlreadyAdded" class="errorMsg">Course already in list</p>
     </div>
-    
+
     <!-- Message box -->
-    <article  class="message is-dark is-marginless" :class="{'is-danger': combinationsNum > 10000000000 }">
+    <article  class="message is-dark is-marginless">
       <div class="message-body">
         · Classes without an assigned timeslot will not appear.
         <br>
         · Please remove and re-add courses to get updated data.
         <!-- <br> -->
         <!-- · Potential timetables: {{ combinationsNum | toLocaleString }} -->
-        <span v-if="combinationsNum > 10000000000">
-          <br>
-          Too many potential timetables to compute! Please select fewer sections or courses.
-        </span>
       </div>
     </article>
     
     <div class="columns is-vcentered">
       <div class="column is-one-fifth">
         <!-- Remove All button -->
-        <button id="t_removeBtn" class="button is-danger is-small is-outlined" @click="removeAll">Remove All</button>
+        <button id="t_removeBtn" class="button is-danger is-small is-outlined" @click="removeAll">Reset</button>
       </div>
-      <!--
-      <div class="column" style="text-align: right">
-        <strong>Campus: </strong>
-        <label class="checkbox campusLabel">
-          <input type="checkbox"> Main
-        </label>
-        <label class="checkbox campusLabel">
-          <input type="checkbox"> Huron
-        </label>
-        <label class="checkbox campusLabel">
-          <input type="checkbox"> Brescia
-        </label>
-        <label class="checkbox campusLabel">
-          <input type="checkbox"> King's
-        </label>
-      </div>
-      -->
+    </div>
+
+    <!-- Compute button -->
+    <div id="t_computeButtonDiv">
+      <button id="t_computeButton"
+        class="button is-link is-rounded"
+        :class="{'is-loading': computeLoading}"
+        :disabled="disableCompute"
+        @click="compute()">
+          Generate Timetables
+      </button>
+      <p v-if="combinationsNum > 0">{{ combinationsNum | toLocaleString }} possible combinations</p>
+      <p v-if="combinationsNum > COMBINATIONS_LIMIT" class="errorMsg">
+        Too many combinations to filter! Please de-select some sections manually or select fewer courses.
+      </p>
+      <p v-if="errorMsg.length" class="errorMsg">Error: {{ errorMsg }}</p>
+      <p :class="{'is-loading': computeLoading}" id="patience">Patience is a virtue.</p>
     </div>
 
     <!-- List of added courses -->
@@ -71,21 +73,6 @@
     :key="course.id"
     :courseIndex="index"
     />
-    
-    <!-- Compute button -->
-    <div style="text-align: center;">
-      <button
-      id="t_computeButton"
-      class="button is-link is-rounded"
-      :class="{'is-loading': computeLoading}"
-      :disabled="disableCompute"
-      @click="compute()"
-      >
-        Generate Timetables
-      </button>
-      <p v-if="errorMsg.length" id="errorMsg">Error: {{ errorMsg }}</p>
-      <p :class="{'is-loading': computeLoading}" id="patience">Patience is a virtue.</p>
-    </div>
 
   </div>
 </template>
@@ -130,18 +117,22 @@ export default {
     },
     disableCompute() {
       return this.$store.state.semester[this.curSemester].courseList.length == 0 ||
-        this.combinationsNum > 10000000000;
+        this.combinationsNum > this.COMBINATIONS_LIMIT;
     },
     computeLoading() {
       return this.$store.state.semester[this.curSemester].computeLoading
     },
     errorMsg() {
       return this.$store.state.semester[this.curSemester].errorMsg
+    },
+    courseAlreadyAdded() {
+      return this.$store.state.semester[this.curSemester].courseList.some((e => e.id === this.selected[this.curSemester]));
     }
   },
   data() {
     return {
-      selected: [null,null]
+      selected: [null,null],
+      COMBINATIONS_LIMIT: 15000000000
     }
   },
   created() {
@@ -185,6 +176,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+/* @import '../styles.scss'; */
 
 button {
   margin-top: 10px;
@@ -202,12 +194,20 @@ button {
   transition-delay: 2s;
 }
 
-#errorMsg {
+.errorMsg {
   color: darkorange;
 }
 
 .campusLabel {
   margin-right: 5px;
+}
+
+#t_computeButtonDiv {
+  text-align: center;
+}
+
+#t_computeButton {
+  box-shadow: 0px 13px 10px -10px rgba(0,0,0,0.4);
 }
 
 </style>
