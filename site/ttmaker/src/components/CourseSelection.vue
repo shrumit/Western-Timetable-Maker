@@ -35,7 +35,7 @@
     <!-- Message box -->
     <article  class="message is-dark is-marginless">
       <div class="message-body">
-        · Classes without an assigned timeslot will not appear.
+        · Courses and sections without an assigned time slot will not appear.
         <br>
         · Please remove and re-add courses to get updated data.
         <!-- <br> -->

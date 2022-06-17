@@ -93,18 +93,13 @@ export default {
     timetableLink() {
       let sub = this.course.name.split(' ')[0]
       let num = this.course.name.split(' ')[1]
-      return 'https://studentservices.uwo.ca/secure/timetables/mastertt/ttindex.cfm?subject='
-      + sub
-      + '&Designation=Any&catalognbr='
-      + num
-      + '&CourseTime=All&Component=All&time=&end_time=&day=m&day=tu&day=w&day=th&day=f&Campus=Any&command=search'
+      return `https://studentservices.uwo.ca/secure/timetables/mastertt/ttindex.cfm?subject=${sub}&catalognbr=${num}`
     },
     calendarLink() {
       let sub = this.course.name.split(' ')[0]
-      // let num = this.course.name.split(' ')[1]
-      return 'http://www.westerncalendar.uwo.ca/Courses.cfm?Subject='
-      + sub
-      + '&SelectedCalendar=Live&ArchiveID='
+      return `http://www.westerncalendar.uwo.ca/Courses.cfm?Subject=${sub}`
+      //+ sub
+      //+ '&SelectedCalendar=Live&ArchiveID='
     }
   },
   methods: {

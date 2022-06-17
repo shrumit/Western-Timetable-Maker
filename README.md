@@ -3,69 +3,48 @@
 
 [https://western.ttmaker.ca](https://western.ttmaker.ca/)
 
+## Overview
+
+A web application to automatically produce valid undergrad course timetables for the University of Western Ontario. The frontend SPA is written with Vue.js. The backend is a Node.js server that invokes a C++ program that does the main computing.
+
+Data comes from [timetable-scraper-java](https://github.com/shrumit/timetable-scraper-java).
+
 ## Getting started
-
-    .
-    ├── compute_server                   # backend Node/C++ npm project root
-    ├── site/ttmaker                     # frontend npm project root
-	│   └── src                          # Vue app
-    ├── LICENSE
-    └── README.md
-
-### Problem basis
-
-A student wishes to enroll in some set of courses (classes). Every course is offered in one or more sections (divisions) and the student must select one section for each course. A section occupies some intervals of time in the week. A valid weekly timetable is one where none of the selected sections overlap. A fitness function can be applied to a valid timetable to evaluate its desirability based on the student's preferences. The k most optimal valid timetables are to be produced.
-
-This problem is a relatively simple instance in a broad category of combinatorial optimization problems known as "timetable scheduling". Most problems of this class do not have (known) polynomial-time exact solution. In practice, as in this case, there are natural limits to the input size due to which a highly-optimized implementation is still feasible.
-
-In this application, the timetabling problem is solved using [backtracking](https://en.wikipedia.org/wiki/Backtracking) and only the k best solutions are stored in a heap. The efficiency of this implementation comes from using bits to represent timeslots, allowing the use of bitwise operations to detect conflicts and evaluate fitness. Naturally, this portion is implemented in C++.
 
 ### Project structure
 
-* [timetable-scraper-java](https://github.com/shrumit/timetable-scraper-java) is used to produce `master.json` and `search.json` which are to be placed in `site/ttmaker/src/`
+    .
+    ├── compute_server                   # backend Node/C++ processing server
+	├── conf                             # misc infra files
+    └── site/ttmaker
+	    └── src                          # frontend Vue app
 
-* The frontend is a Vue.js/Vuex single-page application.
-
-* `compute_server/` contains a C++ program that computes and evaluates valid timetables. It is wrapped by a small Node.js script to create a RESTful API.
-
-* Flow of data:
-
-	1. User loads the site. Scraped course data is sent as a static asset.
-	
-	2. User searches for and selects courses. The user may deselect course sections.
-	
-	3. User presses "Compute". The relevant data is sent to the compute API.
-	
-	4. The compute API returns k-most optimal valid solutions for the various fitness functions.
-	
-	5. The user's course/section selections and last-computed solutions are persisted in the browser's localStorage.
 
 ### Running locally
 
-Backend
+### Frontend
 
-1. Go to `compute_server/`
+1. First run [timetable-scraper-java](https://github.com/shrumit/timetable-scraper-java) to produce  `master.json` and `search.json` and place them in `site/ttmaker/src/`.
 
-2. Run `make` to compile the C++ program
+2. Navigate to `site/ttmaker/`.
 
-3. Run `npm install` to download dependencies
+3. Run `npm ci` to download dependencies.
 
-4. Run `node server.js` to start the backend server
+4. Run `npm run serve` to build and serve the site locally with hot reload.
 
-Frontend
+5. Run `npm run build` to package everything for production. Production files will be created in `dist/`.
 
-1. Go to `site/ttmaker/`
+### Backend (compute API)
 
-2. Run `npm install` to download dependencies
+`compute_server/` contains a Node.js HTTP server to receive data and interface with a C++ executable that computes and evaluates valid timetables. For simplicity, this is a stateless pure function and relies on the frontend to send it all the data that it needs.
 
-3. Run `npm run serve` to serve site on localhost with hot-reload. Make sure `search.json` and `master.json` have been generated and placed in `site/ttmaker/src/`.
+1. Navigate to `compute_server/`.
 
-4. Run `npm run build` to package everything for production. Files will be created in `dist/`.
+2. Run `make` to compile the C++ program.
 
+3. Run `npm ci` to download dependencies.
 
-## Contributing
-
-Fork the repo > Push changes to the `develop` branch of your fork > Open a Pull Request to this repo
+4. Run `node server.js` to start the backend server.
 
 ## License
 

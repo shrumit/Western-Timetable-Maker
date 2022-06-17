@@ -34,6 +34,8 @@
         </li>
       </ul>
     </div>
+
+    <Instructions v-show="curStep !== 2" :curStep="curStep" />
     
     <!-- Tables -->
     <div
@@ -48,11 +50,14 @@
 </template>
 
 <script>
+import Instructions from './Instructions.vue'
 import Table from './Table.vue'
+
 export default {
   name: 'Results',
   components: {
-    Table
+    Table,
+    Instructions
   },
   data: function(){
     return {
@@ -74,6 +79,17 @@ export default {
     },
     timeTaken() {
       return this.computeData.info ? Number(this.computeData.info.timeTaken)/1000 : null
+    },
+    curStep() {
+      if (this.$store.state.semester[this.curSemester].courseList.length == 0){
+        return 0;
+      }
+      else if (this.$store.state.semester[this.curSemester].computeData.length == 0) {
+        return 1;
+      }
+      else {
+        return 2;
+      }
     }
   },
   methods: {

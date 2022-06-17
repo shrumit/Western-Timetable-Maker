@@ -35,7 +35,6 @@
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
 import CourseSelection from './components/CourseSelection.vue'
 import Results from './components/Results.vue'
 
@@ -126,8 +125,8 @@ export default {
 
 @media (max-width: 1300px) {
   #t_bodyContainer {
-    max-width: 100%;
-    padding: 0.5rem;
+    // max-width: 100%;
+    // padding: 0.5rem;
     // transition: 0.5s;
   }
 }

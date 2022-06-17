@@ -95,7 +95,7 @@ app.post('/compute', function(req, res) {
   // res.send(req.body)
 })
 
-var port = process.argv[2] || 3200;
+var port = process.argv[2] || 8081;
 app.listen(port, 'localhost', function(){
   console.log("Compute server started at " + port);
 });
