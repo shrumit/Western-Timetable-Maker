@@ -2,6 +2,10 @@
 set -e
 set -x
 
+# add to crontab:
+# 0 */6 * * * /root/build.sh >> /root/logs/log_$(date +\%F-\%H\%M) 2>&1
+# 0 3 * * 0 docker system prune -af && rm -rf /root/ttbuild/
+
 timestamp=$(date +"%F-%H%M")
 
 # pull and run timetable-scraper-java
