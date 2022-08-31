@@ -1,0 +1,17 @@
+# place in /etc/systemd/system
+# `systemctl daemon-reload`
+# `systemctl start ttmaker-compute.service`
+# `systemctl enable ttmaker-compute.service`
+
+[Unit]
+After=network.target
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/node /root/compute_server/server.js
+WorkingDirectory=/root/compute_server
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

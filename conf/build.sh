@@ -38,14 +38,11 @@ npm ci
 npm run build
 
 # copy dist to /var/www
-cp -r dist /var/www/
-rm -rf /var/www/ttmaker.ca
-mv /var/www/dist /var/www/ttmaker.ca
+rsync -va --delete-after /var/www/ttmaker.ca/ /var/www/ttmaker.ca.last/  || true
+rsync -va --delete-after dist/ /var/www/ttmaker.ca/
 
 find /var/www/ -type d -exec chmod 755 {} \;
 find /var/www/ -type f -exec chmod 644 {} \;
-
-rm -rf /var/www/dist
 
 docker container prune -f
 docker volume prune -f
