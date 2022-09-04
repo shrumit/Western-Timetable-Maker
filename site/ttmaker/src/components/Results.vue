@@ -35,7 +35,7 @@
       </ul>
     </div>
 
-    <Instructions v-show="curStep !== 2" :curStep="curStep" />
+    <Instructions />
     
     <!-- Tables -->
     <div
@@ -79,17 +79,6 @@ export default {
     },
     timeTaken() {
       return this.computeData.info ? Number(this.computeData.info.timeTaken)/1000 : null
-    },
-    curStep() {
-      if (this.$store.state.semester[this.curSemester].courseList.length == 0){
-        return 0;
-      }
-      else if (this.$store.state.semester[this.curSemester].computeData.length == 0) {
-        return 1;
-      }
-      else {
-        return 2;
-      }
     }
   },
   methods: {
@@ -108,7 +97,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 @import '../styles.scss';
+
 .t_nonePossible {
   color: $danger;
+}
+.is-active {
+  font-weight: bold;
 }
 </style>

@@ -16,7 +16,7 @@
 
     <article id="disclaimer" class="message is-info">
       <div class="message-body">
-        <span class="red">Updated for 2022/2023!</span> Data updated on <strong>{{ scrapeTime }}</strong>. Western Timetable Maker is not affiliated with the university.
+        Data last updated on <strong>{{ scrapeTime }}</strong>. Western Timetable Maker is not affiliated with the university.
       </div>
     </article>
 

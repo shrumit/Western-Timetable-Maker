@@ -1,15 +1,11 @@
 <template>
-  <div>
-    <!-- <p v-if="daysArray && Array.isArray(daysArray)">{{ daysArray[0] }}</p> -->
-    <!-- {{ coursecomp }} -->
-    Score: {{ table.score }}
+  <div class="t_tableDiv">
     <table class="t_weekTable">
       <thead>
         <td></td><td>Mon</td><td>Tue</td><td>Wed</td><td>Thu</td><td>Fri</td>
       </thead>
       <tr v-for="row in 30" v-bind:key=row>
         <td>{{ labels[row-1] }}</td>
-        <!-- v-if="day[row-1]" -->
         <td
         v-for="(day, dayIdx) in daysArray"
         v-bind:key=dayIdx
@@ -19,11 +15,7 @@
         :title="day[row-1].tooltip"
         >
           {{ day[row-1].text }}
-          <!-- {{ day[row-1] }} -->
         </td>
-        <!-- <td v-else>
-          
-        </td> -->
       </tr>
     </table>
     <br>
@@ -112,6 +104,10 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.t_tableDiv {
+  overflow: auto;
+}
+
 table {
   border: 1px solid #DBDBDB;
   width: 100%;
@@ -119,9 +115,10 @@ table {
   /* max-width: 1000px; */
   border-collapse: collapse;
 }
+
 td {
   border-top: 1px solid #DBDBDB;
-  border-right: 1px solid #DBDBDB;
+  border-right: 1px solid #DBDBDB !important;
   padding: 0 0.5em 0 0.5em;
   width: 8em;
 }
@@ -146,7 +143,7 @@ tr:hover {
 }
 
 .t_firstCell {
-  box-shadow: inset 0px 1px 0px 0px black;
+  border-top: 1px solid black !important;
 }
 
 tr:nth-child(even) {

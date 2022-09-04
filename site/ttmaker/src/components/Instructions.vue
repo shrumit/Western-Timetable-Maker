@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="curStep !== 2">
       <ol>
         <li :class="{'is-active' : curStep === 0 }">Select and add a course.</li>
         <li :class="{'is-active' : curStep === 1 }">Click "Generate Timetables" to compute conflict-free timetables!</li>
@@ -10,8 +10,22 @@
 <script>
 export default {
   name: 'Instructions',
-  props: {
-    curStep: Number,
+  computed: {
+    curSemester() {
+      return this.$store.state.curSemester
+    },
+    curStep() {
+      if (this.$store.state.semester[this.curSemester].courseList.length == 0
+        && this.$store.state.semester[this.curSemester].computeData.length == 0) {
+        return 0
+      }
+      else if (this.$store.state.semester[this.curSemester].computeData.length == 0) {
+        return 1
+      }
+      else {
+        return 2
+      }
+    }
   }
 }
 </script>

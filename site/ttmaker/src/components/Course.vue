@@ -1,5 +1,5 @@
 <template>
-    <div class="message is-marginless is-dark t_courseBox">
+    <div class="message is-marginless is-dark t_courseDiv">
       <!-- Accordian title -->
       <div class="message-header t_courseTitle" @click="toggleExpand">
         <p class="t_openSymbol" v-show="!expanded">+</p>
@@ -9,7 +9,7 @@
       </div>
       
       <!-- Accordian body -->
-      <table v-show="expanded" class="message-body t_courseBody table">
+      <table v-show="expanded" class="message-body table">
         <tbody>
           <tr>
             <td></td>
@@ -152,8 +152,9 @@ export default {
 <style lang="scss" scoped>
 @import '../styles.scss';
 
-.t_courseBox {
+.t_courseDiv {
   overflow: auto;
+  // max-height: 90vh;
 }
 
 .t_courseRemove:hover {
