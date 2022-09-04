@@ -1,12 +1,6 @@
 <template>
   <div>
-    <!-- {{ coursecomp }} -->
-    <!-- {{ computeData }} -->
     <h2 class="subtitle">Results</h2>
-    <!-- <p>Potential timetables: {{ combinationsCount | toLocaleString }}</p> -->
-    <!-- <p v-if="validCount > 0">Conflict-free timetables: {{ validCount | toLocaleString }}</p>
-    <p v-if="validCount == 0" class="t_nonePossible">No conflict-free timetables exist!</p>
-    <p v-if="computeData.info">Actual time to compute: {{ timeTaken | toLocaleString }}s</p> -->
 
     <article v-if="validCount != null" class="message is-dark is-marginless">
       <div class="message-body">

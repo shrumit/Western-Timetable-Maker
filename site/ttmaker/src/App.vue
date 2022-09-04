@@ -123,11 +123,10 @@ export default {
   font-weight: bold;
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1024px) {
   #t_bodyContainer {
-    // max-width: 100%;
-    // padding: 0.5rem;
-    // transition: 0.5s;
+    max-width: 99%;
+    padding: 0.5rem;
   }
 }
 </style>

@@ -57,10 +57,8 @@ export default new Vuex.Store({
   },
   
   mutations: {
-    addSearchList(state, {semesterId, data}){
-      state.semester[semesterId].searchList = data//.slice(0,10);
-      // state.semester[0].searchList = data[0]//.slice(0,10);
-      // state.semester[1].searchList = data[1]//.slice(10,20);
+    addSearchList(state, {semesterId, data}) {
+      state.semester[semesterId].searchList = data
     },
     
     addCourseToList(state, payload) {
@@ -70,6 +68,9 @@ export default new Vuex.Store({
           sArray[sIndex].selected = true
         })
       })
+
+      // compute color and store
+      payload.course.color = courseNameToColor(payload.course.name)
       
       state.semester[payload.semesterId].courseList.push(payload.course)
       // Vue.set(state.semester, payload.semesterId, state.semester[payload.semesterId])
@@ -148,7 +149,6 @@ export default new Vuex.Store({
     },
     fetchCourse({commit, state}, {courseId, semesterId}) {
       if ( courseId != null && courseId >= 0 && !state.semester[semesterId].courseList.some( item => item['id'] === courseId)) {
-        console.log('addCourseToList:'+courseId)
         commit('addCourseToList', {course: courseData[courseId], semesterId: semesterId});
       }
     },
@@ -165,17 +165,25 @@ export default new Vuex.Store({
       // console.log(JSON.stringify(state.semester[semesterId].courseList));
       let courseList = state.semester[semesterId].courseList
       
-      // produce coursecomp, which is a flattening of course:components[] containing 'selected' components and sections only
+      // produce coursecomp, which is a flattening of course:components[] with 'selected' components and sections only
+      // coursecomp is used to generate the /compute payload and to render Table.vue
       let coursecomp = []
       courseList.forEach(function(course) {
         course.components.forEach(function(comp){
           if (comp.selected != true) return;
+          // serializing and deserializing removes extra things from the object
           let filteredComp = JSON.parse(JSON.stringify(comp))
+
+          // remove unselected sections
           filteredComp.sections = filteredComp.sections.filter(section => section.selected == true)
+          // skip if no section are selected
           if (filteredComp.sections.length == 0) return
-          // comp.sections = comp.sections.map(section => section.timebits)
+
+          // add some course properties to the comp
           filteredComp.courseId = course.id
           filteredComp.courseName = course.name
+          filteredComp.courseColor = course.color
+
           coursecomp.push(filteredComp)
         })
       })
@@ -190,8 +198,7 @@ export default new Vuex.Store({
         let endTime = performance.now()
         let timeTaken = (endTime-startTime)
         res.data.info.timeTaken = timeTaken
-        console.log('TIME TAKEN:' + timeTaken + 'ms')        
-        commit('setCoursecomp', {semesterId: semesterId, coursecomp: coursecomp}) // coursecomp required by Table.vue for display      
+        commit('setCoursecomp', {semesterId: semesterId, coursecomp: coursecomp}) // coursecomp required by Table.vue for display
         commit('addComputeData', {semesterId: semesterId, data: res.data})
       })
       .catch((error) => {
@@ -204,3 +211,21 @@ export default new Vuex.Store({
     }
   }
 });
+
+
+
+function strHash(str) { // java String#hashCode
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+     hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
+}
+function numToColor(num) {
+num = num * num
+return "rgb("+(255-((num*7)%127))+","+(255-((num*5)%83))+","+(255-((num*3)%79))+")"
+// return "rgb("+(255-(num%151))+","+(255-(num%127))+","+(255-(num%103))+")"
+}
+function courseNameToColor(name) {
+return numToColor(strHash(name))
+}

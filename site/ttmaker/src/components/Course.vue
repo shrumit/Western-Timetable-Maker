@@ -2,9 +2,10 @@
     <div class="message is-marginless is-dark t_courseDiv">
       <!-- Accordian title -->
       <div class="message-header t_courseTitle" @click="toggleExpand">
-        <p class="t_openSymbol" v-show="!expanded">+</p>
-        <p class="t_openSymbol" v-show="expanded">−</p>
+        <p class="t_openSymbol" v-show="!expanded">+&nbsp;</p>
+        <p class="t_openSymbol" v-show="expanded">−&nbsp;</p>
         {{ this.course.name }}
+        <div class="t_colorSquare" :style="{'background-color': this.course.color}"></div>
         <a class="delete is-medium t_courseRemove" @click="remove"></a>
       </div>
       
@@ -186,22 +187,22 @@ export default {
 }
 .t_compSelected {
   text-decoration: none;
-  background: azure;
+  background: $tt-course-comp;
 }
 
 .t_sectionRow {
   cursor: pointer;
-  background:$tt-section-row;
+  background:$tt-course-section;
   opacity: 0.6;
 }
 
 .t_sectionRowSelected, .t_sectionRowHeader {
   opacity: 1;
-  background: $tt-section-row;
+  background: $tt-course-section;
 }
 
 .t_sectionRow:hover {
-  background: darken($tt-section-row, 2.5%);
+  background: darken($tt-course-section, 2.5%);
 }
 
 .t_sectionRowDisable {
@@ -213,6 +214,14 @@ export default {
 .t_sectionTable, .t_sectionTable td, .t_sectionTable th {
   border:solid lightgrey 1px;
   padding: 3px !important;
+}
+
+.t_colorSquare {
+  min-height: 1rem;
+  min-width: 1.5rem;
+  border-radius: 2px;
+  margin-right: 0.75rem;
+  margin-left: auto;
 }
 
 </style>

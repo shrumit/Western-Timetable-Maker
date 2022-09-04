@@ -23,21 +23,7 @@
 </template>
 
 <script>
-function strHash(str) { // java String#hashCode
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-       hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return hash;
-}
-function numToColor(num) {
-  num = num * num
-  return "rgb("+(255-((num*7)%127))+","+(255-((num*5)%83))+","+(255-((num*3)%79))+")"
-  // return "rgb("+(255-(num%151))+","+(255-(num%127))+","+(255-(num%103))+")"
-}
-function courseNameToColor(name) {
-  return numToColor(strHash(name))
-}
+
 function courseShortForm(name) {
   name = name.split('-')[0].trim().split(' ')
   return name[0].slice(0,4) + ' ' + name[1]
@@ -70,20 +56,22 @@ export default {
         text: '',
         color: 'inherit',
         tooltip: '',
-        type: ''
+        type: '',
+        firstCell: false
       }
       days[0] = new Array(32).fill(cellDummy)
       days[1] = new Array(32).fill(cellDummy)
       days[2] = new Array(32).fill(cellDummy)
       days[3] = new Array(32).fill(cellDummy)
       days[4] = new Array(32).fill(cellDummy)
+
+      // coursecomponent sections are joined with metadata to produce days of the table
       this.table.sections.forEach(function(section, ccIdx) {
         this.coursecomp[ccIdx].sections[section].timeslots.forEach(function(ts, tsIdx) { // for each day
           for (let i = 0; i < ts[1]; i++) { // loop as many times as the length
             let cell = {
               text: '',
-              // color: numToColor(this.coursecomp[ccIdx].sections[section].number),
-              color: courseNameToColor(this.coursecomp[ccIdx].courseName),
+              color: this.coursecomp[ccIdx].courseColor,
               tooltip: courseNameOnly(this.coursecomp[ccIdx].courseName) + ' ClassNbr:' +this.coursecomp[ccIdx].sections[section].number + ' '+  this.coursecomp[ccIdx].sections[section].location +' ' + this.coursecomp[ccIdx].sections[section].instructor,
               type:  this.coursecomp[ccIdx].name
             }
@@ -91,12 +79,14 @@ export default {
               cell.text = courseShortForm(this.coursecomp[ccIdx].courseName) // BIOL 1001A
               cell.firstCell = true
             }
-            else if (i == 1)
+            else if (i == 1) {
               cell.text = this.coursecomp[ccIdx].name + ' ' +  this.coursecomp[ccIdx].sections[section].name// <COMP SEC INSTRUCTOR>
+            }
             days[tsIdx][ts[0]+i] = cell
           }
         }.bind(this))
       }.bind(this))
+
       return days
     }
   }
