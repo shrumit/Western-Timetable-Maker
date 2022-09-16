@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="subtitle">Results</h2>
+    <h2>Results</h2>
 
     <article v-if="validCount != null" class="message is-dark is-marginless">
       <div class="message-body">

@@ -30,8 +30,8 @@
               {{ comp.name }}
             </th>
             <!-- Section selection -->
-            <td>
-              <table class="table t_sectionTable">
+            <td style="padding:1px;">
+              <table class="t_sectionTable">
                 <tr class="t_sectionRowHeader" :class="{'t_sectionRowDisable': !comp.selected}">
                   <th>
                     Section
@@ -50,10 +50,11 @@
                 <tr
                 v-for="(section, sectionIndex) in comp.sections"
                 class="t_sectionRow"
-                :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected}"
-                :title="section.timeFull"
+                :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected, 't_sectionRowFilteredOut': section.filteredOut }"
+                :title="section.filteredOut ? 'Filtered' : section.timeFull"
                 :key="sectionIndex"
                 @click="toggleSection(compIndex, sectionIndex)"
+                v-show="!section.filteredOut || showFilteredOut"
                 >
                   <td><input type="checkbox" class="checkbox" :checked="section.selected"> {{ section.name }}</td>
                   <!-- <td></td> -->
@@ -64,6 +65,8 @@
                   <td>{{ section.timeShort }}</td>
                 </tr>
               </table>
+              <p v-show="!showFilteredOut"><strong>+{{ comp.filteredOut }}</strong> sections hidden by filters</p>
+              <p v-show="comp.selected && comp.filteredOut == comp.sections.length" class="errorMsg">No sections match your filters. Deselect {{ comp.name }} to ignore this component.</p>
             </td>
           </tr>
         </tbody>
@@ -76,20 +79,40 @@
 export default {
   name: 'Course',
   props: {
-    courseIndex: Number
+    courseIndex: Number,
+    showFilteredOut: Boolean,
+    campusTypes: Array,
+    deliveryTypes: Array
   },
   data() {
     return {
-      expanded: false,
-      counter: 0
+      expanded: false
     }
   },
   computed: {
     curSemester() {
       return this.$store.state.curSemester
     },
+    campusTypesSet() {
+      const ret = new Set()
+      this.campusTypes.forEach(e => ret.add(e))
+      return ret
+    },
+    deliveryTypesSet() {
+      const ret = new Set()
+      this.deliveryTypes.forEach(e => ret.add(e))
+      return ret
+    },
     course() {
-      return this.$store.state.semester[this.curSemester].courseList[this.courseIndex]
+      var course = this.$store.state.semester[this.curSemester].courseList[this.courseIndex]
+      course.components.forEach(comp => {
+        comp.filteredOut = 0
+        comp.sections.forEach(section => {
+          section.filteredOut = !this.campusTypesSet.has(section.campus) || !this.deliveryTypesSet.has(section.delivery)
+          if (section.filteredOut) comp.filteredOut++
+        })
+      })
+      return course;
     },
     timetableLink() {
       let sub = this.course.name.split(' ')[0]
@@ -101,6 +124,14 @@ export default {
       return `http://www.westerncalendar.uwo.ca/Courses.cfm?Subject=${sub}`
       //+ sub
       //+ '&SelectedCalendar=Live&ArchiveID='
+    },
+    noSectionsMatchFilters() {
+      let noSectionsMatchFilters = false
+      this.course.components.forEach(comp => {
+        if (comp.selected && comp.filteredOut == comp.sections.length)
+          noSectionsMatchFilters = true
+      })
+      return noSectionsMatchFilters
     }
   },
   methods: {
@@ -112,7 +143,6 @@ export default {
     },
     toggleExpand() {
       this.expanded = !this.expanded
-      this.counter++
     },
     toggleSection(compIndex, sectionIndex) {
       this.$store.commit('toggleSection', {
@@ -183,11 +213,11 @@ export default {
 
 .t_comp {
   text-decoration: line-through;
-  cursor:pointer;
+  cursor: pointer;
+  background: $tt-course-comp;
 }
 .t_compSelected {
   text-decoration: none;
-  background: $tt-course-comp;
 }
 
 .t_sectionRow {
@@ -211,14 +241,22 @@ export default {
   pointer-events: none;
 }
 
+.t_sectionRowFilteredOut {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: khaki;
+}
+
 .t_sectionTable, .t_sectionTable td, .t_sectionTable th {
   border:solid lightgrey 1px;
   padding: 3px !important;
+  margin-bottom: 0px;
 }
 
 .t_colorSquare {
   min-height: 1rem;
-  min-width: 1.5rem;
+  min-width: 1.25rem;
   border-radius: 2px;
   margin-right: 0.75rem;
   margin-left: auto;

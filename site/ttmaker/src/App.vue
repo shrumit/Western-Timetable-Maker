@@ -90,6 +90,14 @@ export default {
 // 	100% {background-color: $tt-western-purple}
 // }
 
+h2 {
+  font-size: 1.25rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+}
+
 #t_bodyContainer {
   max-width: 98%;
   margin-top: 10px;
@@ -128,5 +136,9 @@ export default {
     max-width: 99%;
     padding: 0.5rem;
   }
+}
+
+.errorMsg {
+  color: $danger;
 }
 </style>

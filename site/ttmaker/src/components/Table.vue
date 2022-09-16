@@ -101,8 +101,6 @@ export default {
 table {
   border: 1px solid #DBDBDB;
   width: 100%;
-  /* margins: 0 auto; */
-  /* max-width: 1000px; */
   border-collapse: collapse;
 }
 

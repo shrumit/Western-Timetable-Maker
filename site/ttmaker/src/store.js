@@ -16,15 +16,13 @@ const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://local
 
 Vue.use(Vuex)
 
-// function sleep(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-// }
-
 export default new Vuex.Store({
   plugins: [vuexPersist.plugin],
   state: {
     metadata: {
-      time: ''
+      time: '',
+      campusTypes: [],
+      deliveryTypes: []
     },
     curSemester: 0,
     semester: [
@@ -45,14 +43,17 @@ export default new Vuex.Store({
         errorMsg: ''
       }
     ],
-    emptySemester:
-    {
+    emptySemester: {
       searchList: [],
       courseList:[],
       computeLoading: false,
       computeData: [],
       coursecomp: [],
       errorMsg: ''
+    },
+    filters: {
+      selectedCampusTypes: [],
+      selectedDeliveryTypes: []
     }
   },
   
@@ -73,7 +74,6 @@ export default new Vuex.Store({
       payload.course.color = courseNameToColor(payload.course.name)
       
       state.semester[payload.semesterId].courseList.push(payload.course)
-      // Vue.set(state.semester, payload.semesterId, state.semester[payload.semesterId])
     },
 
     addMetadata(state, metadata) {
@@ -115,7 +115,6 @@ export default new Vuex.Store({
       state.semester[semesterId].computeLoading = status
     },
     setCoursecomp(state, {semesterId, coursecomp}) {
-      // Vue.set(state.semester[semesterId].coursecomp, coursecomp)
       state.semester[semesterId].coursecomp = coursecomp
     },
     addComputeData(state, {semesterId, data}) {
@@ -126,26 +125,23 @@ export default new Vuex.Store({
       state.semester[semesterId].errorMsg = errorMsg
     },
     resetSemester(state, semesterId) {
-      // state.semester[semesterId] = JSON.parse(JSON.stringify(state.emptySemester))
       Vue.set(state.semester, semesterId, JSON.parse(JSON.stringify(state.emptySemester)))
-      // state.semester[semesterId] = Object.assign(state.emptySemester)
     },
-    setDemoReel(state, {semesterId, value}) {
-      state.semester[semesterId].demoReelActive = value
+
+    // filters
+    updateSelectedCampusTypes(state, selectedCampusTypes) {
+      state.filters.selectedCampusTypes = selectedCampusTypes
+    },
+    updateSelectedDeliveryTypes(state, selectedDeliveryTypes) {
+      state.filters.selectedDeliveryTypes = selectedDeliveryTypes
     }
+
   },
   
   actions: {
     resetSemester({commit, dispatch}, semesterId) {
       commit('resetSemester', semesterId)
       dispatch('loadSearch')
-    },
-    loadTest({dispatch}, {semesterId}) {
-      dispatch('fetchCourse',{semesterId: semesterId, courseId: 142})
-      dispatch('fetchCourse',{semesterId: semesterId, courseId: 2038})
-      dispatch('fetchCourse',{semesterId: semesterId, courseId: 224})
-      dispatch('fetchCourse',{semesterId: semesterId, courseId: 395})
-      // dispatch('fetchCourse',{semesterId: semesterId, courseId: 691})
     },
     fetchCourse({commit, state}, {courseId, semesterId}) {
       if ( courseId != null && courseId >= 0 && !state.semester[semesterId].courseList.some( item => item['id'] === courseId)) {
@@ -211,8 +207,6 @@ export default new Vuex.Store({
     }
   }
 });
-
-
 
 function strHash(str) { // java String#hashCode
   let hash = 0;

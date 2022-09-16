@@ -1,11 +1,9 @@
 <template>
   <div>
-    <h2 class="subtitle">Courses</h2>
-    <!-- <button class="button" @click="loadTest">Load Test</button> -->
-    
+    <h2>Courses</h2>
     
     <!-- Search bar -->
-    <div class="">
+    <div>
       <v-select
       v-model="selected[curSemester]"
       :key="selected[curSemester]"
@@ -15,14 +13,13 @@
       label="name"
       :placeholder="searchPlaceholder"
       selectOnTab
-      transition=""
       >
       </v-select>
     </div>
-    
+
     <!-- Add button -->
     <div style="text-align: right;">
-      <button id="t_addBtn"
+      <button
         class="button is-dark is-rounded"
         @click="fetchCourse"
         :disabled="courseAlreadyAdded"
@@ -35,22 +32,22 @@
     <!-- Message box -->
     <article  class="message is-dark is-marginless">
       <div class="message-body">
-        · Courses and sections without an assigned time slot will not appear.
-        <br>
+        <!-- · Courses and sections without an assigned time slot will not appear.
+        <br> -->
         · Please remove and re-add courses to get updated data.
         <!-- <br> -->
         <!-- · Potential timetables: {{ combinationsNum | toLocaleString }} -->
       </div>
     </article>
     
+    <!-- Reset button -->
     <div class="columns is-vcentered">
-      <div class="column is-one-fifth">
-        <!-- Remove All button -->
-        <button id="t_removeBtn" class="button is-danger is-small is-outlined" @click="removeAll">Reset</button>
+      <div class="column is-half">
+        <button class="button is-danger is-small is-outlined" @click="removeAll">Reset All</button>
       </div>
     </div>
 
-    <!-- Compute button -->
+    <!-- Generate button -->
     <div id="t_computeButtonDiv">
       <button id="t_computeButton"
         class="button is-link is-rounded"
@@ -64,14 +61,56 @@
         Too many combinations to filter! Please de-select some sections manually or select fewer courses.
       </p>
       <p v-if="errorMsg.length" class="errorMsg">Error: {{ errorMsg }}</p>
-      <p :class="{'is-loading': computeLoading}" id="patience">Patience is a virtue.</p>
     </div>
+
+    <!-- Filters -->
+    <h2>Filters</h2>
+    <div class="columns is-variable is-1" style="margin:0px;">
+      <div class="column">
+        <v-select
+        :options="campusTypes.filter(e => selectedCampusTypes.indexOf(e) < 0)"
+        :value="selectedCampusTypes"
+        @input="updateSelectedCampusTypes"
+        placeholder="Any campus"
+        multiple
+        selectOnTab
+        :searchable="false"
+        :closeOnSelect="false"
+        >
+          <template #no-options>&nbsp;</template>
+          <!-- <template #open-indicator>&nbsp;</template> -->
+        </v-select>
+      </div>
+      <div class="column">
+        <v-select
+        :options="deliveryTypes.filter(e => selectedDeliveryTypes.indexOf(e) < 0)"
+        :value="selectedDeliveryTypes"
+        @input="updateSelectedDeliveryTypes"
+        placeholder="Any delivery type"
+        multiple
+        selectOnTab
+        :searchable="false"
+        :closeOnSelect="false"
+        >
+          <template #no-options>&nbsp;</template>
+        </v-select>
+      </div>
+    </div>
+    <label class="checkbox" style="margin-bottom: 1rem;">
+      <input type="checkbox" v-model="showFilteredOut">
+      Show filtered sections in table
+    </label>
+    
+    
 
     <!-- List of added courses -->
     <Course
     v-for="(course, index) in selectedCourses"
     :key="course.id"
     :courseIndex="index"
+    :showFilteredOut="showFilteredOut"
+    :campusTypes="selectedCampusTypes.length > 0 ? selectedCampusTypes : campusTypes"
+    :deliveryTypes="selectedDeliveryTypes.length > 0 ? selectedDeliveryTypes : deliveryTypes"
     />
 
   </div>
@@ -100,7 +139,8 @@ export default {
     selectedCourses() {
       return this.$store.state.semester[this.curSemester].courseList
     },
-    combinationsNum(){
+
+    combinationsNum() {
       if (!this.$store.state.semester[this.curSemester].courseList || this.$store.state.semester[this.curSemester].courseList.length == 0) 
         return 0;
 
@@ -127,16 +167,29 @@ export default {
     },
     courseAlreadyAdded() {
       return this.$store.state.semester[this.curSemester].courseList.some((e => e.id === this.selected[this.curSemester]));
+    },
+    campusTypes() {
+      return this.$store.state.metadata.campusTypes
+    },
+    deliveryTypes() {
+      return this.$store.state.metadata.deliveryTypes
+    },
+    selectedCampusTypes() {
+      return this.$store.state.filters.selectedCampusTypes
+    },
+    selectedDeliveryTypes() {
+      return this.$store.state.filters.selectedDeliveryTypes
     }
   },
   data() {
     return {
+      COMBINATIONS_LIMIT: 15000000000,
       selected: [null,null],
-      COMBINATIONS_LIMIT: 15000000000
+      showFilteredOut: false
     }
   },
   created() {
-    this.$store.dispatch('loadSearch');
+    this.$store.dispatch('loadSearch')
   },
   methods: {
     fetchCourse() {
@@ -152,18 +205,21 @@ export default {
       this.$store.commit('removeCourse', index)
     },
     filter(option, label, search) {
-      // don't show results until more than 1 characters typed
+      // don't show results until more than 2 characters typed
       if (search == null || label == null || search.length < 2) return false;
       return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
-    },
-    loadTest() {
-      this.$store.dispatch('loadTest', {semesterId: this.curSemester})
     },
     compute() {
       this.$store.dispatch('compute', this.curSemester)
     },
     removeAll() {
       this.$store.dispatch('resetSemester', this.curSemester)
+    },
+    updateSelectedCampusTypes(value) {
+      this.$store.commit('updateSelectedCampusTypes', value)
+    },
+    updateSelectedDeliveryTypes(value) {
+      this.$store.commit('updateSelectedDeliveryTypes', value)
     }
   },
   filters: {
@@ -194,10 +250,6 @@ button {
   transition-delay: 2s;
 }
 
-.errorMsg {
-  color: darkorange;
-}
-
 .campusLabel {
   margin-right: 5px;
 }
@@ -207,6 +259,7 @@ button {
 }
 
 #t_computeButton {
+  margin: 0px;
   box-shadow: 0px 13px 10px -10px rgba(0,0,0,0.4);
 }
 
