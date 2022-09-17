@@ -1,5 +1,6 @@
 <template>
   <div class="t_tableDiv">
+    <p>{{ timeslotless }}</p>
     <table class="t_weekTable">
       <thead>
         <td></td><td>Mon</td><td>Tue</td><td>Wed</td><td>Thu</td><td>Fri</td>
@@ -7,7 +8,7 @@
       <tr v-for="row in 30" v-bind:key=row>
         <td>{{ labels[row-1] }}</td>
         <td
-        v-for="(day, dayIdx) in daysArray"
+        v-for="(day, dayIdx) in days"
         v-bind:key=dayIdx
         class="t_weekSlot"
         :class="{ 't_lab': day[row-1].type==='LAB', 't_tut': day[row-1].type==='TUT', 't_firstCell': day[row-1].firstCell }"
@@ -30,7 +31,6 @@ function courseShortForm(name) {
 }
 function courseNameOnly(name) {
   return name.split('-')[1].trim()
-  // return name.slice(0,4) + ' ' + name.split(' ')[1]
 }
 
 export default {
@@ -50,7 +50,7 @@ export default {
     coursecomp() {
       return this.$store.state.semester[this.curSemester].coursecomp
     },
-    daysArray() {
+    days() {
       let days = new Array(5);
       let cellDummy = {
         text: '',
@@ -59,14 +59,18 @@ export default {
         type: '',
         firstCell: false
       }
-      days[0] = new Array(32).fill(cellDummy)
-      days[1] = new Array(32).fill(cellDummy)
-      days[2] = new Array(32).fill(cellDummy)
-      days[3] = new Array(32).fill(cellDummy)
-      days[4] = new Array(32).fill(cellDummy)
+      days[0] = new Array(30).fill(cellDummy)
+      days[2] = new Array(30).fill(cellDummy)
+      days[1] = new Array(30).fill(cellDummy)
+      days[3] = new Array(30).fill(cellDummy)
+      days[4] = new Array(30).fill(cellDummy)
 
-      // coursecomponent sections are joined with metadata to produce days of the table
+      // table sections are joined with coursecomp
       this.table.sections.forEach(function(section, ccIdx) {
+        // ignore the timeslotless pseudosection
+        if (section == this.coursecomp[ccIdx].sections.length)
+          return;       
+
         this.coursecomp[ccIdx].sections[section].timeslots.forEach(function(ts, tsIdx) { // for each day
           for (let i = 0; i < ts[1]; i++) { // loop as many times as the length
             let cell = {
@@ -80,7 +84,7 @@ export default {
               cell.firstCell = true
             }
             else if (i == 1) {
-              cell.text = this.coursecomp[ccIdx].name + ' ' +  this.coursecomp[ccIdx].sections[section].name// <COMP SEC INSTRUCTOR>
+              cell.text = this.coursecomp[ccIdx].name + ' ' +  this.coursecomp[ccIdx].sections[section].name // LEC 001
             }
             days[tsIdx][ts[0]+i] = cell
           }
@@ -88,6 +92,24 @@ export default {
       }.bind(this))
 
       return days
+    },
+    timeslotless() {
+      let ret = []
+      // table sections are joined with coursecomp
+      this.table.sections.forEach(function(section, ccIdx) {
+        // skip if not the timeslotful pseudosection
+        if (section < this.coursecomp[ccIdx].sections.length) return
+
+        // build a context for all timeslotless sections
+        this.coursecomp[ccIdx].timeslotless.forEach((sec) => {
+          let context = {}
+          context.text = `${courseShortForm(this.coursecomp[ccIdx].courseName)} ${this.coursecomp[ccIdx].name} ${sec.name}`
+          context.tooltip = courseNameOnly(this.coursecomp[ccIdx].courseName) + ' ClassNbr:' + sec.number + ' '+  sec.location +' ' + sec.instructor
+          context.type = this.coursecomp[ccIdx].name
+          ret.push(context)
+        })
+      }.bind(this))
+      return JSON.stringify(ret)
     }
   }
 }

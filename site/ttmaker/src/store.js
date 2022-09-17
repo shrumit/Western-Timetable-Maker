@@ -56,7 +56,27 @@ export default new Vuex.Store({
       selectedDeliveryTypes: []
     }
   },
-  
+  getters: {
+    getFromCourseList: (state) => (semesterId, courseIndex) => {
+      const course = state.semester[semesterId].courseList[courseIndex]
+
+      // add derived properties
+      course.components.forEach(comp => {
+        comp.filteredCount = 0
+        comp.activeCount = 0
+        comp.sections.forEach(section => {
+          section.filtered = (state.filters.selectedCampusTypes.length > 0 && !state.filters.selectedCampusTypes.includes(section.campus))
+                          || (state.filters.selectedDeliveryTypes.length > 0 && !state.filters.selectedDeliveryTypes.includes(section.delivery))
+
+          if (section.filtered) comp.filteredCount++
+          if (section.selected && !section.filtered) comp.activeCount++
+        })
+        if (!comp.selected) comp.activeCount = 0
+      })
+
+      return course;
+    }
+  },
   mutations: {
     addSearchList(state, {semesterId, data}) {
       state.semester[semesterId].searchList = data
@@ -77,7 +97,6 @@ export default new Vuex.Store({
     },
 
     addMetadata(state, metadata) {
-      // console.log(metadata)
       state.metadata = metadata;
     },
     
@@ -127,15 +146,14 @@ export default new Vuex.Store({
     resetSemester(state, semesterId) {
       Vue.set(state.semester, semesterId, JSON.parse(JSON.stringify(state.emptySemester)))
     },
-
-    // filters
     updateSelectedCampusTypes(state, selectedCampusTypes) {
+      // Vue.set(state.filters, 'selectedCampusTypes', selectedCampusTypes)
       state.filters.selectedCampusTypes = selectedCampusTypes
     },
     updateSelectedDeliveryTypes(state, selectedDeliveryTypes) {
+      // Vue.set(state.filters, 'selectedDeliveryTypes', selectedDeliveryTypes)
       state.filters.selectedDeliveryTypes = selectedDeliveryTypes
     }
-
   },
   
   actions: {
@@ -155,24 +173,27 @@ export default new Vuex.Store({
     loadMetadata( {commit} ) {
       commit('addMetadata', metadata);
     },
-    compute({commit, state}, semesterId) {
+    compute({commit, state, getters}, semesterId) {
       commit('setComputeError', {semesterId: semesterId, errorMsg: ''})
       commit('setComputeLoading', {semesterId: semesterId, status: true});
-      // console.log(JSON.stringify(state.semester[semesterId].courseList));
+
       let courseList = state.semester[semesterId].courseList
       
-      // produce coursecomp, which is a flattening of course:components[] with 'selected' components and sections only
-      // coursecomp is used to generate the /compute payload and to render Table.vue
+      // produce coursecomp, which is a flat snapshot of courseList[*].components[*] with 'active' components and sections only
+      // coursecomp is used to generate the /compute payload and render Table.vue
       let coursecomp = []
-      courseList.forEach(function(course) {
+      for (let i = 0; i < courseList.length; i++) {
+        const course = getters.getFromCourseList(semesterId, i)
         course.components.forEach(function(comp){
-          if (comp.selected != true) return;
+          if (!comp.selected) return
+
           // serializing and deserializing removes extra things from the object
           let filteredComp = JSON.parse(JSON.stringify(comp))
 
-          // remove unselected sections
-          filteredComp.sections = filteredComp.sections.filter(section => section.selected == true)
-          // skip if no section are selected
+          // remove filtered/unselected sections
+          filteredComp.sections = filteredComp.sections.filter(section => section.selected && !section.filtered)
+
+          // skip if no section are selected (as if comp was deselected)
           if (filteredComp.sections.length == 0) return
 
           // add some course properties to the comp
@@ -180,14 +201,29 @@ export default new Vuex.Store({
           filteredComp.courseName = course.name
           filteredComp.courseColor = course.color
 
+          // move timeslotless sections to timeslotless.section
+          filteredComp.timeslotless = []
+          for (let i = filteredComp.sections.length - 1; i >= 0; i--) {
+            if (isTimeslotless(filteredComp.sections[i])) {
+              filteredComp.timeslotless.push(filteredComp.sections[i])
+              filteredComp.sections.splice(i, 1)
+            }
+          }
           coursecomp.push(filteredComp)
         })
-      })
-      
+      }
+
       let req = []
-      coursecomp.forEach(function(comp){ // remove everything but timebits
-        req.push(comp.sections.map(sec => sec.timebits))
+      coursecomp.forEach(function(comp){
+        // remove everything but timebits
+        let distilled = comp.sections.map(sec => sec.timebits)
+        // add a timeslotless "pseudosection"
+        if (comp.timeslotless.length > 0)
+          distilled.push(comp.timeslotless[0].timebits)
+
+        req.push(distilled)
       })
+
       let startTime = performance.now()
       axios.post(COMPUTE_URL, req)
       .then((res) => {
@@ -223,3 +259,11 @@ return "rgb("+(255-((num*7)%127))+","+(255-((num*5)%83))+","+(255-((num*3)%79))+
 function courseNameToColor(name) {
 return numToColor(strHash(name))
 }
+
+function isTimeslotless(section) {
+  return section.timebits[0]==0 && section.timebits[1]==0 && section.timebits[2]==0 && section.timebits[3]==0 && section.timebits[4]==0
+}
+
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }

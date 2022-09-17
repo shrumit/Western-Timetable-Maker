@@ -42,7 +42,7 @@
                   </th>
                   <!-- <th>Section</th> -->
                   <th>Class Nbr</th>
-                  <th>Location</th>
+                  <!-- <th>Location</th> -->
                   <th>Instructor</th>
                   <th>Campus</th>
                   <th>Time</th>
@@ -50,23 +50,22 @@
                 <tr
                 v-for="(section, sectionIndex) in comp.sections"
                 class="t_sectionRow"
-                :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected, 't_sectionRowFilteredOut': section.filteredOut }"
-                :title="section.filteredOut ? 'Filtered' : section.timeFull"
+                :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected, 't_sectionRowFilteredOut': section.filtered }"
+                :title="section.filtered ? 'Filtered' : section.timeFull"
                 :key="sectionIndex"
                 @click="toggleSection(compIndex, sectionIndex)"
-                v-show="!section.filteredOut || showFilteredOut"
+                v-show="!section.filtered || showFilteredOut"
                 >
                   <td><input type="checkbox" class="checkbox" :checked="section.selected"> {{ section.name }}</td>
-                  <!-- <td></td> -->
                   <td>{{ section.number }}</td>
-                  <td>{{ section.location }}</td>
+                  <!-- <td>{{ section.location }}</td> -->
                   <td>{{ section.instructor }}</td>
                   <td>{{ section.campus }}</td>
                   <td>{{ section.timeShort }}</td>
                 </tr>
               </table>
-              <p v-show="!showFilteredOut"><strong>+{{ comp.filteredOut }}</strong> sections hidden by filters</p>
-              <p v-show="comp.selected && comp.filteredOut == comp.sections.length" class="errorMsg">No sections match your filters. Deselect {{ comp.name }} to ignore this component.</p>
+              <p v-show="!showFilteredOut"><strong>+{{ comp.filteredCount }}</strong> sections hidden by filters</p>
+              <p v-show="comp.selected && comp.filteredCount == comp.sections.length" class="errorMsg">No sections match your filters. Deselect {{ comp.name }} to ignore this component.</p>
             </td>
           </tr>
         </tbody>
@@ -79,10 +78,9 @@
 export default {
   name: 'Course',
   props: {
+    curSemester: Number,
     courseIndex: Number,
-    showFilteredOut: Boolean,
-    campusTypes: Array,
-    deliveryTypes: Array
+    showFilteredOut: Boolean
   },
   data() {
     return {
@@ -90,29 +88,8 @@ export default {
     }
   },
   computed: {
-    curSemester() {
-      return this.$store.state.curSemester
-    },
-    campusTypesSet() {
-      const ret = new Set()
-      this.campusTypes.forEach(e => ret.add(e))
-      return ret
-    },
-    deliveryTypesSet() {
-      const ret = new Set()
-      this.deliveryTypes.forEach(e => ret.add(e))
-      return ret
-    },
     course() {
-      var course = this.$store.state.semester[this.curSemester].courseList[this.courseIndex]
-      course.components.forEach(comp => {
-        comp.filteredOut = 0
-        comp.sections.forEach(section => {
-          section.filteredOut = !this.campusTypesSet.has(section.campus) || !this.deliveryTypesSet.has(section.delivery)
-          if (section.filteredOut) comp.filteredOut++
-        })
-      })
-      return course;
+      return this.$store.getters.getFromCourseList(this.curSemester, this.courseIndex)
     },
     timetableLink() {
       let sub = this.course.name.split(' ')[0]
@@ -124,14 +101,6 @@ export default {
       return `http://www.westerncalendar.uwo.ca/Courses.cfm?Subject=${sub}`
       //+ sub
       //+ '&SelectedCalendar=Live&ArchiveID='
-    },
-    noSectionsMatchFilters() {
-      let noSectionsMatchFilters = false
-      this.course.components.forEach(comp => {
-        if (comp.selected && comp.filteredOut == comp.sections.length)
-          noSectionsMatchFilters = true
-      })
-      return noSectionsMatchFilters
     }
   },
   methods: {

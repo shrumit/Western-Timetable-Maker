@@ -107,10 +107,9 @@
     <Course
     v-for="(course, index) in selectedCourses"
     :key="course.id"
+    :curSemester="curSemester"
     :courseIndex="index"
     :showFilteredOut="showFilteredOut"
-    :campusTypes="selectedCampusTypes.length > 0 ? selectedCampusTypes : campusTypes"
-    :deliveryTypes="selectedDeliveryTypes.length > 0 ? selectedDeliveryTypes : deliveryTypes"
     />
 
   </div>
@@ -193,12 +192,10 @@ export default {
   },
   methods: {
     fetchCourse() {
-      // console.log('fetchCourse:' + this.selected)
       this.$store.dispatch('fetchCourse', {
         semesterId: this.curSemester,
         courseId: this.selected[this.curSemester]
       })
-      // Vue.set(this.selected,this.curSemester,null)
       this.selected[this.curSemester] = null
     },
     removeCourse(index) {

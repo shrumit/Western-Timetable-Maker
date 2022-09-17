@@ -25,7 +25,7 @@
       <CourseSelection class="column is-5"/>
       <Results class="column"/>
     </div>
-
+    
     <!-- Footer -->
     <footer id="footer">
       <strong>Western Timetable Maker</strong> is <a href="https://github.com/shrumit/Western-Timetable-Maker" target="_blank">open-source</a>.
@@ -45,7 +45,7 @@ export default {
     Results
   },
   created() {
-    this.$store.dispatch('loadMetadata');
+    this.$store.dispatch('loadMetadata')
   },
   computed: {
     curSemester() {
@@ -64,9 +64,6 @@ export default {
   methods: {
     changeSemester(semesterId) {
       this.$store.commit('changeSemester', semesterId)
-    },
-    runDemoReel() {
-      this.$store.dispatch('demoReel', this.curSemester)
     }
   }
 }
