@@ -25,12 +25,4 @@ $title-color: $tt-western-purple;
 $message-header-weight: regular;
 $strong-weight: $tt-bold-weight;
 
-// vue-select
-$vs-component-line-height: 2;
-$vs-component-placeholder-color: $tt-western-purple;
-$vs-state-active-bg: $tt-western-purple;
-$vs-border-color: $tt-western-purple;
-$vs-controls-color: $tt-western-purple;
-
-@import "../node_modules/bulma/bulma.sass";
-@import '../node_modules/vue-select/src/scss/vue-select.scss';
+@import "./node_modules/bulma/bulma.sass";

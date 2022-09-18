@@ -4,13 +4,13 @@
 
     <article v-if="validCount != null" class="message is-dark is-marginless">
       <div class="message-body">
-        · Conflict-free combinations: {{ validCount | toLocaleString }}
+        · Conflict-free combinations: {{ toLocaleString(validCount) }}
         <span v-if="validCount == 0" class="t_nonePossible">
           <br>
           · Sorry, no conflict-free timetables found!
         </span>
         <br>
-        · Processed in: {{ timeTaken | toLocaleString }}s
+        · Processed in: {{ toLocaleString(timeTaken) }}s
       </div>
     </article>
 
@@ -78,9 +78,7 @@ export default {
   methods: {
     changeTab(tabIdx) {
       this.selectedIdx = tabIdx
-    }
-  },
-  filters: {
+    },
     toLocaleString(n) {
       return n != null ? n.toLocaleString() : null
     }

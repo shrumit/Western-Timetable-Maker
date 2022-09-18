@@ -1,14 +1,13 @@
-import Vue from 'vue'
-import App from './App.vue'
-import store from './store'
+import { createApp } from 'vue';
+import App from './App.vue';
+import store from './store';
 
-import vSelect from 'vue-select'
-Vue.component('v-select', vSelect)
-// import 'vue-select/dist/vue-select.css';
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 
-Vue.config.productionTip = false
+// config.productionTip = false;
 
-new Vue({
-  store,
-  render: h => h(App)
-}).$mount('#app')
+const app = createApp(App);
+app.use(store);
+app.component('v-select', vSelect);
+app.mount('#app');

@@ -1,4 +1,4 @@
-import Vue from 'vue'
+// import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
 import axios from 'axios'
@@ -8,15 +8,13 @@ const vuexPersist = new VuexPersist({
   storage: window.localStorage
 })
 
-const courseData = require('./master.json');
-const searchData = require('./search.json');
-const metadata = require('./metadata.json');
+import courseData from './master.json';
+import searchData from './search.json';
+import metadata from './metadata.json';
 
 const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:8081/compute' : window.location.origin + '/compute'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export default Vuex.createStore({
   plugins: [vuexPersist.plugin],
   state: {
     metadata: {
@@ -107,22 +105,17 @@ export default new Vuex.Store({
     toggleSection(state, {semesterId, courseIndex, compIndex, sectionIndex}) {
       state.semester[semesterId].courseList[courseIndex].components[compIndex].sections[sectionIndex].selected =
         !state.semester[semesterId].courseList[courseIndex].components[compIndex].sections[sectionIndex].selected;
-      // Vue.set is required to trigger update
-      Vue.set(state.semester[semesterId].courseList, courseIndex, state.semester[semesterId].courseList[courseIndex])
     },
     
     toggleComponent(state, {semesterId, courseIndex, compIndex}) {
       state.semester[semesterId].courseList[courseIndex].components[compIndex].selected =
         !state.semester[semesterId].courseList[courseIndex].components[compIndex].selected;
-      // Vue.set is required to trigger update
-      Vue.set(state.semester[semesterId].courseList, courseIndex, state.semester[semesterId].courseList[courseIndex])
     },
     
     setAllSelectedInComponent(state, {semesterId, courseIndex, compIndex, selected}) {
       state.semester[semesterId].courseList[courseIndex].components[compIndex].sections.forEach(function(s, idx, sArray){
         sArray[idx].selected = selected;
       })
-      Vue.set(state.semester[semesterId].courseList, courseIndex, state.semester[semesterId].courseList[courseIndex])
     },
     
     changeSemester(state, semesterId) {
@@ -144,14 +137,12 @@ export default new Vuex.Store({
       state.semester[semesterId].errorMsg = errorMsg
     },
     resetSemester(state, semesterId) {
-      Vue.set(state.semester, semesterId, JSON.parse(JSON.stringify(state.emptySemester)))
+      state.semester[semesterId] = JSON.parse(JSON.stringify(state.emptySemester))
     },
     updateSelectedCampusTypes(state, selectedCampusTypes) {
-      // Vue.set(state.filters, 'selectedCampusTypes', selectedCampusTypes)
       state.filters.selectedCampusTypes = selectedCampusTypes
     },
     updateSelectedDeliveryTypes(state, selectedDeliveryTypes) {
-      // Vue.set(state.filters, 'selectedDeliveryTypes', selectedDeliveryTypes)
       state.filters.selectedDeliveryTypes = selectedDeliveryTypes
     }
   },

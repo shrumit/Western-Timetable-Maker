@@ -36,7 +36,7 @@
         <br> -->
         · Please remove and re-add courses to get updated data.
         <!-- <br> -->
-        <!-- · Potential timetables: {{ combinationsNum | toLocaleString }} -->
+        <!-- · Potential timetables: {{ toLocaleString(combinationsNum) }} -->
       </div>
     </article>
     
@@ -56,7 +56,7 @@
         @click="compute()">
           Generate Timetables
       </button>
-      <p v-if="combinationsNum > 0">{{ combinationsNum | toLocaleString }} possible combinations</p>
+      <p v-if="combinationsNum > 0">{{ toLocaleString(combinationsNum) }} possible combinations</p>
       <p v-if="combinationsNum > COMBINATIONS_LIMIT" class="errorMsg">
         Too many combinations to filter! Please de-select some sections manually or select fewer courses.
       </p>
@@ -217,9 +217,7 @@ export default {
     },
     updateSelectedDeliveryTypes(value) {
       this.$store.commit('updateSelectedDeliveryTypes', value)
-    }
-  },
-  filters: {
+    },
     toLocaleString(n) {
       return n.toLocaleString()
     }
