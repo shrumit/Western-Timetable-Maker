@@ -5,8 +5,6 @@ import store from './store';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 
-// config.productionTip = false;
-
 const app = createApp(App);
 app.use(store);
 app.component('v-select', vSelect);

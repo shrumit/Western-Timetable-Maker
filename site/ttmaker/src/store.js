@@ -1,4 +1,3 @@
-// import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
 import axios from 'axios'
