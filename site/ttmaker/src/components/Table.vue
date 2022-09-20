@@ -36,6 +36,7 @@ function courseNameOnly(name) {
 export default {
   name: 'Table',
   props: {
+    semester: Number,
     table: Object,
   },
   data() {
@@ -44,11 +45,8 @@ export default {
     }
   },
   computed: {
-    curSemester() {
-      return this.$store.state.curSemester
-    },
     coursecomp() {
-      return this.$store.state.semester[this.curSemester].coursecomp
+      return this.$store.state.semester[this.semester].coursecomp
     },
     days() {
       let days = new Array(5);

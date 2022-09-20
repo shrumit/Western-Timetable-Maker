@@ -29,7 +29,7 @@
       </ul>
     </div>
 
-    <Instructions />
+    <Instructions :semester="semester" />
     
     <!-- Tables -->
     <div
@@ -49,6 +49,9 @@ import Table from './Table.vue'
 
 export default {
   name: 'Results',
+  props: {
+    semester: Number
+  },
   components: {
     Table,
     Instructions
@@ -59,14 +62,11 @@ export default {
     }
   },
   computed: {
-    curSemester() {
-      return this.$store.state.curSemester
-    },
     coursecomp(){
-      return this.$store.state.semester[this.curSemester].coursecomp
+      return this.$store.state.semester[this.semester].coursecomp
     },
     computeData(){
-      return this.$store.state.semester[this.curSemester].computeData
+      return this.$store.state.semester[this.semester].computeData
     },
     validCount() {
       return this.computeData.info ? Number(this.computeData.info.validCount) : null

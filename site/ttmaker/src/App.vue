@@ -9,8 +9,8 @@
     <!-- Semester selection tab -->
     <div class="tabs is-boxed">
       <ul>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL 2022</a></li>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2023</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : semester === 0 }" @click="semester=0"><a>FALL 2022</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : semester === 1 }" @click="semester=1"><a>WINTER 2023</a></li>
       </ul>
     </div>
 
@@ -21,9 +21,13 @@
     </article>
 
     <!-- Body -->
-    <div class="columns" :class="{'t_lowerFall': curSemester == 0, 't_lowerWinter': curSemester == 1}">
-      <CourseSelection class="column is-5"/>
-      <Results class="column"/>
+    <div class="columns" v-show="semester === 0">
+      <CourseSelection :semester="0" class="column is-5"/>
+      <Results :semester="1" class="column"/>
+    </div>
+    <div class="columns" v-show="semester === 1">
+      <CourseSelection :semester="1" class="column is-5"/>
+      <Results :semester="1" class="column"/>
     </div>
     
     <!-- Footer -->
@@ -44,27 +48,24 @@ export default {
     CourseSelection,
     Results
   },
+  data() {
+    return { semester: 0 }
+  },
   created() {
     this.$store.dispatch('loadMetadata')
   },
   computed: {
-    curSemester() {
-      return this.$store.state.curSemester
-    },
     hasComputeData(){
-      return this.$store.state.semester[this.curSemester].computeData && this.$store.state.semester[this.curSemester].computeData.length > 0
+      return this.$store.state.semester[this.semester].computeData && this.$store.state.semester[this.semester].computeData.length > 0
     },
     computeData(){
-      return {tables: this.$store.state.semester[this.curSemester].computeData}
+      return {tables: this.$store.state.semester[this.semester].computeData}
     },
     scrapeTime() {
       return this.$store.state.metadata.time
     }
   },
   methods: {
-    changeSemester(semesterId) {
-      this.$store.commit('changeSemester', semesterId)
-    }
   }
 }
 </script>

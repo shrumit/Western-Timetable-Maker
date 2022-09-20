@@ -78,7 +78,7 @@
 export default {
   name: 'Course',
   props: {
-    curSemester: Number,
+    semester: Number,
     courseIndex: Number,
     showFilteredOut: Boolean
   },
@@ -89,7 +89,7 @@ export default {
   },
   computed: {
     course() {
-      return this.$store.getters.getFromCourseList(this.curSemester, this.courseIndex)
+      return this.$store.getters.getFromCourseList(this.semester, this.courseIndex)
     },
     timetableLink() {
       let sub = this.course.name.split(' ')[0]
@@ -106,7 +106,7 @@ export default {
   methods: {
     remove() {
       this.$store.commit('removeCourse', {
-        semesterId: this.curSemester,
+        semesterId: this.semester,
         courseIndex: this.courseIndex
       })
     },
@@ -115,7 +115,7 @@ export default {
     },
     toggleSection(compIndex, sectionIndex) {
       this.$store.commit('toggleSection', {
-        semesterId: this.curSemester,
+        semesterId: this.semester,
         courseIndex: this.courseIndex,
         compIndex: compIndex,
         sectionIndex: sectionIndex
@@ -123,14 +123,14 @@ export default {
     },
     toggleComponent(compIndex) {
       this.$store.commit('toggleComponent', {
-        semesterId: this.curSemester,
+        semesterId: this.semester,
         courseIndex: this.courseIndex,
         compIndex: compIndex
       })
     },
     selectAllInComp(compIndex) {
       this.$store.commit('setAllSelectedInComponent', {
-        semesterId: this.curSemester,
+        semesterId: this.semester,
         courseIndex: this.courseIndex,
         compIndex: compIndex,
         selected: true
@@ -138,7 +138,7 @@ export default {
     },
     deselectAllInComp(compIndex) {
       this.$store.commit('setAllSelectedInComponent', {
-        semesterId: this.curSemester,
+        semesterId: this.semester,
         courseIndex: this.courseIndex,
         compIndex: compIndex,
         selected: false

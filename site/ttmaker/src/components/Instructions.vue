@@ -10,16 +10,16 @@
 <script>
 export default {
   name: 'Instructions',
+  props: {
+    semester: Number
+  },
   computed: {
-    curSemester() {
-      return this.$store.state.curSemester
-    },
     curStep() {
-      if (this.$store.state.semester[this.curSemester].courseList.length == 0
-        && this.$store.state.semester[this.curSemester].computeData.length == 0) {
+      if (this.$store.state.semester[this.semester].courseList.length == 0
+        && this.$store.state.semester[this.semester].computeData.length == 0) {
         return 0
       }
-      else if (this.$store.state.semester[this.curSemester].computeData.length == 0) {
+      else if (this.$store.state.semester[this.semester].computeData.length == 0) {
         return 1
       }
       else {
