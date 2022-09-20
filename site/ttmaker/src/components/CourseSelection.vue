@@ -104,13 +104,15 @@
     
 
     <!-- List of added courses -->
-    <Course
-    v-for="(course, index) in selectedCourses"
-    :key="course.id"
-    :semester="semester"
-    :courseIndex="index"
-    :showFilteredOut="showFilteredOut"
-    />
+    <TransitionGroup name="course-list">
+      <Course
+      v-for="(course, index) in selectedCourses"
+      :key="course.id"
+      :semester="semester"
+      :courseIndex="index"
+      :showFilteredOut="showFilteredOut"
+      />
+    </TransitionGroup>
 
   </div>
 </template>
@@ -256,6 +258,20 @@ button {
 #t_computeButton {
   margin: 0px;
   box-shadow: 0px 13px 10px -10px rgba(0,0,0,0.4);
+}
+
+.course-list-enter-active,
+.course-list-leave-active {
+  transition: all 0.2s ease;
+}
+.course-list-enter-from {
+  opacity: 0;
+  transform: translateY(-300px);
+}
+
+.course-list-leave-to {
+  opacity: 0;
+  transform: translateX(-100px);
 }
 
 </style>

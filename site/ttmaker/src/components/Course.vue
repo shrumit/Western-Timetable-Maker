@@ -10,66 +10,68 @@
       </div>
       
       <!-- Accordian body -->
-      <table v-show="expanded" class="message-body table">
-        <tbody>
-          <tr>
-            <td></td>
-            <td style="display:flex; justify-content: space-around;">
-              <a :href="timetableLink" target="_blank">View in Academic Timetable</a>&emsp;
-              <a :href="calendarLink" target="_blank">View in Academic Calendar</a>
-            </td>
-          </tr>
-          <tr v-for="(comp, compIndex) in this.course.components" :key="compIndex">
-            <!-- Component selection -->
-            <th
-            class="t_comp"
-            :class="{ 't_compSelected': comp.selected }"
-            @click="toggleComponent(compIndex)"
-            >
-              <input type="checkbox" class="checkbox" :checked="comp.selected">
-              {{ comp.name }}
-            </th>
-            <!-- Section selection -->
-            <td style="padding:1px;">
-              <table class="t_sectionTable">
-                <tr class="t_sectionRowHeader" :class="{'t_sectionRowDisable': !comp.selected}">
-                  <th>
-                    Section
-                    <br>
-                    <button @click="selectAllInComp(compIndex)" class="button is-small is-text">Select All</button>
-                    <br>
-                    <button @click="deselectAllInComp(compIndex)" class="button is-small is-text">Deselect All</button>
-                  </th>
-                  <!-- <th>Section</th> -->
-                  <th>Class Nbr</th>
-                  <!-- <th>Location</th> -->
-                  <th>Instructor</th>
-                  <th>Campus</th>
-                  <th>Time</th>
-                </tr>
-                <tr
-                v-for="(section, sectionIndex) in comp.sections"
-                class="t_sectionRow"
-                :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected, 't_sectionRowFilteredOut': section.filtered }"
-                :title="section.filtered ? 'Filtered' : section.timeFull"
-                :key="sectionIndex"
-                @click="toggleSection(compIndex, sectionIndex)"
-                v-show="!section.filtered || showFilteredOut"
-                >
-                  <td><input type="checkbox" class="checkbox" :checked="section.selected"> {{ section.name }}</td>
-                  <td>{{ section.number }}</td>
-                  <!-- <td>{{ section.location }}</td> -->
-                  <td>{{ section.instructor }}</td>
-                  <td>{{ section.campus }}</td>
-                  <td>{{ section.timeShort }}</td>
-                </tr>
-              </table>
-              <p v-show="!showFilteredOut"><strong>+{{ comp.filteredCount }}</strong> sections hidden by filters</p>
-              <p v-show="comp.selected && comp.filteredCount == comp.sections.length" class="errorMsg">No sections match your filters. Deselect {{ comp.name }} to ignore this component.</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <Transition name="accordion">
+        <table v-show="expanded" class="message-body table">
+          <tbody>
+            <tr>
+              <td></td>
+              <td style="display:flex; justify-content: space-around;">
+                <a :href="timetableLink" target="_blank">View in Academic Timetable</a>&emsp;
+                <a :href="calendarLink" target="_blank">View in Academic Calendar</a>
+              </td>
+            </tr>
+            <tr v-for="(comp, compIndex) in this.course.components" :key="compIndex">
+              <!-- Component selection -->
+              <th
+              class="t_comp"
+              :class="{ 't_compSelected': comp.selected }"
+              @click="toggleComponent(compIndex)"
+              >
+                <input type="checkbox" class="checkbox" :checked="comp.selected">
+                {{ comp.name }}
+              </th>
+              <!-- Section selection -->
+              <td style="padding:1px;">
+                <table class="t_sectionTable">
+                  <tr class="t_sectionRowHeader" :class="{'t_sectionRowDisable': !comp.selected}">
+                    <th>
+                      Section
+                      <br>
+                      <button @click="selectAllInComp(compIndex)" class="button is-small is-text">Select All</button>
+                      <br>
+                      <button @click="deselectAllInComp(compIndex)" class="button is-small is-text">Deselect All</button>
+                    </th>
+                    <!-- <th>Section</th> -->
+                    <th>Class Nbr</th>
+                    <!-- <th>Location</th> -->
+                    <th>Instructor</th>
+                    <th>Campus</th>
+                    <th>Time</th>
+                  </tr>
+                  <tr
+                  v-for="(section, sectionIndex) in comp.sections"
+                  class="t_sectionRow"
+                  :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected, 't_sectionRowFilteredOut': section.filtered }"
+                  :title="section.filtered ? 'Filtered' : section.timeFull"
+                  :key="sectionIndex"
+                  @click="toggleSection(compIndex, sectionIndex)"
+                  v-show="!section.filtered || showFilteredOut"
+                  >
+                    <td><input type="checkbox" class="checkbox" :checked="section.selected"> {{ section.name }}</td>
+                    <td>{{ section.number }}</td>
+                    <!-- <td>{{ section.location }}</td> -->
+                    <td>{{ section.instructor }}</td>
+                    <td>{{ section.campus }}</td>
+                    <td>{{ section.timeShort }}</td>
+                  </tr>
+                </table>
+                <p v-show="!showFilteredOut"><strong>+{{ comp.filteredCount }}</strong> sections hidden by filters</p>
+                <p v-show="comp.selected && comp.filteredCount == comp.sections.length" class="errorMsg">No sections match your filters. Deselect {{ comp.name }} to ignore this component.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </Transition>
     </div>
 </template>
 
@@ -230,5 +232,16 @@ export default {
   margin-right: 0.75rem;
   margin-left: auto;
 }
+
+// .accordion-enter-active,
+// .accordion-leave-active {
+//   transition: all 0.3s ease-in-out;
+  
+// }
+// .accordion-enter-from,
+// .accordion-leave-to {
+//   opacity: 0;
+//   transition: all 0.3s ease-in-out;
+// }
 
 </style>

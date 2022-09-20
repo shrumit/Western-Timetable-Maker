@@ -90,7 +90,7 @@ export default Vuex.createStore({
       // compute color and store
       payload.course.color = courseNameToColor(payload.course.name)
       
-      state.semester[payload.semesterId].courseList.push(payload.course)
+      state.semester[payload.semesterId].courseList.unshift(payload.course)
     },
 
     addMetadata(state, metadata) {
