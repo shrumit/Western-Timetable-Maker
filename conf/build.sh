@@ -12,7 +12,7 @@ timestamp=$(date +"%F-%H%M")
 mkdir -p ~/ttbuild/ttbuild-${timestamp}/tsj
 cd ~/ttbuild/ttbuild-${timestamp}/tsj
 container_name="tsj-${timestamp}"
-docker run -d -v $(pwd):/execution --name $container_name --pull=always ghcr.io/shrumit/timetable-scraper-java
+docker run -v $(pwd):/execution --name $container_name --pull=always ghcr.io/shrumit/timetable-scraper-java
 
 container_running=$(docker inspect $container_name --format='{{.State.Running}}')
 while [ "$container_running" = "true" ]; do

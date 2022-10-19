@@ -44,10 +44,14 @@ server {
 server {
     listen 80;
     listen [::]:80;
-    listen 443;
-    listen [::]:443;
+    listen 443 ssl;
+    listen [::]:443 ssl;
 
-    server_name ttmaker.ca;
+    server_name .ttmaker.ca;
+    ssl_certificate /etc/letsencrypt/live/western.ttmaker.ca/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/western.ttmaker.ca/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
         return 301 https://western.ttmaker.ca$request_uri;
