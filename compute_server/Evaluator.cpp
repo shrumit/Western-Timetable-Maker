@@ -39,13 +39,33 @@ class LongWeekend : public Evaluator
     double computeScore(const Week& table) override
     {
         uint_fast32_t score = 0;
-        if (table.day[MON] == 0)
+        if (table.day[MON] == 0) {
             score++;
-        if (table.day[FRI] == 0)
+            if (table.day[TUE] == 0) {
+                score++;
+                if (table.day[WED] == 0) {
+                    score++;
+                    if (table.day[THU] == 0) {
+                        score++;
+                    }
+                }
+            }
+        }
+        if (table.day[FRI] == 0) {
             score++;
-
+            if (table.day[THU] == 0) {
+                score++;
+                if (table.day[WED] == 0) {
+                    score++;
+                    if (table.day[TUE] == 0) {
+                        score++;
+                    }
+                }
+            }
+        }
         return (double) score;
     }
+
 public:
     LongWeekend(string idName, int capacity) : Evaluator(idName, capacity) {}
 };
@@ -57,11 +77,12 @@ class NumHolidays : public Evaluator
     {
         uint_fast32_t score = 0;
         for (int i = 0; i < WEEK_SIZE; i++) {
-          if (table.day[i] == 0)
-            score++;
+            if (table.day[i] == 0)
+                score++;
         }
         return (double) score;
     }
+
 public:
     NumHolidays(string idName, int capacity) : Evaluator(idName, capacity) {}
 };
@@ -69,35 +90,17 @@ public:
 
 class LateStart : public Evaluator
 {
-  double computeScore(const Week& table) override
-  {
-      uint_fast32_t score = 0;
-
-      // lower day bit is better
-      for (int i = 0; i < WEEK_SIZE; i++) {
-        if (table.day[i] != 0) {
-          score += table.day[i];
+    double computeScore(const Week& table) override
+    {
+        uint_fast32_t score = 0;
+        for (int i = 0; i < WEEK_SIZE; i++) {
+            if (table.day[i] != 0) {
+                score += table.day[i];
+            }
         }
-      }
-      
-      return (double)score;
-  }
-    // static const uint32_t allSet = (uint32_t)~0 >> 16;
-    // // static const uint32_t allSet = ~0;
-    // double computeScore(const Week& table) override
-    // {
-    //     double score = 0;
-    //     int nonEmptyDays = 0;
-    //     // higher day bit is better
-    //     for (int i = 0; i < WEEK_SIZE; i++) {
-    //       if (table.day[i] != 0) {
-    //         nonEmptyDays++;
-    //         // score += log(table.day[i]); // log is super slow
-    //         score += (double)table.day[i]/allSet;
-    //       }
-    //     }
-    //     return score/nonEmptyDays;
-    // }
+        return (double)score;
+    }
+
 public:
     LateStart(string idName, int capacity) : Evaluator(idName, capacity) {}
 };
@@ -108,32 +111,16 @@ class EarlyStart : public Evaluator
     double computeScore(const Week& table) override
     {
         uint_fast32_t score = 0;
-
-        // lower day bit is better
         for (int i = 0; i < WEEK_SIZE; i++) {
           if (table.day[i] != 0) {
             score += table.day[i];
           }
         }
         
+        // lower day bit is better
         return -1*(double)score;
     }
-    // static const uint32_t allSet = (uint32_t)~0 >> 16;
-    // double computeScore(const Week& table) override
-    // {
-    //     double score = 0;
-    //     size_t nonEmptyDays = 0;
-    //
-    //     // lower day bit is better
-    //     for (int i = 0; i < WEEK_SIZE; i++) {
-    //       if (table.day[i] != 0) {
-    //         nonEmptyDays++;
-    //         score += (double)table.day[i]/allSet;
-    //       }
-    //     }
-    //
-    //     return -1 * score/nonEmptyDays;
-    // }
+
 public:
     EarlyStart(string idName, int capacity) : Evaluator(idName, capacity) {}
 };
@@ -147,13 +134,22 @@ class LeastGaps : public Evaluator
         for (int i = 0; i < WEEK_SIZE; i++) {
             if (table.day[i] != 0) {
                 uint_fast32_t temp = table.day[i];
-                while ((temp & 1) == 0)
-                    temp >>= 1;
+                if ((temp & 65535) == 0)
+                  temp >>= 16;
+                if ((temp & 255) == 0)
+                  temp >>= 8;
+                if ((temp & 15) == 0)
+                  temp >>= 4;
+                if ((temp & 3) == 0)
+                  temp >>= 2;
+                if ((temp & 1) == 0)
+                  temp >>= 1;
                 score += temp;
             }
         }
         return (double) -1*score;
     }
+
 public:
     LeastGaps(string idName, int capacity) : Evaluator(idName, capacity) {}
 };
