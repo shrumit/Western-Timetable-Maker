@@ -1,10 +1,7 @@
-//#include <stdlib.h>
 #include <iostream>
 #include <cstdint>
 #include <vector>
 #include <climits>
-//#include <cilk/cilk.h>
-//#include <cilk/cilk_api.h>
 
 #include "Week.h"
 #include "Evaluator.h"
