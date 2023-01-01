@@ -44,5 +44,13 @@ rsync -va --delete-after dist/ /var/www/ttmaker.ca/
 find /var/www/ -type d -exec chmod 755 {} \;
 find /var/www/ -type f -exec chmod 644 {} \;
 
+# compile and update compute_server
+cd ../../compute_server
+make
+npm ci
+rsync -va --delete-after /root/compute_server/ /root/compute_server.last/ || true
+rsync -va --delete-after . /root/compute_server/
+systemctl restart ttmaker-compute
+
 docker container prune -f
 docker volume prune -f
