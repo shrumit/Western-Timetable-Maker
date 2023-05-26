@@ -5,7 +5,7 @@ $tt-western-purple:#4F2683;
 $tt-western-grey: #807F83;
 
 $tt-course-section: #FAFAFA;
-$tt-course-comp: #FAF6F3;
+$tt-course-comp: #F3F3F3;
 
 $link: $tt-western-purple;
 $danger: darkorange;
@@ -22,7 +22,29 @@ $title-weight: $tt-bold-weight;
 $title-family: $family-sans-serif;
 $title-color: $tt-western-purple;
 
+$subtitle-weight: $tt-bold-weight;
 $message-header-weight: regular;
 $strong-weight: $tt-bold-weight;
 
-@import "./node_modules/bulma/bulma.sass";
+// vue-select
+$vs-component-line-height: 2;
+
+$vs-component-placeholder-color: $tt-western-purple;
+$vs-state-active-bg: $tt-western-purple;
+$vs-border-color: $tt-western-purple;
+$vs-controls-color: $tt-western-purple;
+
+:root {
+    --vs-line-height: 2 !important;
+    --vs-search-input-placeholder-color: #{$tt-western-purple} !important;
+    --vs-border-color: #{$tt-western-purple} !important;
+    --vs-controls-color: #{$tt-western-purple} !important;
+    --vs-dropdown-option--active-bg: #{$tt-western-purple} !important; 
+}
+
+
+@import "../node_modules/bulma/bulma.sass";
+// @import '../node_modules/vue-select/src/scss/vue-select.scss';
+// @import '../node_modules/vue-select/src/css/vue-select.css';
+// @import '../node_modules/vue-select/dist/vue-select.css';
+

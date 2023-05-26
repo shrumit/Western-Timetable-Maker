@@ -68,25 +68,24 @@
     <div class="columns is-variable is-1" style="margin:0px;">
       <div class="column">
         <v-select
-        :options="campusTypes.filter(e => selectedCampusTypes.indexOf(e) < 0)"
-        :value="selectedCampusTypes"
-        @input="updateSelectedCampusTypes"
-        placeholder="Any campus"
+        :options="campusTypes"
+        :modelValue="selectedCampusTypes"
+        @update:modelValue="updateSelectedCampusTypes"
+        placeholder="All campuses"
         multiple
         selectOnTab
         :searchable="false"
         :closeOnSelect="false"
         >
           <template #no-options>&nbsp;</template>
-          <!-- <template #open-indicator>&nbsp;</template> -->
         </v-select>
       </div>
       <div class="column">
         <v-select
-        :options="deliveryTypes.filter(e => selectedDeliveryTypes.indexOf(e) < 0)"
-        :value="selectedDeliveryTypes"
-        @input="updateSelectedDeliveryTypes"
-        placeholder="Any delivery type"
+        :options="deliveryTypes"
+        :modelValue="selectedDeliveryTypes"
+        @update:modelValue="updateSelectedDeliveryTypes"
+        placeholder="All delivery types"
         multiple
         selectOnTab
         :searchable="false"
@@ -96,12 +95,11 @@
         </v-select>
       </div>
     </div>
+
     <label class="checkbox" style="margin-bottom: 1rem;">
       <input type="checkbox" v-model="showFilteredOut">
-      Show filtered sections in table
+      Display hidden sections
     </label>
-    
-    
 
     <!-- List of added courses -->
     <TransitionGroup name="course-list">
@@ -170,10 +168,12 @@ export default {
       return this.$store.state.semester[this.semester].courseList.some((e => e.id === this.selected[this.semester]));
     },
     campusTypes() {
-      return this.$store.state.metadata.campusTypes
+      // only keep unselected ones
+      return this.$store.state.metadata.campusTypes.filter(e => !this.selectedCampusTypes.includes(e))
     },
     deliveryTypes() {
-      return this.$store.state.metadata.deliveryTypes
+      // only keep unselected ones
+      return this.$store.state.metadata.deliveryTypes.filter(e => !this.selectedDeliveryTypes.includes(e)) 
     },
     selectedCampusTypes() {
       return this.$store.state.filters.selectedCampusTypes
@@ -229,7 +229,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/* @import '../styles.scss'; */
 
 button {
   margin-top: 10px;
@@ -273,5 +272,4 @@ button {
   opacity: 0;
   transform: translateX(-100px);
 }
-
 </style>
