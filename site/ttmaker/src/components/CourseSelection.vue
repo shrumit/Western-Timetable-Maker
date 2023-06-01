@@ -35,9 +35,9 @@
     <!-- Message box -->
     <article  class="message is-dark is-marginless">
       <div class="message-body">
-        · Courses and sections without an assigned time slot will not appear.
+        · Distance/online courses and sections will not appear.
         <br>
-        · Please remove and re-add courses to get updated data.
+        · Please remove and re-add cached courses to get the latest section data.
         <!-- <br> -->
         <!-- · Potential timetables: {{ combinationsNum | toLocaleString }} -->
       </div>

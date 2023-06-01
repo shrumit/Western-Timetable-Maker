@@ -9,13 +9,14 @@
     <!-- Semester selection tab -->
     <div class="tabs is-boxed">
       <ul>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL 2022</a></li>
-        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2023</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 0 }" @click="changeSemester(0)"><a>FALL 2023</a></li>
+        <li class="t_semesterTab" :class="{'is-active' : curSemester === 1 }" @click="changeSemester(1)"><a>WINTER 2024</a></li>
       </ul>
     </div>
 
     <article id="disclaimer" class="message is-info">
       <div class="message-body">
+        <span class="red">**Updated for 2023/2024!**</span>
         Data last updated on <strong>{{ scrapeTime }}</strong>. Western Timetable Maker is not affiliated with the university.
       </div>
     </article>
