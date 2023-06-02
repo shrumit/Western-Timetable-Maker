@@ -18,33 +18,40 @@ along with Western Timetable Maker.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
 const { execFile } = require('child_process');
+const nodeCache = require( "node-cache" );
 
-var app = express();
-app.use(bodyParser.json());
+const cache = new nodeCache();
+const app = express();
+
+app.use(express.json());
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 
+
 app.post('/compute', function(req, res) {
-  // console.log('req received:'+ JSON.stringify(req.body))
   
-  // let args = ''
-  // args += req.body.length + ' '
-  // req.body.forEach(function(coursecomp) {
-  //   args += coursecomp.length + ' '
-  //   coursecomp.forEach(function(section) {
-  //     args += section.join(' ')
-  //     args += ' '
-  //   })
-  // })
-  // console.log(args)
+  if (!req.body || !req.body.length || !req.body.forEach) {
+    res.status(400).send();
+    console.log('bad req.body:'+ JSON.stringify(req.body));
+    return;
+  }
+
+  const cacheKey = JSON.stringify(req.body);
+  const value = cache.get(cacheKey)
+  if (value) {
+    res.send(value);
+    return;
+  }
+  
   let args = []
   let numCourseComps = req.body.length
+
   args.push(numCourseComps)
   req.body.forEach(function(coursecomp) {
     args.push(coursecomp.length)
@@ -52,50 +59,63 @@ app.post('/compute', function(req, res) {
       args.push(...section)
     })
   })
-  // console.log(args)
+
+  // console.log('args:' + args)
   const child = execFile('./main', [...args], (error, stdout, stderr) => {
     if (error) {
       console.log('ERROR:'+error)
       console.log('STDERR:'+stderr)
       console.log('STDOUT:'+stdout)
-      res = res.status(500)
-      res.send(error)
-    } else {
-      // console.log(stdout.split('\n'))
-      let result = []
-      let info = {}
-      stdout.split('\n').forEach(function(line) {
-        if (line.length == 0) return
-        let lineArr = line.split(' ');
-        let typeName = lineArr[0] // name of the evaluator
-        if (typeName === 'info') {
-          info.validCount = lineArr[1]
-          return
-        }
-        lineArr.splice(0,2) // remove type name and number of tables
-        let evalResults = []
-        while (lineArr.length) {
-          let table = {}
-          table.score = lineArr[0]
-          lineArr.splice(0,1) // remove score
-          table.sections = lineArr.splice(0,numCourseComps)
-          evalResults.push(table)
-        }
-        evalResults.sort(function(a,b) {
-          return b.score - a.score
-        })
-        result.push({type: typeName, tables: evalResults})
+      res.status(500).send(error)
+      console.log('req.body:'+ JSON.stringify(req.body))
+      return;
+    }
+
+    let result = []
+    let info = {}
+
+    // for every evaluator scheme
+    stdout.split('\n').forEach(function(line) {
+      if (line.length == 0) return
+      let lineArr = line.split(' ');
+      let typeName = lineArr[0] // name of the evaluator
+      if (typeName === 'info') {
+        info.validCount = lineArr[1]
+        return
+      }
+      lineArr.splice(0,2) // remove type name and number of tables
+      let evalResults = []
+      while (lineArr.length) {
+        let table = {}
+        table.score = lineArr[0]
+        lineArr.splice(0,1) // remove score
+        table.sections = lineArr.splice(0,numCourseComps)
+        evalResults.push(table)
+      }
+      // sort tables by score
+      evalResults.sort(function(a,b) {
+        return b.score - a.score
       })
-      res = res.status(200)
-      res.send({info: info, schemes: result})
+      result.push({type: typeName, tables: evalResults})
+    })
+    
+    let payload = {info: info, schemes: result};
+    res.send(payload);
+    
+    try {
+      cache.set(cacheKey, payload);
+    } catch (err) {
+      console.log(JSON.stringify(err));
     }
   })
-  
-  // res = res.status(200)
-  // res.send(req.body)
 })
 
-var port = process.argv[2] || 8081;
+app.get('/cache-stats', function(req, res) {
+  res.send(cache.getStats());
+});
+
+
+const port = process.argv[2] || 8081;
 app.listen(port, 'localhost', function(){
   console.log("Compute server started at " + port);
 });

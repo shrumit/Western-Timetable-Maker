@@ -10,6 +10,7 @@ After=network.target
 Restart=always
 ExecStart=/usr/bin/node /root/compute_server/server.js
 WorkingDirectory=/root/compute_server
+Environment=NODE_ENV=production
 StandardOutput=journal
 StandardError=journal
 
