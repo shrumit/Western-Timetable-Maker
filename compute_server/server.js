@@ -1,5 +1,5 @@
 /*
-Copyright (C) Shrumit Mehta 2019
+Copyright (C) Shrumit Mehta 2024
 
 This file is part of Western Timetable Maker.
 
