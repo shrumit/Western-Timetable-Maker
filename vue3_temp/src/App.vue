@@ -38,7 +38,6 @@
 </template>
 
 <script setup>
-  import { onMounted } from 'vue'
   import CourseSelection from './components/CourseSelection.vue'
   import Results from './components/Results.vue'
   import { useStore } from './store.js'
@@ -48,11 +47,6 @@
   function changeSemester(semesterId) {
     store.changeSemester(semesterId)
   }
-
-  onMounted(() => {
-    store.loadMetadata()
-    store.loadSearch()
-  })
 </script>
 
 <style lang="scss">
