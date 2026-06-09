@@ -2,6 +2,7 @@ dump/
 node_modules/
 temp/
 lib
+dist/
 
 compute_server/main
 site/ttmaker/deploy.sh

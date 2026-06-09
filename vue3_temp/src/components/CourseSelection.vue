@@ -6,18 +6,17 @@
     
     <!-- Search bar -->
     <div class="">
-      <v-select
+      <VueSelect
       v-model="selected[curSemester]"
       :key="selected[curSemester]"
-      :filterBy="filter"
+      class="course-select"
+      :filter-by="filter"
+      :get-option-label="getOptionLabel"
+      :get-option-value="getOptionValue"
       :options="options"
-      :reduce="item => item.id"
-      label="name"
       :placeholder="searchPlaceholder"
-      selectOnTab
-      transition=""
       >
-      </v-select>
+      </VueSelect>
     </div>
     
     <!-- Add button -->
@@ -80,11 +79,14 @@
 <script>
 import Course from './Course.vue'
 import { useStore } from '../store.js'
+import VueSelect from 'vue3-select-component'
+import 'vue3-select-component/styles'
 
 export default {
   name: 'CourseSelection',
   components: {
-    Course
+    Course,
+    VueSelect
   },
   setup() {
     return {
@@ -162,6 +164,12 @@ export default {
       if (search == null || label == null || search.length < 2) return false;
       return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
     },
+    getOptionLabel(option) {
+      return option.name
+    },
+    getOptionValue(option) {
+      return option.id
+    },
     loadTest() {
       this.store.loadTest({semesterId: this.curSemester})
     },
@@ -201,6 +209,17 @@ button {
 
 .campusLabel {
   margin-right: 5px;
+}
+
+.course-select {
+  --vs-border: 1px solid #4F2683;
+  --vs-outline-color: #4F2683;
+  --vs-placeholder-color: #4F2683;
+  --vs-indicator-icon-color: #4F2683;
+  --vs-option-focused-background-color: #4F2683;
+  --vs-option-focused-text-color: #FFFFFF;
+  --vs-option-selected-background-color: #4F2683;
+  --vs-option-selected-text-color: #FFFFFF;
 }
 
 #t_computeButtonDiv {
