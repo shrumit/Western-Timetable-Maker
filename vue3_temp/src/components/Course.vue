@@ -32,37 +32,41 @@
             <!-- Section selection -->
             <td>
               <table class="table t_sectionTable">
-                <tr class="t_sectionRowHeader" :class="{'t_sectionRowDisable': !comp.selected}">
-                  <th>
-                    Section
-                    <br>
-                    <button @click="selectAllInComp(compIndex)" class="button is-small is-text">Select All</button>
-                    <br>
-                    <button @click="deselectAllInComp(compIndex)" class="button is-small is-text">Deselect All</button>
-                  </th>
-                  <!-- <th>Section</th> -->
-                  <th>Class Nbr</th>
-                  <th>Location</th>
-                  <th>Instructor</th>
-                  <th>Campus</th>
-                  <th>Time</th>
-                </tr>
-                <tr
-                v-for="(section, sectionIndex) in comp.sections"
-                class="t_sectionRow"
-                :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected}"
-                :title="section.timeFull"
-                :key="sectionIndex"
-                @click="toggleSection(compIndex, sectionIndex)"
-                >
-                  <td><input type="checkbox" class="checkbox" :checked="section.selected"> {{ section.name }}</td>
-                  <!-- <td></td> -->
-                  <td>{{ section.number }}</td>
-                  <td>{{ section.location }}</td>
-                  <td>{{ section.instructor }}</td>
-                  <td>{{ section.campus }}</td>
-                  <td>{{ section.timeShort }}</td>
-                </tr>
+                <thead>
+                  <tr class="t_sectionRowHeader" :class="{'t_sectionRowDisable': !comp.selected}">
+                    <th>
+                      Section
+                      <br>
+                      <button @click="selectAllInComp(compIndex)" class="button is-small is-text">Select All</button>
+                      <br>
+                      <button @click="deselectAllInComp(compIndex)" class="button is-small is-text">Deselect All</button>
+                    </th>
+                    <!-- <th>Section</th> -->
+                    <th>Class Nbr</th>
+                    <th>Location</th>
+                    <th>Instructor</th>
+                    <th>Campus</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                  v-for="(section, sectionIndex) in comp.sections"
+                  class="t_sectionRow"
+                  :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected}"
+                  :title="section.timeFull"
+                  :key="sectionIndex"
+                  @click="toggleSection(compIndex, sectionIndex)"
+                  >
+                    <td><input type="checkbox" class="checkbox" :checked="section.selected"> {{ section.name }}</td>
+                    <!-- <td></td> -->
+                    <td>{{ section.number }}</td>
+                    <td>{{ section.location }}</td>
+                    <td>{{ section.instructor }}</td>
+                    <td>{{ section.campus }}</td>
+                    <td>{{ section.timeShort }}</td>
+                  </tr>
+                </tbody>
               </table>
             </td>
           </tr>
@@ -157,7 +161,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-@import '../styles.scss';
+@use 'sass:color';
+@use '../theme' as *;
 
 .t_courseDiv {
   overflow: auto;
@@ -177,7 +182,7 @@ export default {
   border-radius: 4px 4px 4px 4px;
 }
 .t_courseTitle:hover {
-  background: darken($dark,2.5%) !important;
+  background: color.adjust($dark, $lightness: -2.5%) !important;
 }
 
 .t_openSymbol {
@@ -208,7 +213,7 @@ export default {
 }
 
 .t_sectionRow:hover {
-  background: darken($tt-course-section, 2.5%);
+  background: color.adjust($tt-course-section, $lightness: -2.5%);
 }
 
 .t_sectionRowDisable {

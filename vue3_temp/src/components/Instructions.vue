@@ -40,7 +40,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-@import '../styles.scss';
+@use '../theme' as *;
 
 div {
     padding: 2rem;

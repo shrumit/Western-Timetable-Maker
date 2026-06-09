@@ -77,8 +77,6 @@
   </script>
   
   <style lang="scss">
-  @import './styles.scss';
-  
   #t_bodyContainer {
     max-width: 98%;
     margin-top: 10px;

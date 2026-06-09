@@ -2,21 +2,25 @@
   <div class="t_tableDiv">
     <table class="t_weekTable">
       <thead>
-        <td></td><td>Mon</td><td>Tue</td><td>Wed</td><td>Thu</td><td>Fri</td>
+        <tr>
+          <th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th>
+        </tr>
       </thead>
-      <tr v-for="row in 30" v-bind:key=row>
-        <td>{{ labels[row-1] }}</td>
-        <td
-        v-for="(day, dayIdx) in daysArray"
-        v-bind:key=dayIdx
-        class="t_weekSlot"
-        :class="{ 't_lab': day[row-1].type==='LAB', 't_tut': day[row-1].type==='TUT', 't_firstCell': day[row-1].firstCell }"
-        :style="{'background-color': day[row-1].color, 'border-color':day[row-1].color}"
-        :title="day[row-1].tooltip"
-        >
-          {{ day[row-1].text }}
-        </td>
-      </tr>
+      <tbody>
+        <tr v-for="row in 30" v-bind:key=row>
+          <th scope="row">{{ labels[row-1] }}</th>
+          <td
+          v-for="(day, dayIdx) in daysArray"
+          v-bind:key=dayIdx
+          class="t_weekSlot"
+          :class="{ 't_lab': day[row-1].type==='LAB', 't_tut': day[row-1].type==='TUT', 't_firstCell': day[row-1].firstCell }"
+          :style="{'background-color': day[row-1].color, 'border-color':day[row-1].color}"
+          :title="day[row-1].tooltip"
+          >
+            {{ day[row-1].text }}
+          </td>
+        </tr>
+      </tbody>
     </table>
     <br>
   </div>
@@ -112,10 +116,13 @@ table {
   border-collapse: collapse;
 }
 
-td {
+td,
+th {
   border-top: 1px solid #DBDBDB;
   border-right: 1px solid #DBDBDB !important;
+  font-weight: normal;
   padding: 0 0.5em 0 0.5em;
+  text-align: left;
   width: 8em;
 }
 tr {
