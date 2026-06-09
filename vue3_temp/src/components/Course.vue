@@ -76,12 +76,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from '../store.js'
-
-defineOptions({
-  name: 'Course'
-})
 
 const props = defineProps({
   courseIndex: Number
@@ -91,8 +87,7 @@ const store = useStore()
 const expanded = ref(false)
 const counter = ref(0)
 
-const curSemester = computed(() => store.curSemester)
-const course = computed(() => store.semester[curSemester.value].courseList[props.courseIndex])
+const course = computed(() => store.semester[store.curSemester].courseList[props.courseIndex])
 const timetableLink = computed(() => {
   let sub = course.value.name.split(' ')[0]
   let num = course.value.name.split(' ')[1]
@@ -107,7 +102,7 @@ const calendarLink = computed(() => {
 
 function remove() {
   store.removeCourse({
-    semesterId: curSemester.value,
+    semesterId: store.curSemester,
     courseIndex: props.courseIndex
   })
 }
@@ -119,7 +114,7 @@ function toggleExpand() {
 
 function toggleSection(compIndex, sectionIndex) {
   store.toggleSection({
-    semesterId: curSemester.value,
+    semesterId: store.curSemester,
     courseIndex: props.courseIndex,
     compIndex: compIndex,
     sectionIndex: sectionIndex
@@ -128,7 +123,7 @@ function toggleSection(compIndex, sectionIndex) {
 
 function toggleComponent(compIndex) {
   store.toggleComponent({
-    semesterId: curSemester.value,
+    semesterId: store.curSemester,
     courseIndex: props.courseIndex,
     compIndex: compIndex
   })
@@ -136,7 +131,7 @@ function toggleComponent(compIndex) {
 
 function selectAllInComp(compIndex) {
   store.setAllSelectedInComponent({
-    semesterId: curSemester.value,
+    semesterId: store.curSemester,
     courseIndex: props.courseIndex,
     compIndex: compIndex,
     selected: true
@@ -145,7 +140,7 @@ function selectAllInComp(compIndex) {
 
 function deselectAllInComp(compIndex) {
   store.setAllSelectedInComponent({
-    semesterId: curSemester.value,
+    semesterId: store.curSemester,
     courseIndex: props.courseIndex,
     compIndex: compIndex,
     selected: false

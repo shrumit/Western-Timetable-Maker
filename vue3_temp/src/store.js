@@ -113,14 +113,6 @@ export const useStore = defineStore('ttmaker', {
       this.semester[semesterId] = createSemesterState(semesterId)
     },
 
-    loadTest({ semesterId }) {
-      this.fetchCourse({ semesterId: semesterId, courseId: 142 })
-      this.fetchCourse({ semesterId: semesterId, courseId: 2038 })
-      this.fetchCourse({ semesterId: semesterId, courseId: 224 })
-      this.fetchCourse({ semesterId: semesterId, courseId: 395 })
-      // this.fetchCourse({ semesterId: semesterId, courseId: 691 })
-    },
-
     fetchCourse({ courseId, semesterId }) {
       if (courseId != null && courseId >= 0 && !this.semester[semesterId].courseList.some((item) => item['id'] === courseId)) {
         this.addCourseToList({ course: courseData[courseId], semesterId: semesterId })

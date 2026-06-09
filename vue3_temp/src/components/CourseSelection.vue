@@ -7,8 +7,8 @@
     <!-- Search bar -->
     <div class="">
       <VueSelect
-      v-model="selected[curSemester]"
-      :key="selected[curSemester]"
+      v-model="selected[store.curSemester]"
+      :key="selected[store.curSemester]"
       class="course-select"
       :filter-by="filter"
       :get-option-label="getOptionLabel"
@@ -83,23 +83,18 @@
   import VueSelect from 'vue3-select-component'
   import 'vue3-select-component/styles'
 
-  defineOptions({
-    name: 'CourseSelection'
-  })
-
   const store = useStore()
 
   const selected = reactive([null, null])
   const COMBINATIONS_LIMIT = 15000000000
 
-  const curSemester = computed(() => store.curSemester)
   const searchPlaceholder = computed(() => {
     if (store.curSemester == 0) return 'Search for fall semester courses...'
     else if (store.curSemester == 1) return 'Search for winter semester courses...'
     else return "Error"
   })
-  const options = computed(() => store.semester[curSemester.value].searchList)
-  const selectedCourses = computed(() => store.semester[curSemester.value].courseList)
+  const options = computed(() => store.semester[store.curSemester].searchList)
+  const selectedCourses = computed(() => store.semester[store.curSemester].courseList)
   const combinationsNum = computed(() => {
     if (!selectedCourses.value || selectedCourses.value.length == 0)
       return 0;
@@ -113,22 +108,23 @@
       })
     })
     return n
-    // return JSON.stringify(store.semester[curSemester.value].courseList)
+    // return JSON.stringify(store.semester[store.curSemester].courseList)
   })
+
   const formattedCombinationsNum = computed(() => combinationsNum.value.toLocaleString())
   const disableCompute = computed(() => selectedCourses.value.length == 0 ||
     combinationsNum.value > COMBINATIONS_LIMIT)
-  const computeLoading = computed(() => store.semester[curSemester.value].computeLoading)
-  const errorMsg = computed(() => store.semester[curSemester.value].errorMsg)
-  const courseAlreadyAdded = computed(() => selectedCourses.value.some((e => e.id === selected[curSemester.value])))
+  const computeLoading = computed(() => store.semester[store.curSemester].computeLoading)
+  const errorMsg = computed(() => store.semester[store.curSemester].errorMsg)
+  const courseAlreadyAdded = computed(() => selectedCourses.value.some((e => e.id === selected[store.curSemester])))
 
   function fetchCourse() {
     // console.log('fetchCourse:' + selected)
     store.fetchCourse({
-      semesterId: curSemester.value,
-      courseId: selected[curSemester.value]
+      semesterId: store.curSemester,
+      courseId: selected[store.curSemester]
     })
-    selected[curSemester.value] = null
+    selected[store.curSemester] = null
   }
 
   function filter(option, label, search) {
@@ -145,16 +141,12 @@
     return option.id
   }
 
-  function loadTest() {
-    store.loadTest({semesterId: curSemester.value})
-  }
-
   function compute() {
-    store.compute(curSemester.value)
+    store.compute(store.curSemester)
   }
 
   function removeAll() {
-    store.resetSemester(curSemester.value)
+    store.resetSemester(store.curSemester)
   }
 </script>
 

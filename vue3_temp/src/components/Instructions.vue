@@ -12,18 +12,13 @@
 import { computed } from 'vue'
 import { useStore } from '../store.js'
 
-defineOptions({
-    name: 'Instructions'
-})
-
 const store = useStore()
-const curSemester = computed(() => store.curSemester)
 const curStep = computed(() => {
-    if (store.semester[curSemester.value].courseList.length == 0
-        && store.semester[curSemester.value].computeData.length == 0) {
+    if (store.semester[store.curSemester].courseList.length == 0
+        && store.semester[store.curSemester].computeData.length == 0) {
         return 0
     }
-    else if (store.semester[curSemester.value].computeData.length == 0) {
+    else if (store.semester[store.curSemester].computeData.length == 0) {
         return 1
     }
     else {

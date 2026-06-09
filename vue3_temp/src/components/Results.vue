@@ -22,7 +22,7 @@
         v-for="(scheme, schemeIdx) in computeData.schemes"
         :class="{'is-active' : selectedIdx === schemeIdx }"
         :key="schemeIdx"
-        @click="changeTab(schemeIdx)"
+        @click="changeTab(schemeIdx)" 
         >
           <a>{{ scheme.type }}</a>
         </li>
@@ -49,15 +49,10 @@ import Instructions from './Instructions.vue'
 import Table from './Table.vue'
 import { useStore } from '../store.js'
 
-defineOptions({
-  name: 'Results'
-})
-
 const store = useStore()
 const selectedIdx = ref(0)
 
-const curSemester = computed(() => store.curSemester)
-const computeData = computed(() => store.semester[curSemester.value].computeData)
+const computeData = computed(() => store.semester[store.curSemester].computeData)
 const validCount = computed(() => computeData.value.info ? Number(computeData.value.info.validCount) : null)
 const timeTaken = computed(() => computeData.value.info ? Number(computeData.value.info.timeTaken)/1000 : null)
 const formattedValidCount = computed(() => validCount.value != null ? validCount.value.toLocaleString() : null)
