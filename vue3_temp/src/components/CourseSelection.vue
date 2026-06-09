@@ -76,158 +76,132 @@
   </div>
 </template>
 
-<script>
-import Course from './Course.vue'
-import { useStore } from '../store.js'
-import VueSelect from 'vue3-select-component'
-import 'vue3-select-component/styles'
+<script setup>
+  import { computed, reactive } from 'vue'
+  import Course from './Course.vue'
+  import { useStore } from '../store.js'
+  import VueSelect from 'vue3-select-component'
+  import 'vue3-select-component/styles'
 
-export default {
-  name: 'CourseSelection',
-  components: {
-    Course,
-    VueSelect
-  },
-  setup() {
-    return {
-      store: useStore()
-    }
-  },
-  computed: {
-    curSemester() {
-      return this.store.curSemester
-    },
-    searchPlaceholder() {
-      if (this.store.curSemester == 0) return 'Search for fall semester courses...'
-      else if (this.store.curSemester == 1) return 'Search for winter semester courses...'
-      else return "Error"
-    },
-    options() {
-      return this.store.semester[this.curSemester].searchList
-    },
-    selectedCourses() {
-      return this.store.semester[this.curSemester].courseList
-    },
-    combinationsNum(){
-      if (!this.store.semester[this.curSemester].courseList || this.store.semester[this.curSemester].courseList.length == 0)
-        return 0;
+  defineOptions({
+    name: 'CourseSelection'
+  })
 
-      let n = 1;
-      this.store.semester[this.curSemester].courseList.forEach(function(course) {
-        course.components.forEach(function(comp){
-          if (!comp.selected) return;
-          let s = comp.sections.filter(x => x.selected).length
-          if (s>0) n *= s
-        })
+  const store = useStore()
+
+  const selected = reactive([null, null])
+  const COMBINATIONS_LIMIT = 15000000000
+
+  const curSemester = computed(() => store.curSemester)
+  const searchPlaceholder = computed(() => {
+    if (store.curSemester == 0) return 'Search for fall semester courses...'
+    else if (store.curSemester == 1) return 'Search for winter semester courses...'
+    else return "Error"
+  })
+  const options = computed(() => store.semester[curSemester.value].searchList)
+  const selectedCourses = computed(() => store.semester[curSemester.value].courseList)
+  const combinationsNum = computed(() => {
+    if (!selectedCourses.value || selectedCourses.value.length == 0)
+      return 0;
+
+    let n = 1;
+    selectedCourses.value.forEach(function(course) {
+      course.components.forEach(function(comp){
+        if (!comp.selected) return;
+        let s = comp.sections.filter(x => x.selected).length
+        if (s>0) n *= s
       })
-      return n
-      // return JSON.stringify(this.store.semester[this.curSemester].courseList)
-    },
-    formattedCombinationsNum() {
-      return this.combinationsNum.toLocaleString()
-    },
-    disableCompute() {
-      return this.store.semester[this.curSemester].courseList.length == 0 ||
-        this.combinationsNum > this.COMBINATIONS_LIMIT;
-    },
-    computeLoading() {
-      return this.store.semester[this.curSemester].computeLoading
-    },
-    errorMsg() {
-      return this.store.semester[this.curSemester].errorMsg
-    },
-    courseAlreadyAdded() {
-      return this.store.semester[this.curSemester].courseList.some((e => e.id === this.selected[this.curSemester]));
-    }
-  },
-  data() {
-    return {
-      selected: [null,null],
-      COMBINATIONS_LIMIT: 15000000000
-    }
-  },
-  created() {
-    this.store.loadSearch()
-  },
-  methods: {
-    fetchCourse() {
-      // console.log('fetchCourse:' + this.selected)
-      this.store.fetchCourse({
-        semesterId: this.curSemester,
-        courseId: this.selected[this.curSemester]
-      })
-      // Vue.set(this.selected,this.curSemester,null)
-      this.selected[this.curSemester] = null
-    },
-    filter(option, label, search) {
-      // don't show results until more than 1 characters typed
-      if (search == null || label == null || search.length < 2) return false;
-      return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
-    },
-    getOptionLabel(option) {
-      return option.name
-    },
-    getOptionValue(option) {
-      return option.id
-    },
-    loadTest() {
-      this.store.loadTest({semesterId: this.curSemester})
-    },
-    compute() {
-      this.store.compute(this.curSemester)
-    },
-    removeAll() {
-      this.store.resetSemester(this.curSemester)
-    }
+    })
+    return n
+    // return JSON.stringify(store.semester[curSemester.value].courseList)
+  })
+  const formattedCombinationsNum = computed(() => combinationsNum.value.toLocaleString())
+  const disableCompute = computed(() => selectedCourses.value.length == 0 ||
+    combinationsNum.value > COMBINATIONS_LIMIT)
+  const computeLoading = computed(() => store.semester[curSemester.value].computeLoading)
+  const errorMsg = computed(() => store.semester[curSemester.value].errorMsg)
+  const courseAlreadyAdded = computed(() => selectedCourses.value.some((e => e.id === selected[curSemester.value])))
+
+  function fetchCourse() {
+    // console.log('fetchCourse:' + selected)
+    store.fetchCourse({
+      semesterId: curSemester.value,
+      courseId: selected[curSemester.value]
+    })
+    selected[curSemester.value] = null
   }
-}
+
+  function filter(option, label, search) {
+    // don't show results until more than 1 characters typed
+    if (search == null || label == null || search.length < 2) return false;
+    return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
+  }
+
+  function getOptionLabel(option) {
+    return option.name
+  }
+
+  function getOptionValue(option) {
+    return option.id
+  }
+
+  function loadTest() {
+    store.loadTest({semesterId: curSemester.value})
+  }
+
+  function compute() {
+    store.compute(curSemester.value)
+  }
+
+  function removeAll() {
+    store.resetSemester(curSemester.value)
+  }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+  <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/* @import '../styles.scss'; */
+  /* @import '../styles.scss'; */
 
-button {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  min-width: 8em;
-}
+  button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-width: 8em;
+  }
 
-#patience {
-  opacity: 0;
-}
+  #patience {
+    opacity: 0;
+  }
 
-#patience.is-loading {
-  opacity: 1;
-  transition: opacity 4s;
-  transition-delay: 2s;
-}
+  #patience.is-loading {
+    opacity: 1;
+    transition: opacity 4s;
+    transition-delay: 2s;
+  }
 
-.errorMsg {
-  color: darkorange;
-}
+  .errorMsg {
+    color: darkorange;
+  }
 
-.campusLabel {
-  margin-right: 5px;
-}
+  .campusLabel {
+    margin-right: 5px;
+  }
 
-.course-select {
-  --vs-border: 1px solid #4F2683;
-  --vs-outline-color: #4F2683;
-  --vs-placeholder-color: #4F2683;
-  --vs-indicator-icon-color: #4F2683;
-  --vs-option-focused-background-color: #4F2683;
-  --vs-option-focused-text-color: #FFFFFF;
-  --vs-option-selected-background-color: #4F2683;
-  --vs-option-selected-text-color: #FFFFFF;
-}
+  .course-select {
+    --vs-border: 1px solid #4F2683;
+    --vs-outline-color: #4F2683;
+    --vs-placeholder-color: #4F2683;
+    --vs-indicator-icon-color: #4F2683;
+    --vs-option-focused-background-color: #4F2683;
+    --vs-option-focused-text-color: #FFFFFF;
+    --vs-option-selected-background-color: #4F2683;
+    --vs-option-selected-text-color: #FFFFFF;
+  }
 
-#t_computeButtonDiv {
-  text-align: center;
-}
+  #t_computeButtonDiv {
+    text-align: center;
+  }
 
-#t_computeButton {
-  box-shadow: 0px 13px 10px -10px rgba(0,0,0,0.4);
-}
-
+  #t_computeButton {
+    box-shadow: 0px 13px 10px -10px rgba(0,0,0,0.4);
+  }
 </style>

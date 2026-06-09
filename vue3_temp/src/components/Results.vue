@@ -43,55 +43,28 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from 'vue'
 import Instructions from './Instructions.vue'
 import Table from './Table.vue'
 import { useStore } from '../store.js'
 
-export default {
-  name: 'Results',
-  components: {
-    Table,
-    Instructions
-  },
-  setup() {
-    return {
-      store: useStore()
-    }
-  },
-  data: function(){
-    return {
-      selectedIdx: 0
-    }
-  },
-  computed: {
-    curSemester() {
-      return this.store.curSemester
-    },
-    coursecomp(){
-      return this.store.semester[this.curSemester].coursecomp
-    },
-    computeData(){
-      return this.store.semester[this.curSemester].computeData
-    },
-    validCount() {
-      return this.computeData.info ? Number(this.computeData.info.validCount) : null
-    },
-    timeTaken() {
-      return this.computeData.info ? Number(this.computeData.info.timeTaken)/1000 : null
-    },
-    formattedValidCount() {
-      return this.validCount != null ? this.validCount.toLocaleString() : null
-    },
-    formattedTimeTaken() {
-      return this.timeTaken != null ? this.timeTaken.toLocaleString() : null
-    }
-  },
-  methods: {
-    changeTab(tabIdx) {
-      this.selectedIdx = tabIdx
-    }
-  }
+defineOptions({
+  name: 'Results'
+})
+
+const store = useStore()
+const selectedIdx = ref(0)
+
+const curSemester = computed(() => store.curSemester)
+const computeData = computed(() => store.semester[curSemester.value].computeData)
+const validCount = computed(() => computeData.value.info ? Number(computeData.value.info.validCount) : null)
+const timeTaken = computed(() => computeData.value.info ? Number(computeData.value.info.timeTaken)/1000 : null)
+const formattedValidCount = computed(() => validCount.value != null ? validCount.value.toLocaleString() : null)
+const formattedTimeTaken = computed(() => timeTaken.value != null ? timeTaken.value.toLocaleString() : null)
+
+function changeTab(tabIdx) {
+  selectedIdx.value = tabIdx
 }
 </script>
 

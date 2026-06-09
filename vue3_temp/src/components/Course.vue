@@ -4,8 +4,8 @@
       <div class="message-header t_courseTitle" @click="toggleExpand">
         <p class="t_openSymbol" v-show="!expanded">+&nbsp;</p>
         <p class="t_openSymbol" v-show="expanded">−&nbsp;</p>
-        {{ this.course.name }}
-        <div class="t_colorSquare" :style="{'background-color': this.course.color}"></div>
+        {{ course.name }}
+        <div class="t_colorSquare" :style="{'background-color': course.color}"></div>
         <a class="delete is-medium t_courseRemove" @click="remove"></a>
       </div>
       
@@ -19,7 +19,7 @@
               <a :href="calendarLink" target="_blank">View in Academic Calendar</a>
             </td>
           </tr>
-          <tr v-for="(comp, compIndex) in this.course.components" :key="compIndex">
+          <tr v-for="(comp, compIndex) in course.components" :key="compIndex">
             <!-- Component selection -->
             <th
             class="t_comp"
@@ -75,87 +75,81 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from 'vue'
 import { useStore } from '../store.js'
 
-export default {
-  name: 'Course',
-  props: {
-    courseIndex: Number
-  },
-  setup() {
-    return {
-      store: useStore()
-    }
-  },
-  data() {
-    return {
-      expanded: false,
-      counter: 0
-    }
-  },
-  computed: {
-    curSemester() {
-      return this.store.curSemester
-    },
-    course() {
-      return this.store.semester[this.curSemester].courseList[this.courseIndex]
-    },
-    timetableLink() {
-      let sub = this.course.name.split(' ')[0]
-      let num = this.course.name.split(' ')[1]
-      return `https://studentservices.uwo.ca/secure/timetables/mastertt/ttindex.cfm?subject=${sub}&catalognbr=${num}`
-    },
-    calendarLink() {
-      let sub = this.course.name.split(' ')[0]
-      return `http://www.westerncalendar.uwo.ca/Courses.cfm?Subject=${sub}`
-      //+ sub
-      //+ '&SelectedCalendar=Live&ArchiveID='
-    }
-  },
-  methods: {
-    remove() {
-      this.store.removeCourse({
-        semesterId: this.curSemester,
-        courseIndex: this.courseIndex
-      })
-    },
-    toggleExpand() {
-      this.expanded = !this.expanded
-      this.counter++
-    },
-    toggleSection(compIndex, sectionIndex) {
-      this.store.toggleSection({
-        semesterId: this.curSemester,
-        courseIndex: this.courseIndex,
-        compIndex: compIndex,
-        sectionIndex: sectionIndex
-      })
-    },
-    toggleComponent(compIndex) {
-      this.store.toggleComponent({
-        semesterId: this.curSemester,
-        courseIndex: this.courseIndex,
-        compIndex: compIndex
-      })
-    },
-    selectAllInComp(compIndex) {
-      this.store.setAllSelectedInComponent({
-        semesterId: this.curSemester,
-        courseIndex: this.courseIndex,
-        compIndex: compIndex,
-        selected: true
-      })
-    },
-    deselectAllInComp(compIndex) {
-      this.store.setAllSelectedInComponent({
-        semesterId: this.curSemester,
-        courseIndex: this.courseIndex,
-        compIndex: compIndex,
-        selected: false
-      })
-    }
-  }
+defineOptions({
+  name: 'Course'
+})
+
+const props = defineProps({
+  courseIndex: Number
+})
+
+const store = useStore()
+const expanded = ref(false)
+const counter = ref(0)
+
+const curSemester = computed(() => store.curSemester)
+const course = computed(() => store.semester[curSemester.value].courseList[props.courseIndex])
+const timetableLink = computed(() => {
+  let sub = course.value.name.split(' ')[0]
+  let num = course.value.name.split(' ')[1]
+  return `https://studentservices.uwo.ca/secure/timetables/mastertt/ttindex.cfm?subject=${sub}&catalognbr=${num}`
+})
+const calendarLink = computed(() => {
+  let sub = course.value.name.split(' ')[0]
+  return `http://www.westerncalendar.uwo.ca/Courses.cfm?Subject=${sub}`
+  //+ sub
+  //+ '&SelectedCalendar=Live&ArchiveID='
+})
+
+function remove() {
+  store.removeCourse({
+    semesterId: curSemester.value,
+    courseIndex: props.courseIndex
+  })
+}
+
+function toggleExpand() {
+  expanded.value = !expanded.value
+  counter.value++
+}
+
+function toggleSection(compIndex, sectionIndex) {
+  store.toggleSection({
+    semesterId: curSemester.value,
+    courseIndex: props.courseIndex,
+    compIndex: compIndex,
+    sectionIndex: sectionIndex
+  })
+}
+
+function toggleComponent(compIndex) {
+  store.toggleComponent({
+    semesterId: curSemester.value,
+    courseIndex: props.courseIndex,
+    compIndex: compIndex
+  })
+}
+
+function selectAllInComp(compIndex) {
+  store.setAllSelectedInComponent({
+    semesterId: curSemester.value,
+    courseIndex: props.courseIndex,
+    compIndex: compIndex,
+    selected: true
+  })
+}
+
+function deselectAllInComp(compIndex) {
+  store.setAllSelectedInComponent({
+    semesterId: curSemester.value,
+    courseIndex: props.courseIndex,
+    compIndex: compIndex,
+    selected: false
+  })
 }
 </script>
 

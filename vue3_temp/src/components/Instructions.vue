@@ -8,34 +8,28 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
 import { useStore } from '../store.js'
 
-export default {
-    name: 'Instructions',
-    setup() {
-        return {
-            store: useStore()
-        }
-    },
-    computed: {
-        curSemester() {
-            return this.store.curSemester
-        },
-        curStep() {
-            if (this.store.semester[this.curSemester].courseList.length == 0
-                && this.store.semester[this.curSemester].computeData.length == 0) {
-                return 0
-            }
-            else if (this.store.semester[this.curSemester].computeData.length == 0) {
-                return 1
-            }
-            else {
-                return 2
-            }
-        }
+defineOptions({
+    name: 'Instructions'
+})
+
+const store = useStore()
+const curSemester = computed(() => store.curSemester)
+const curStep = computed(() => {
+    if (store.semester[curSemester.value].courseList.length == 0
+        && store.semester[curSemester.value].computeData.length == 0) {
+        return 0
     }
-}
+    else if (store.semester[curSemester.value].computeData.length == 0) {
+        return 1
+    }
+    else {
+        return 2
+    }
+})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
