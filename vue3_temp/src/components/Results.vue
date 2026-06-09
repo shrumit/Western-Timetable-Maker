@@ -4,13 +4,13 @@
 
     <article v-if="validCount != null" class="message is-dark is-marginless">
       <div class="message-body">
-        · Conflict-free combinations: {{ validCount | toLocaleString }}
+        · Conflict-free combinations: {{ formattedValidCount }}
         <span v-if="validCount == 0" class="t_nonePossible">
           <br>
           · Sorry, no conflict-free timetables found!
         </span>
         <br>
-        · Processed in: {{ timeTaken | toLocaleString }}s
+        · Processed in: {{ formattedTimeTaken }}s
       </div>
     </article>
 
@@ -46,12 +46,18 @@
 <script>
 import Instructions from './Instructions.vue'
 import Table from './Table.vue'
+import { useStore } from '../store.js'
 
 export default {
   name: 'Results',
   components: {
     Table,
     Instructions
+  },
+  setup() {
+    return {
+      store: useStore()
+    }
   },
   data: function(){
     return {
@@ -60,29 +66,30 @@ export default {
   },
   computed: {
     curSemester() {
-      return this.$store.state.curSemester
+      return this.store.curSemester
     },
     coursecomp(){
-      return this.$store.state.semester[this.curSemester].coursecomp
+      return this.store.semester[this.curSemester].coursecomp
     },
     computeData(){
-      return this.$store.state.semester[this.curSemester].computeData
+      return this.store.semester[this.curSemester].computeData
     },
     validCount() {
       return this.computeData.info ? Number(this.computeData.info.validCount) : null
     },
     timeTaken() {
       return this.computeData.info ? Number(this.computeData.info.timeTaken)/1000 : null
+    },
+    formattedValidCount() {
+      return this.validCount != null ? this.validCount.toLocaleString() : null
+    },
+    formattedTimeTaken() {
+      return this.timeTaken != null ? this.timeTaken.toLocaleString() : null
     }
   },
   methods: {
     changeTab(tabIdx) {
       this.selectedIdx = tabIdx
-    }
-  },
-  filters: {
-    toLocaleString(n) {
-      return n != null ? n.toLocaleString() : null
     }
   }
 }

@@ -9,18 +9,25 @@
 </template>
 
 <script>
+import { useStore } from '../store.js'
+
 export default {
     name: 'Instructions',
+    setup() {
+        return {
+            store: useStore()
+        }
+    },
     computed: {
         curSemester() {
-            return this.$store.state.curSemester
+            return this.store.curSemester
         },
         curStep() {
-            if (this.$store.state.semester[this.curSemester].courseList.length == 0
-                && this.$store.state.semester[this.curSemester].computeData.length == 0) {
+            if (this.store.semester[this.curSemester].courseList.length == 0
+                && this.store.semester[this.curSemester].computeData.length == 0) {
                 return 0
             }
-            else if (this.$store.state.semester[this.curSemester].computeData.length == 0) {
+            else if (this.store.semester[this.curSemester].computeData.length == 0) {
                 return 1
             }
             else {

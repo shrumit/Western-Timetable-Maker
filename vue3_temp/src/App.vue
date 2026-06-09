@@ -38,6 +38,7 @@
   <script>
   import CourseSelection from './components/CourseSelection.vue'
   import Results from './components/Results.vue'
+  import { useStore } from './store.js'
   
   export default {
     name: 'app',
@@ -45,29 +46,31 @@
       CourseSelection,
       Results
     },
+    setup() {
+      return {
+        store: useStore()
+      }
+    },
     created() {
-      this.$store.dispatch('loadMetadata');
+      this.store.loadMetadata()
     },
     computed: {
       curSemester() {
-        return this.$store.state.curSemester
+        return this.store.curSemester
       },
       hasComputeData(){
-        return this.$store.state.semester[this.curSemester].computeData && this.$store.state.semester[this.curSemester].computeData.length > 0
+        return this.store.semester[this.curSemester].computeData && this.store.semester[this.curSemester].computeData.length > 0
       },
       computeData(){
-        return {tables: this.$store.state.semester[this.curSemester].computeData}
+        return {tables: this.store.semester[this.curSemester].computeData}
       },
       scrapeTime() {
-        return this.$store.state.metadata.time
+        return this.store.metadata.time
       }
     },
     methods: {
       changeSemester(semesterId) {
-        this.$store.commit('changeSemester', semesterId)
-      },
-      runDemoReel() {
-        this.$store.dispatch('demoReel', this.curSemester)
+        this.store.changeSemester(semesterId)
       }
     }
   }

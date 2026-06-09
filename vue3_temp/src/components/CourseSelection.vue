@@ -39,7 +39,7 @@
         <br>
         · Please remove and re-add cached courses to get the latest section data.
         <!-- <br> -->
-        <!-- · Potential timetables: {{ combinationsNum | toLocaleString }} -->
+        <!-- · Potential timetables: {{ formattedCombinationsNum }} -->
       </div>
     </article>
     
@@ -59,7 +59,7 @@
         @click="compute()">
           Generate Timetables
       </button>
-      <p v-if="combinationsNum > 0">{{ combinationsNum | toLocaleString }} possible combinations</p>
+      <p v-if="combinationsNum > 0">{{ formattedCombinationsNum }} possible combinations</p>
       <p v-if="combinationsNum > COMBINATIONS_LIMIT" class="errorMsg">
         Too many combinations to filter! Please de-select some sections manually or select fewer courses.
       </p>
@@ -79,33 +79,39 @@
 
 <script>
 import Course from './Course.vue'
+import { useStore } from '../store.js'
 
 export default {
   name: 'CourseSelection',
   components: {
     Course
   },
+  setup() {
+    return {
+      store: useStore()
+    }
+  },
   computed: {
     curSemester() {
-      return this.$store.state.curSemester
+      return this.store.curSemester
     },
     searchPlaceholder() {
-      if (this.$store.state.curSemester == 0) return 'Search for fall semester courses...'
-      else if (this.$store.state.curSemester == 1) return 'Search for winter semester courses...'
+      if (this.store.curSemester == 0) return 'Search for fall semester courses...'
+      else if (this.store.curSemester == 1) return 'Search for winter semester courses...'
       else return "Error"
     },
     options() {
-      return this.$store.state.semester[this.curSemester].searchList
+      return this.store.semester[this.curSemester].searchList
     },
     selectedCourses() {
-      return this.$store.state.semester[this.curSemester].courseList
+      return this.store.semester[this.curSemester].courseList
     },
     combinationsNum(){
-      if (!this.$store.state.semester[this.curSemester].courseList || this.$store.state.semester[this.curSemester].courseList.length == 0) 
+      if (!this.store.semester[this.curSemester].courseList || this.store.semester[this.curSemester].courseList.length == 0)
         return 0;
 
       let n = 1;
-      this.$store.state.semester[this.curSemester].courseList.forEach(function(course) {
+      this.store.semester[this.curSemester].courseList.forEach(function(course) {
         course.components.forEach(function(comp){
           if (!comp.selected) return;
           let s = comp.sections.filter(x => x.selected).length
@@ -113,20 +119,23 @@ export default {
         })
       })
       return n
-      // return JSON.stringify(this.$store.state.semester[this.curSemester].courseList)
+      // return JSON.stringify(this.store.semester[this.curSemester].courseList)
+    },
+    formattedCombinationsNum() {
+      return this.combinationsNum.toLocaleString()
     },
     disableCompute() {
-      return this.$store.state.semester[this.curSemester].courseList.length == 0 ||
+      return this.store.semester[this.curSemester].courseList.length == 0 ||
         this.combinationsNum > this.COMBINATIONS_LIMIT;
     },
     computeLoading() {
-      return this.$store.state.semester[this.curSemester].computeLoading
+      return this.store.semester[this.curSemester].computeLoading
     },
     errorMsg() {
-      return this.$store.state.semester[this.curSemester].errorMsg
+      return this.store.semester[this.curSemester].errorMsg
     },
     courseAlreadyAdded() {
-      return this.$store.state.semester[this.curSemester].courseList.some((e => e.id === this.selected[this.curSemester]));
+      return this.store.semester[this.curSemester].courseList.some((e => e.id === this.selected[this.curSemester]));
     }
   },
   data() {
@@ -136,20 +145,17 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('loadSearch');
+    this.store.loadSearch()
   },
   methods: {
     fetchCourse() {
       // console.log('fetchCourse:' + this.selected)
-      this.$store.dispatch('fetchCourse', {
+      this.store.fetchCourse({
         semesterId: this.curSemester,
         courseId: this.selected[this.curSemester]
       })
       // Vue.set(this.selected,this.curSemester,null)
       this.selected[this.curSemester] = null
-    },
-    removeCourse(index) {
-      this.$store.commit('removeCourse', index)
     },
     filter(option, label, search) {
       // don't show results until more than 1 characters typed
@@ -157,18 +163,13 @@ export default {
       return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
     },
     loadTest() {
-      this.$store.dispatch('loadTest', {semesterId: this.curSemester})
+      this.store.loadTest({semesterId: this.curSemester})
     },
     compute() {
-      this.$store.dispatch('compute', this.curSemester)
+      this.store.compute(this.curSemester)
     },
     removeAll() {
-      this.$store.dispatch('resetSemester', this.curSemester)
-    }
-  },
-  filters: {
-    toLocaleString(n) {
-      return n.toLocaleString()
+      this.store.resetSemester(this.curSemester)
     }
   }
 }

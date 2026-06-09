@@ -72,11 +72,17 @@
 </template>
 
 <script>
+import { useStore } from '../store.js'
 
 export default {
   name: 'Course',
   props: {
     courseIndex: Number
+  },
+  setup() {
+    return {
+      store: useStore()
+    }
   },
   data() {
     return {
@@ -86,10 +92,10 @@ export default {
   },
   computed: {
     curSemester() {
-      return this.$store.state.curSemester
+      return this.store.curSemester
     },
     course() {
-      return this.$store.state.semester[this.curSemester].courseList[this.courseIndex]
+      return this.store.semester[this.curSemester].courseList[this.courseIndex]
     },
     timetableLink() {
       let sub = this.course.name.split(' ')[0]
@@ -105,7 +111,7 @@ export default {
   },
   methods: {
     remove() {
-      this.$store.commit('removeCourse', {
+      this.store.removeCourse({
         semesterId: this.curSemester,
         courseIndex: this.courseIndex
       })
@@ -115,7 +121,7 @@ export default {
       this.counter++
     },
     toggleSection(compIndex, sectionIndex) {
-      this.$store.commit('toggleSection', {
+      this.store.toggleSection({
         semesterId: this.curSemester,
         courseIndex: this.courseIndex,
         compIndex: compIndex,
@@ -123,14 +129,14 @@ export default {
       })
     },
     toggleComponent(compIndex) {
-      this.$store.commit('toggleComponent', {
+      this.store.toggleComponent({
         semesterId: this.curSemester,
         courseIndex: this.courseIndex,
         compIndex: compIndex
       })
     },
     selectAllInComp(compIndex) {
-      this.$store.commit('setAllSelectedInComponent', {
+      this.store.setAllSelectedInComponent({
         semesterId: this.curSemester,
         courseIndex: this.courseIndex,
         compIndex: compIndex,
@@ -138,7 +144,7 @@ export default {
       })
     },
     deselectAllInComp(compIndex) {
-      this.$store.commit('setAllSelectedInComponent', {
+      this.store.setAllSelectedInComponent({
         semesterId: this.curSemester,
         courseIndex: this.courseIndex,
         compIndex: compIndex,

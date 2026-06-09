@@ -1,9 +1,9 @@
 # Vuex to Pinia Migration TODO
 
-- [ ] Confirm the Pinia setup in `src/main.js` remains the single app-wide store installation point.
-- [ ] Import `useStore` from `src/store.js` in each component that currently uses `this.$store`.
-- [ ] Add a consistent Options API bridge in those components, likely `setup() { return { store: useStore() } }`, so templates and computed properties can access the Pinia store.
-- [ ] Replace all `this.$store.state...` reads with direct Pinia state reads from the store instance.
+- [x] Confirm the Pinia setup in `src/main.js` remains the single app-wide store installation point.
+- [x] Import `useStore` from `src/store.js` in each component that currently uses `this.$store`.
+- [x] Add a consistent Options API bridge in those components, likely `setup() { return { store: useStore() } }`, so templates and computed properties can access the Pinia store.
+- [x] Replace all `this.$store.state...` reads with direct Pinia state reads from the store instance.
   - `curSemester`
   - `metadata.time`
   - `semester[semesterId].searchList`
@@ -12,19 +12,19 @@
   - `semester[semesterId].computeData`
   - `semester[semesterId].computeLoading`
   - `semester[semesterId].errorMsg`
-- [ ] Replace all Vuex `dispatch` calls with direct Pinia action calls.
+- [x] Replace all Vuex `dispatch` calls with direct Pinia action calls.
   - `loadSearch`
   - `fetchCourse`
   - `loadTest`
   - `compute`
   - `resetSemester`
   - `loadMetadata`
-- [ ] Replace all Vuex `commit` calls with calls to the existing Pinia action methods in `store.js`; do not inline state mutations in components.
+- [x] Replace all Vuex `commit` calls with calls to the existing Pinia action methods in `store.js`; do not inline state mutations in components.
   - `removeCourse`
   - `toggleSection`
   - `toggleComponent`
   - `setAllSelectedInComponent`
   - `changeSemester`
-- [ ] Check for stale Vuex-era references that do not map cleanly to `store.js`, especially `demoReel` in `src/App.vue` and the unused `removeCourse(index)` helper in `src/components/CourseSelection.vue`.
-- [ ] Update component formatting helpers that use Vue 2 filters, since Vue 3 does not support component `filters`.
-- [ ] Run a project-wide search for any remaining `$store`, `dispatch`, `commit`, `mapState`, `mapGetters`, `mapActions`, or `mapMutations` references.
+- [x] Check for stale Vuex-era references that do not map cleanly to `store.js`, especially `demoReel` in `src/App.vue` and the unused `removeCourse(index)` helper in `src/components/CourseSelection.vue`.
+- [x] Update component formatting helpers that use Vue 2 filters, since Vue 3 does not support component `filters`.
+- [x] Run a project-wide search for any remaining `$store`, `dispatch`, `commit`, `mapState`, `mapGetters`, `mapActions`, or `mapMutations` references.
