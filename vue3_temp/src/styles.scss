@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+// Colours
+$tt-western-purple:#4F2683;
+$tt-western-grey: #807F83;
+
+$tt-course-section: #FAFAFA;
+$tt-course-comp: #F3F3F3;
+
+$link: $tt-western-purple;
+$danger: darkorange;
+$dark: $tt-western-grey;
+$scheme-main: #FFFFFF;
+// $scheme-main: #C8C8C9;
+$body-background-color: #E3E3E3;
+
+// Typography
+$family-sans-serif: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+$tt-bold-weight: 600;
+
+$title-weight: $tt-bold-weight;
+$title-family: $family-sans-serif;
+$title-color: $tt-western-purple;
+
+$subtitle-weight: $tt-bold-weight;
+$message-header-weight: regular;
+$strong-weight: $tt-bold-weight;
+
+// vue-select
+$vs-component-line-height: 2;
+$vs-component-placeholder-color: $tt-western-purple;
+$vs-state-active-bg: $tt-western-purple;
+$vs-border-color: $tt-western-purple;
+$vs-controls-color: $tt-western-purple;
+
+@import "../node_modules/bulma/bulma.scss";
