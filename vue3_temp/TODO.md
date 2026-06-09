@@ -1,0 +1,30 @@
+# Vuex to Pinia Migration TODO
+
+- [ ] Confirm the Pinia setup in `src/main.js` remains the single app-wide store installation point.
+- [ ] Import `useStore` from `src/store.js` in each component that currently uses `this.$store`.
+- [ ] Add a consistent Options API bridge in those components, likely `setup() { return { store: useStore() } }`, so templates and computed properties can access the Pinia store.
+- [ ] Replace all `this.$store.state...` reads with direct Pinia state reads from the store instance.
+  - `curSemester`
+  - `metadata.time`
+  - `semester[semesterId].searchList`
+  - `semester[semesterId].courseList`
+  - `semester[semesterId].coursecomp`
+  - `semester[semesterId].computeData`
+  - `semester[semesterId].computeLoading`
+  - `semester[semesterId].errorMsg`
+- [ ] Replace all Vuex `dispatch` calls with direct Pinia action calls.
+  - `loadSearch`
+  - `fetchCourse`
+  - `loadTest`
+  - `compute`
+  - `resetSemester`
+  - `loadMetadata`
+- [ ] Replace all Vuex `commit` calls with calls to the existing Pinia action methods in `store.js`; do not inline state mutations in components.
+  - `removeCourse`
+  - `toggleSection`
+  - `toggleComponent`
+  - `setAllSelectedInComponent`
+  - `changeSemester`
+- [ ] Check for stale Vuex-era references that do not map cleanly to `store.js`, especially `demoReel` in `src/App.vue` and the unused `removeCourse(index)` helper in `src/components/CourseSelection.vue`.
+- [ ] Update component formatting helpers that use Vue 2 filters, since Vue 3 does not support component `filters`.
+- [ ] Run a project-wide search for any remaining `$store`, `dispatch`, `commit`, `mapState`, `mapGetters`, `mapActions`, or `mapMutations` references.
