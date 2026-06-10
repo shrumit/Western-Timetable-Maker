@@ -6,18 +6,17 @@
     
     <!-- Search bar -->
     <div class="">
-      <v-select
-      v-model="selected[curSemester]"
-      :key="selected[curSemester]"
-      :filterBy="filter"
+      <VueSelect
+      v-model="selected[store.curSemester]"
+      :key="selected[store.curSemester]"
+      class="course-select"
+      :filter-by="filter"
+      :get-option-label="getOptionLabel"
+      :get-option-value="getOptionValue"
       :options="options"
-      :reduce="item => item.id"
-      label="name"
       :placeholder="searchPlaceholder"
-      selectOnTab
-      transition=""
       >
-      </v-select>
+      </VueSelect>
     </div>
     
     <!-- Add button -->
@@ -39,7 +38,7 @@
         <br>
         · Please remove and re-add cached courses to get the latest section data.
         <!-- <br> -->
-        <!-- · Potential timetables: {{ combinationsNum | toLocaleString }} -->
+        <!-- · Potential timetables: {{ formattedCombinationsNum }} -->
       </div>
     </article>
     
@@ -59,7 +58,7 @@
         @click="compute()">
           Generate Timetables
       </button>
-      <p v-if="combinationsNum > 0">{{ combinationsNum | toLocaleString }} possible combinations</p>
+      <p v-if="combinationsNum > 0">{{ formattedCombinationsNum }} possible combinations</p>
       <p v-if="combinationsNum > COMBINATIONS_LIMIT" class="errorMsg">
         Too many combinations to filter! Please de-select some sections manually or select fewer courses.
       </p>
@@ -77,137 +76,124 @@
   </div>
 </template>
 
-<script>
-import Course from './Course.vue'
+<script setup>
+  import { computed, reactive } from 'vue'
+  import Course from './Course.vue'
+  import { useStore } from '../store.js'
+  import VueSelect from 'vue3-select-component'
+  import 'vue3-select-component/styles'
 
-export default {
-  name: 'CourseSelection',
-  components: {
-    Course
-  },
-  computed: {
-    curSemester() {
-      return this.$store.state.curSemester
-    },
-    searchPlaceholder() {
-      if (this.$store.state.curSemester == 0) return 'Search for fall semester courses...'
-      else if (this.$store.state.curSemester == 1) return 'Search for winter semester courses...'
-      else return "Error"
-    },
-    options() {
-      return this.$store.state.semester[this.curSemester].searchList
-    },
-    selectedCourses() {
-      return this.$store.state.semester[this.curSemester].courseList
-    },
-    combinationsNum(){
-      if (!this.$store.state.semester[this.curSemester].courseList || this.$store.state.semester[this.curSemester].courseList.length == 0) 
-        return 0;
+  const store = useStore()
 
-      let n = 1;
-      this.$store.state.semester[this.curSemester].courseList.forEach(function(course) {
-        course.components.forEach(function(comp){
-          if (!comp.selected) return;
-          let s = comp.sections.filter(x => x.selected).length
-          if (s>0) n *= s
-        })
+  const selected = reactive([null, null])
+  const COMBINATIONS_LIMIT = 15000000000
+
+  const searchPlaceholder = computed(() => {
+    if (store.curSemester == 0) return 'Search for fall semester courses...'
+    else if (store.curSemester == 1) return 'Search for winter semester courses...'
+    else return "Error"
+  })
+  const options = computed(() => store.semester[store.curSemester].searchList)
+  const selectedCourses = computed(() => store.semester[store.curSemester].courseList)
+  const combinationsNum = computed(() => {
+    if (!selectedCourses.value || selectedCourses.value.length == 0)
+      return 0;
+
+    let n = 1;
+    selectedCourses.value.forEach(function(course) {
+      course.components.forEach(function(comp){
+        if (!comp.selected) return;
+        let s = comp.sections.filter(x => x.selected).length
+        if (s>0) n *= s
       })
-      return n
-      // return JSON.stringify(this.$store.state.semester[this.curSemester].courseList)
-    },
-    disableCompute() {
-      return this.$store.state.semester[this.curSemester].courseList.length == 0 ||
-        this.combinationsNum > this.COMBINATIONS_LIMIT;
-    },
-    computeLoading() {
-      return this.$store.state.semester[this.curSemester].computeLoading
-    },
-    errorMsg() {
-      return this.$store.state.semester[this.curSemester].errorMsg
-    },
-    courseAlreadyAdded() {
-      return this.$store.state.semester[this.curSemester].courseList.some((e => e.id === this.selected[this.curSemester]));
-    }
-  },
-  data() {
-    return {
-      selected: [null,null],
-      COMBINATIONS_LIMIT: 15000000000
-    }
-  },
-  created() {
-    this.$store.dispatch('loadSearch');
-  },
-  methods: {
-    fetchCourse() {
-      // console.log('fetchCourse:' + this.selected)
-      this.$store.dispatch('fetchCourse', {
-        semesterId: this.curSemester,
-        courseId: this.selected[this.curSemester]
-      })
-      // Vue.set(this.selected,this.curSemester,null)
-      this.selected[this.curSemester] = null
-    },
-    removeCourse(index) {
-      this.$store.commit('removeCourse', index)
-    },
-    filter(option, label, search) {
-      // don't show results until more than 1 characters typed
-      if (search == null || label == null || search.length < 2) return false;
-      return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
-    },
-    loadTest() {
-      this.$store.dispatch('loadTest', {semesterId: this.curSemester})
-    },
-    compute() {
-      this.$store.dispatch('compute', this.curSemester)
-    },
-    removeAll() {
-      this.$store.dispatch('resetSemester', this.curSemester)
-    }
-  },
-  filters: {
-    toLocaleString(n) {
-      return n.toLocaleString()
-    }
+    })
+    return n
+    // return JSON.stringify(store.semester[store.curSemester].courseList)
+  })
+
+  const formattedCombinationsNum = computed(() => combinationsNum.value.toLocaleString())
+  const disableCompute = computed(() => selectedCourses.value.length == 0 ||
+    combinationsNum.value > COMBINATIONS_LIMIT)
+  const computeLoading = computed(() => store.semester[store.curSemester].computeLoading)
+  const errorMsg = computed(() => store.semester[store.curSemester].errorMsg)
+  const courseAlreadyAdded = computed(() => selectedCourses.value.some((e => e.id === selected[store.curSemester])))
+
+  function fetchCourse() {
+    // console.log('fetchCourse:' + selected)
+    store.fetchCourse({
+      semesterId: store.curSemester,
+      courseId: selected[store.curSemester]
+    })
+    selected[store.curSemester] = null
   }
-}
+
+  function filter(option, label, search) {
+    // don't show results until more than 1 characters typed
+    if (search == null || label == null || search.length < 2) return false;
+    return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
+  }
+
+  function getOptionLabel(option) {
+    return option.name
+  }
+
+  function getOptionValue(option) {
+    return option.id
+  }
+
+  function compute() {
+    store.compute(store.curSemester)
+  }
+
+  function removeAll() {
+    store.resetSemester(store.curSemester)
+  }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+  <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/* @import '../styles.scss'; */
+  /* @import '../styles.scss'; */
 
-button {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  min-width: 8em;
-}
+  button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-width: 8em;
+  }
 
-#patience {
-  opacity: 0;
-}
+  #patience {
+    opacity: 0;
+  }
 
-#patience.is-loading {
-  opacity: 1;
-  transition: opacity 4s;
-  transition-delay: 2s;
-}
+  #patience.is-loading {
+    opacity: 1;
+    transition: opacity 4s;
+    transition-delay: 2s;
+  }
 
-.errorMsg {
-  color: darkorange;
-}
+  .errorMsg {
+    color: darkorange;
+  }
 
-.campusLabel {
-  margin-right: 5px;
-}
+  .campusLabel {
+    margin-right: 5px;
+  }
 
-#t_computeButtonDiv {
-  text-align: center;
-}
+  .course-select {
+    --vs-border: 1px solid #4F2683;
+    --vs-outline-color: #4F2683;
+    --vs-placeholder-color: #4F2683;
+    --vs-indicator-icon-color: #4F2683;
+    --vs-option-focused-background-color: #4F2683;
+    --vs-option-focused-text-color: #FFFFFF;
+    --vs-option-selected-background-color: #4F2683;
+    --vs-option-selected-text-color: #FFFFFF;
+  }
 
-#t_computeButton {
-  box-shadow: 0px 13px 10px -10px rgba(0,0,0,0.4);
-}
+  #t_computeButtonDiv {
+    text-align: center;
+  }
 
+  #t_computeButton {
+    box-shadow: 0px 13px 10px -10px rgba(0,0,0,0.4);
+  }
 </style>

@@ -4,13 +4,13 @@
 
     <article v-if="validCount != null" class="message is-dark is-marginless">
       <div class="message-body">
-        · Conflict-free combinations: {{ validCount | toLocaleString }}
+        · Conflict-free combinations: {{ formattedValidCount }}
         <span v-if="validCount == 0" class="t_nonePossible">
           <br>
           · Sorry, no conflict-free timetables found!
         </span>
         <br>
-        · Processed in: {{ timeTaken | toLocaleString }}s
+        · Processed in: {{ formattedTimeTaken }}s
       </div>
     </article>
 
@@ -22,7 +22,7 @@
         v-for="(scheme, schemeIdx) in computeData.schemes"
         :class="{'is-active' : selectedIdx === schemeIdx }"
         :key="schemeIdx"
-        @click="changeTab(schemeIdx)"
+        @click="changeTab(schemeIdx)" 
         >
           <a>{{ scheme.type }}</a>
         </li>
@@ -43,54 +43,29 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from 'vue'
 import Instructions from './Instructions.vue'
 import Table from './Table.vue'
+import { useStore } from '../store.js'
 
-export default {
-  name: 'Results',
-  components: {
-    Table,
-    Instructions
-  },
-  data: function(){
-    return {
-      selectedIdx: 0
-    }
-  },
-  computed: {
-    curSemester() {
-      return this.$store.state.curSemester
-    },
-    coursecomp(){
-      return this.$store.state.semester[this.curSemester].coursecomp
-    },
-    computeData(){
-      return this.$store.state.semester[this.curSemester].computeData
-    },
-    validCount() {
-      return this.computeData.info ? Number(this.computeData.info.validCount) : null
-    },
-    timeTaken() {
-      return this.computeData.info ? Number(this.computeData.info.timeTaken)/1000 : null
-    }
-  },
-  methods: {
-    changeTab(tabIdx) {
-      this.selectedIdx = tabIdx
-    }
-  },
-  filters: {
-    toLocaleString(n) {
-      return n != null ? n.toLocaleString() : null
-    }
-  }
+const store = useStore()
+const selectedIdx = ref(0)
+
+const computeData = computed(() => store.semester[store.curSemester].computeData)
+const validCount = computed(() => computeData.value.info ? Number(computeData.value.info.validCount) : null)
+const timeTaken = computed(() => computeData.value.info ? Number(computeData.value.info.timeTaken)/1000 : null)
+const formattedValidCount = computed(() => validCount.value != null ? validCount.value.toLocaleString() : null)
+const formattedTimeTaken = computed(() => timeTaken.value != null ? timeTaken.value.toLocaleString() : null)
+
+function changeTab(tabIdx) {
+  selectedIdx.value = tabIdx
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-@import '../styles.scss';
+@use '../theme' as *;
 
 .t_nonePossible {
   color: $danger;

@@ -1,14 +1,14 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
+import './styles.scss'
 import App from './App.vue'
-import store from './store'
 
-import vSelect from 'vue-select'
-Vue.component('v-select', vSelect)
-// import 'vue-select/dist/vue-select.css';
+const app = createApp(App)
 
-Vue.config.productionTip = false
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
-new Vue({
-  store,
-  render: h => h(App)
-}).$mount('#app')
+app.use(pinia)
+app.mount('#app')

@@ -1,181 +1,141 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import VuexPersist from 'vuex-persist'
+import { defineStore } from 'pinia'
 import axios from 'axios'
 
-const vuexPersist = new VuexPersist({
-  key: 'ttmaker-2024',
-  storage: window.localStorage
-})
-
-const courseData = require('./master.json');
-const searchData = require('./search.json');
-const metadata = require('./metadata.json');
+import courseData from './master.json'
+import searchData from './search.json'
+import metadataData from './metadata.json'
 
 const COMPUTE_URL = window.location.origin.includes('localhost') ? 'http://localhost:8081/compute' : window.location.origin + '/compute'
 
-Vue.use(Vuex)
+const createSemesterState = (semesterId) => ({
+  searchList: searchData[semesterId] ?? [],
+  courseList: [],
+  computeLoading: false,
+  computeData: [],
+  coursecomp: [],
+  errorMsg: '',
+})
 
-// function sleep(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-// }
+const restoreStaticState = ({ store }) => {
+  store.metadata = metadataData
+  store.semester.forEach((semester, semesterId) => {
+    semester.searchList = searchData[semesterId] ?? []
+  })
+}
 
-export default new Vuex.Store({
-  plugins: [vuexPersist.plugin],
-  state: {
-    metadata: {
-      time: ''
-    },
+const ignoredPersistKeys = new Set(['emptySemester', 'metadata', 'searchList'])
+
+const persistedStateSerializer = {
+  serialize: (state) =>
+    JSON.stringify(state, (key, value) => {
+      if (ignoredPersistKeys.has(key)) return undefined
+      return value
+    }),
+  deserialize: (value) =>
+    JSON.parse(value, (key, value) => {
+      if (ignoredPersistKeys.has(key)) return undefined
+      return value
+    }),
+}
+
+export const useStore = defineStore('ttmaker', {
+  state: () => ({
+    metadata: metadataData,
     curSemester: 0,
-    semester: [
-      {
-        searchList: [],
-        courseList:[],
-        computeLoading: false,
-        computeData: [],
-        coursecomp: [],
-        errorMsg: ''
-      },
-      {
-        searchList: [],
-        courseList:[],
-        computeLoading: false,
-        computeData: [],
-        coursecomp: [],
-        errorMsg: ''
-      }
-    ],
-    emptySemester:
-    {
-      searchList: [],
-      courseList:[],
-      computeLoading: false,
-      computeData: [],
-      coursecomp: [],
-      errorMsg: ''
-    }
+    semester: [createSemesterState(0), createSemesterState(1)],
+  }),
+
+  // Requires pinia-plugin-persistedstate to be registered on the Pinia instance.
+  persist: {
+    key: 'ttmaker-2026',
+    storage: window.localStorage,
+    serializer: persistedStateSerializer,
+    afterHydrate: restoreStaticState,
   },
-  
-  mutations: {
-    addSearchList(state, {semesterId, data}) {
-      state.semester[semesterId].searchList = data
-    },
-    
-    addCourseToList(state, payload) {
-      payload.course.components.forEach(function(c, cIndex, cArray){
+
+  actions: {
+    addCourseToList(payload) {
+      payload.course.components.forEach(function (c, cIndex, cArray) {
         cArray[cIndex].selected = true
-        cArray[cIndex].sections.forEach(function(s,sIndex, sArray){
+        cArray[cIndex].sections.forEach(function (s, sIndex, sArray) {
           sArray[sIndex].selected = true
         })
       })
 
       // compute color and store
       payload.course.color = courseNameToColor(payload.course.name)
-      
-      state.semester[payload.semesterId].courseList.push(payload.course)
-      // Vue.set(state.semester, payload.semesterId, state.semester[payload.semesterId])
+
+      this.semester[payload.semesterId].courseList.push(payload.course)
     },
 
-    addMetadata(state, metadata) {
-      // console.log(metadata)
-      state.metadata = metadata;
+    removeCourse(payload) {
+      this.semester[payload.semesterId].courseList.splice(payload.courseIndex, 1)
     },
-    
-    removeCourse(state, payload) {
-      state.semester[payload.semesterId].courseList.splice(payload.courseIndex,1)
+
+    toggleSection({ semesterId, courseIndex, compIndex, sectionIndex }) {
+      this.semester[semesterId].courseList[courseIndex].components[compIndex].sections[sectionIndex].selected =
+        !this.semester[semesterId].courseList[courseIndex].components[compIndex].sections[sectionIndex].selected
     },
-    
-    toggleSection(state, {semesterId, courseIndex, compIndex, sectionIndex}) {
-      state.semester[semesterId].courseList[courseIndex].components[compIndex].sections[sectionIndex].selected =
-        !state.semester[semesterId].courseList[courseIndex].components[compIndex].sections[sectionIndex].selected;
-      // Vue.set is required to trigger update
-      Vue.set(state.semester[semesterId].courseList, courseIndex, state.semester[semesterId].courseList[courseIndex])
+
+    toggleComponent({ semesterId, courseIndex, compIndex }) {
+      this.semester[semesterId].courseList[courseIndex].components[compIndex].selected = !this.semester[semesterId].courseList[courseIndex].components[compIndex].selected
     },
-    
-    toggleComponent(state, {semesterId, courseIndex, compIndex}) {
-      state.semester[semesterId].courseList[courseIndex].components[compIndex].selected =
-        !state.semester[semesterId].courseList[courseIndex].components[compIndex].selected;
-      // Vue.set is required to trigger update
-      Vue.set(state.semester[semesterId].courseList, courseIndex, state.semester[semesterId].courseList[courseIndex])
-    },
-    
-    setAllSelectedInComponent(state, {semesterId, courseIndex, compIndex, selected}) {
-      state.semester[semesterId].courseList[courseIndex].components[compIndex].sections.forEach(function(s, idx, sArray){
-        sArray[idx].selected = selected;
+
+    setAllSelectedInComponent({ semesterId, courseIndex, compIndex, selected }) {
+      this.semester[semesterId].courseList[courseIndex].components[compIndex].sections.forEach(function (s, idx, sArray) {
+        sArray[idx].selected = selected
       })
-      Vue.set(state.semester[semesterId].courseList, courseIndex, state.semester[semesterId].courseList[courseIndex])
     },
-    
-    changeSemester(state, semesterId) {
-      state.curSemester = semesterId
+
+    changeSemester(semesterId) {
+      this.curSemester = semesterId
     },
-    
+
     // computation
-    setComputeLoading(state, {semesterId, status}) {
-      state.semester[semesterId].computeLoading = status
+    setComputeLoading({ semesterId, status }) {
+      this.semester[semesterId].computeLoading = status
     },
-    setCoursecomp(state, {semesterId, coursecomp}) {
-      // Vue.set(state.semester[semesterId].coursecomp, coursecomp)
-      state.semester[semesterId].coursecomp = coursecomp
+
+    setCoursecomp({ semesterId, coursecomp }) {
+      this.semester[semesterId].coursecomp = coursecomp
     },
-    addComputeData(state, {semesterId, data}) {
-      state.semester[semesterId].computeData = data
+
+    addComputeData({ semesterId, data }) {
+      this.semester[semesterId].computeData = data
     },
-    setComputeError(state, {semesterId, errorMsg}) {
+
+    setComputeError({ semesterId, errorMsg }) {
       console.log(errorMsg)
-      state.semester[semesterId].errorMsg = errorMsg
+      this.semester[semesterId].errorMsg = errorMsg
     },
-    resetSemester(state, semesterId) {
-      // state.semester[semesterId] = JSON.parse(JSON.stringify(state.emptySemester))
-      Vue.set(state.semester, semesterId, JSON.parse(JSON.stringify(state.emptySemester)))
-      // state.semester[semesterId] = Object.assign(state.emptySemester)
+
+    resetSemester(semesterId) {
+      this.semester[semesterId] = createSemesterState(semesterId)
     },
-    setDemoReel(state, {semesterId, value}) {
-      state.semester[semesterId].demoReelActive = value
-    }
-  },
-  
-  actions: {
-    resetSemester({commit, dispatch}, semesterId) {
-      commit('resetSemester', semesterId)
-      dispatch('loadSearch')
-    },
-    loadTest({dispatch}, {semesterId}) {
-      dispatch('fetchCourse',{semesterId: semesterId, courseId: 142})
-      dispatch('fetchCourse',{semesterId: semesterId, courseId: 2038})
-      dispatch('fetchCourse',{semesterId: semesterId, courseId: 224})
-      dispatch('fetchCourse',{semesterId: semesterId, courseId: 395})
-      // dispatch('fetchCourse',{semesterId: semesterId, courseId: 691})
-    },
-    fetchCourse({commit, state}, {courseId, semesterId}) {
-      if ( courseId != null && courseId >= 0 && !state.semester[semesterId].courseList.some( item => item['id'] === courseId)) {
-        commit('addCourseToList', {course: courseData[courseId], semesterId: semesterId});
+
+    fetchCourse({ courseId, semesterId }) {
+      if (courseId != null && courseId >= 0 && !this.semester[semesterId].courseList.some((item) => item['id'] === courseId)) {
+        this.addCourseToList({ course: courseData[courseId], semesterId: semesterId })
       }
     },
-    loadSearch( {commit} ) {
-      commit('addSearchList', {semesterId: 0, data: searchData[0]});
-      commit('addSearchList', {semesterId: 1, data: searchData[1]});
-    },
-    loadMetadata( {commit} ) {
-      commit('addMetadata', metadata);
-    },
-    compute({commit, state}, semesterId) {
-      commit('setComputeError', {semesterId: semesterId, errorMsg: ''})
-      commit('setComputeLoading', {semesterId: semesterId, status: true});
-      // console.log(JSON.stringify(state.semester[semesterId].courseList));
-      let courseList = state.semester[semesterId].courseList
-      
+
+    compute(semesterId) {
+      this.setComputeError({ semesterId: semesterId, errorMsg: '' })
+      this.setComputeLoading({ semesterId: semesterId, status: true })
+      // console.log(JSON.stringify(this.semester[semesterId].courseList));
+      let courseList = this.semester[semesterId].courseList
+
       // produce coursecomp, which is a flattening of course:components[] with 'selected' components and sections only
       // coursecomp is used to generate the /compute payload and to render Table.vue
       let coursecomp = []
-      courseList.forEach(function(course) {
-        course.components.forEach(function(comp){
-          if (comp.selected != true) return;
+      courseList.forEach(function (course) {
+        course.components.forEach(function (comp) {
+          if (comp.selected != true) return
           // serializing and deserializing removes extra things from the object
           let filteredComp = JSON.parse(JSON.stringify(comp))
 
           // remove unselected sections
-          filteredComp.sections = filteredComp.sections.filter(section => section.selected == true)
+          filteredComp.sections = filteredComp.sections.filter((section) => section.selected == true)
           // skip if no section are selected
           if (filteredComp.sections.length == 0) return
 
@@ -187,45 +147,50 @@ export default new Vuex.Store({
           coursecomp.push(filteredComp)
         })
       })
-      
+
       let req = []
-      coursecomp.forEach(function(comp){ // remove everything but timebits
-        req.push(comp.sections.map(sec => sec.timebits))
+      coursecomp.forEach(function (comp) {
+        // remove everything but timebits
+        req.push(comp.sections.map((sec) => sec.timebits))
       })
       let startTime = performance.now()
-      axios.post(COMPUTE_URL, req)
-      .then((res) => {
-        let endTime = performance.now()
-        let timeTaken = (endTime-startTime)
-        res.data.info.timeTaken = timeTaken
-        commit('setCoursecomp', {semesterId: semesterId, coursecomp: coursecomp}) // coursecomp required by Table.vue for display
-        commit('addComputeData', {semesterId: semesterId, data: res.data})
-      })
-      .catch((error) => {
-        console.log(JSON.stringify(error))
-        commit('setComputeError', {semesterId: semesterId, errorMsg: error.message})
-      })
-      .finally(() => {
-        commit('setComputeLoading', {semesterId: semesterId, status: false});
-      })
-    }
-  }
-});
+      axios
+        .post(COMPUTE_URL, req)
+        .then((res) => {
+          let endTime = performance.now()
+          let timeTaken = endTime - startTime
+          res.data.info.timeTaken = timeTaken
+          this.setCoursecomp({ semesterId: semesterId, coursecomp: coursecomp }) // coursecomp required by Table.vue for display
+          this.addComputeData({ semesterId: semesterId, data: res.data })
+        })
+        .catch((error) => {
+          console.log(JSON.stringify(error))
+          this.setComputeError({ semesterId: semesterId, errorMsg: error.message })
+        })
+        .finally(() => {
+          this.setComputeLoading({ semesterId: semesterId, status: false })
+        })
+    },
+  },
+})
 
+export default useStore
 
-
-function strHash(str) { // java String#hashCode
-  let hash = 0;
+function strHash(str) {
+  // java String#hashCode
+  let hash = 0
   for (let i = 0; i < str.length; i++) {
-     hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
   }
-  return hash;
+  return hash
 }
+
 function numToColor(num) {
-num = num * num
-return "rgb("+(255-((num*7)%127))+","+(255-((num*5)%83))+","+(255-((num*3)%79))+")"
-// return "rgb("+(255-(num%151))+","+(255-(num%127))+","+(255-(num%103))+")"
+  num = num * num
+  return 'rgb(' + (255 - ((num * 7) % 127)) + ',' + (255 - ((num * 5) % 83)) + ',' + (255 - ((num * 3) % 79)) + ')'
+  // return "rgb("+(255-(num%151))+","+(255-(num%127))+","+(255-(num%103))+")"
 }
+
 function courseNameToColor(name) {
-return numToColor(strHash(name))
+  return numToColor(strHash(name))
 }
