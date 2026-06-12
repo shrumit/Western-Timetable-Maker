@@ -10,15 +10,15 @@
       <div class="tabs is-boxed">
         <ul>
           <li class="t_semesterTab" :class="{ 'is-active': store.curSemester === 0 }" @click="changeSemester(0)"><a>FALL
-              2024</a></li>
+              2026</a></li>
           <li class="t_semesterTab" :class="{ 'is-active': store.curSemester === 1 }" @click="changeSemester(1)"><a>WINTER
-              2025</a></li>
+              2027</a></li>
         </ul>
       </div>
 
       <article id="disclaimer" class="message is-info">
         <div class="message-body">
-          <span class="red">**Updated for 2024/2025!**</span>
+          <!-- <span class="red">**Updated for 2024/2025!**</span> -->
           Data last updated on <strong>{{ store.metadata.time }}</strong>. Western Timetable Maker is not affiliated with the
           university.
         </div>
