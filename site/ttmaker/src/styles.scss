@@ -15,3 +15,83 @@
   $title-family: theme.$title-family,
   $title-weight: theme.$title-weight
 );
+
+:root {
+  color-scheme: light;
+
+  --tt-heading-color: #{theme.$tt-western-purple};
+  --tt-accent-color: #{theme.$tt-western-purple};
+  --tt-danger-color: #{theme.$danger};
+  --tt-course-section-bg: #{theme.$tt-course-section};
+  --tt-course-section-hover-bg: #f0f0f0;
+  --tt-course-comp-bg: #{theme.$tt-course-comp};
+  --tt-course-title-hover-bg: #79787c;
+  --tt-course-table-border: #d8d8d8;
+  --tt-table-border: #dbdbdb;
+  --tt-table-muted-text: #737373;
+  --tt-table-hover-text: #111111;
+  --tt-table-slot-text: #111111;
+  --tt-table-tutorial-text: indianred;
+  --tt-table-lab-text: darkgreen;
+  --tt-table-slot-divider: #111111;
+  --tt-table-row-even-bg: #{theme.$tt-course-comp};
+  --tt-table-row-odd-bg: #{theme.$tt-course-section};
+  --tt-select-border: #{theme.$tt-western-purple};
+  --tt-select-bg: #ffffff;
+  --tt-select-disabled-bg: #f4f4f5;
+  --tt-select-text: #18181b;
+  --tt-select-placeholder: #{theme.$tt-western-purple};
+  --tt-select-indicator: #{theme.$tt-western-purple};
+  --tt-select-menu-bg: #ffffff;
+  --tt-select-menu-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.08);
+  --tt-select-option-active-bg: #{theme.$tt-western-purple};
+  --tt-select-option-active-text: #ffffff;
+
+  --bulma-body-background-color: #{theme.$body-background-color};
+}
+
+.title {
+  --bulma-title-color: var(--tt-heading-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --tt-heading-color: #d7c5f3;
+    --tt-accent-color: #c8acef;
+    --tt-danger-color: #ffb24d;
+    --tt-course-section-bg: #2f3138;
+    --tt-course-section-hover-bg: #383a42;
+    --tt-course-comp-bg: #3b3d46;
+    --tt-course-title-hover-bg: #77767d;
+    --tt-course-table-border: #4b4d57;
+    --tt-table-border: #4b4d57;
+    --tt-table-muted-text: #c1c1c8;
+    --tt-table-hover-text: #ffffff;
+    --tt-table-slot-text: #111111;
+    --tt-table-tutorial-text: #a63246;
+    --tt-table-lab-text: #0d6530;
+    --tt-table-slot-divider: #111111;
+    --tt-table-row-even-bg: #31333b;
+    --tt-table-row-odd-bg: #2b2d34;
+    --tt-select-border: #c8acef;
+    --tt-select-bg: #30323a;
+    --tt-select-disabled-bg: #3b3d46;
+    --tt-select-text: #f1f1f4;
+    --tt-select-placeholder: #c8acef;
+    --tt-select-indicator: #c8acef;
+    --tt-select-menu-bg: #30323a;
+    --tt-select-menu-shadow: 0 12px 30px rgb(0 0 0 / 0.35);
+    --tt-select-option-active-bg: #6f49a4;
+    --tt-select-option-active-text: #ffffff;
+
+    --bulma-scheme-main-l: 18%;
+    --bulma-scheme-main-bis-l: 21%;
+    --bulma-scheme-main-ter-l: 24%;
+    --bulma-background-l: 25%;
+    --bulma-border-weak-l: 32%;
+    --bulma-border-l: 38%;
+    --bulma-body-background-color: #2b2d34;
+  }
+}

@@ -146,7 +146,6 @@ function deselectAllInComp(compIndex) {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-@use 'sass:color';
 @use '../theme' as *;
 
 .t_courseDiv {
@@ -155,7 +154,7 @@ function deselectAllInComp(compIndex) {
 }
 
 .t_courseRemove:hover {
-  background: $danger;
+  background: var(--tt-danger-color);
 }
 
 .message {
@@ -167,7 +166,7 @@ function deselectAllInComp(compIndex) {
   border-radius: 4px 4px 4px 4px;
 }
 .t_courseTitle:hover {
-  background: color.adjust($dark, $lightness: -2.5%) !important;
+  background: var(--tt-course-title-hover-bg) !important;
 }
 
 .t_openSymbol {
@@ -183,23 +182,23 @@ function deselectAllInComp(compIndex) {
 }
 .t_compSelected {
   text-decoration: none;
-  background: $tt-course-comp;
+  background: var(--tt-course-comp-bg);
 }
 
 .t_sectionRow {
   cursor: pointer;
-  background: $tt-course-section;
+  background: var(--tt-course-section-bg);
   opacity: 0.6;
 }
 
 .t_sectionRowSelected,
 .t_sectionRowHeader {
   opacity: 1;
-  background: $tt-course-section;
+  background: var(--tt-course-section-bg);
 }
 
 .t_sectionRow:hover {
-  background: color.adjust($tt-course-section, $lightness: -2.5%);
+  background: var(--tt-course-section-hover-bg);
 }
 
 .t_sectionRowDisable {
@@ -211,7 +210,7 @@ function deselectAllInComp(compIndex) {
 .t_sectionTable,
 .t_sectionTable td,
 .t_sectionTable th {
-  border: solid lightgrey 1px;
+  border: solid var(--tt-course-table-border) 1px;
   padding: 3px !important;
 }
 

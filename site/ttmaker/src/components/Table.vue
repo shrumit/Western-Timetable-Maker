@@ -95,7 +95,7 @@ const daysArray = computed(() => {
 }
 
 table {
-  border: 1px solid #DBDBDB;
+  border: 1px solid var(--tt-table-border);
   width: 100%;
   /* margins: 0 auto; */
   /* max-width: 1000px; */
@@ -104,41 +104,41 @@ table {
 
 td,
 th {
-  border-top: 1px solid #DBDBDB;
-  border-right: 1px solid #DBDBDB !important;
+  border-top: 1px solid var(--tt-table-border);
+  border-right: 1px solid var(--tt-table-border) !important;
   font-weight: normal;
   padding: 0 0.5em 0 0.5em;
   text-align: left;
   width: 8em;
 }
 tr {
-  color: grey;
+  color: var(--tt-table-muted-text);
 }
 tr:hover {
-  color: black;
+  color: var(--tt-table-hover-text);
 }
 
 .t_weekSlot {
-  color: black;
+  color: var(--tt-table-slot-text);
   text-align: center;
 }
 
 .t_tut {
-  color: indianred;
+  color: var(--tt-table-tutorial-text);
 }
 
 .t_lab {
-  color: darkgreen;
+  color: var(--tt-table-lab-text);
 }
 
 .t_firstCell {
-  border-top: 1px solid black !important;
+  border-top: 1px solid var(--tt-table-slot-divider) !important;
 }
 
 tr:nth-child(even) {
-  background-color: #F3F3F3;
+  background-color: var(--tt-table-row-even-bg);
 }
 tr:nth-child(odd) {
-  background-color: #FAFAFA;
+  background-color: var(--tt-table-row-odd-bg);
 }
 </style>

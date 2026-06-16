@@ -171,7 +171,7 @@
   }
 
   .errorMsg {
-    color: darkorange;
+    color: var(--tt-danger-color);
   }
 
   .campusLabel {
@@ -179,14 +179,23 @@
   }
 
   .course-select {
-    --vs-border: 1px solid #4F2683;
-    --vs-outline-color: #4F2683;
-    --vs-placeholder-color: #4F2683;
-    --vs-indicator-icon-color: #4F2683;
-    --vs-option-focused-background-color: #4F2683;
-    --vs-option-focused-text-color: #FFFFFF;
-    --vs-option-selected-background-color: #4F2683;
-    --vs-option-selected-text-color: #FFFFFF;
+    --vs-border: 1px solid var(--tt-select-border);
+    --vs-outline-color: var(--tt-select-border);
+    --vs-background-color: var(--tt-select-bg);
+    --vs-disabled-background-color: var(--tt-select-disabled-bg);
+    --vs-text-color: var(--tt-select-text);
+    --vs-placeholder-color: var(--tt-select-placeholder);
+    --vs-indicator-icon-color: var(--tt-select-indicator);
+    --vs-menu-border: 1px solid var(--tt-select-border);
+    --vs-menu-background-color: var(--tt-select-menu-bg);
+    --vs-menu-box-shadow: var(--tt-select-menu-shadow);
+    --vs-option-background-color: var(--tt-select-menu-bg);
+    --vs-option-text-color: var(--tt-select-text);
+    --vs-option-focused-background-color: var(--tt-select-option-active-bg);
+    --vs-option-focused-text-color: var(--tt-select-option-active-text);
+    --vs-option-selected-background-color: var(--tt-select-option-active-bg);
+    --vs-option-selected-text-color: var(--tt-select-option-active-text);
+    --vs-option-disabled-background-color: var(--tt-select-disabled-bg);
   }
 
   #t_computeButtonDiv {

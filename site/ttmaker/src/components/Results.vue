@@ -65,10 +65,8 @@ function changeTab(tabIdx) {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-@use '../theme' as *;
-
 .t_nonePossible {
-  color: $danger;
+  color: var(--tt-danger-color);
 }
 .is-active {
   font-weight: bold;

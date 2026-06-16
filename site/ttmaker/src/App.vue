@@ -79,7 +79,7 @@
   }
 
   .red {
-    color: red;
+    color: var(--tt-danger-color);
     font-weight: bold;
   }
 

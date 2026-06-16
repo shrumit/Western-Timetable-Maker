@@ -29,14 +29,12 @@ const curStep = computed(() => {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-@use '../theme' as *;
-
 div {
     padding: 2rem;
 }
 
 .is-active {
     font-weight: bold;
-    color: $tt-western-purple;
+    color: var(--tt-accent-color);
 }
 </style>
