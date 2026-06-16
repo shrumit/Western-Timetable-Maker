@@ -12,6 +12,7 @@ master.json*
 search.json*
 compute.json*
 metadata.json*
+subjects.json*
 
 *.out
 *.o

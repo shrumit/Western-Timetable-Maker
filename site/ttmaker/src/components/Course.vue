@@ -1,78 +1,74 @@
 <template>
-    <div class="message is-marginless is-dark t_courseDiv">
-      <!-- Accordian title -->
-      <div class="message-header t_courseTitle" @click="toggleExpand">
-        <p class="t_openSymbol" v-show="!expanded">+&nbsp;</p>
-        <p class="t_openSymbol" v-show="expanded">−&nbsp;</p>
-        {{ course.name }}
-        <div class="t_colorSquare" :style="{'background-color': course.color}"></div>
-        <a class="delete is-medium t_courseRemove" @click="remove"></a>
-      </div>
-      
-      <!-- Accordian body -->
-      <table v-show="expanded" class="message-body table">
-        <tbody>
-          <tr>
-            <td></td>
-            <td style="display:flex; justify-content: space-around;">
-              <a :href="timetableLink" target="_blank">View in Academic Timetable</a>&emsp;
-              <a :href="calendarLink" target="_blank">View in Academic Calendar</a>
-            </td>
-          </tr>
-          <tr v-for="(comp, compIndex) in course.components" :key="compIndex">
-            <!-- Component selection -->
-            <th
-            class="t_comp"
-            :class="{ 't_compSelected': comp.selected }"
-            @click="toggleComponent(compIndex)"
-            >
-              <input type="checkbox" class="checkbox" :checked="comp.selected">
-              {{ comp.name }}
-            </th>
-            <!-- Section selection -->
-            <td>
-              <table class="table t_sectionTable">
-                <thead>
-                  <tr class="t_sectionRowHeader" :class="{'t_sectionRowDisable': !comp.selected}">
-                    <th>
-                      Section
-                      <br>
-                      <button @click="selectAllInComp(compIndex)" class="button is-small is-text">Select All</button>
-                      <br>
-                      <button @click="deselectAllInComp(compIndex)" class="button is-small is-text">Deselect All</button>
-                    </th>
-                    <!-- <th>Section</th> -->
-                    <th>Class Nbr</th>
-                    <th>Location</th>
-                    <th>Instructor</th>
-                    <th>Campus</th>
-                    <th>Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
+  <div class="message is-marginless is-dark t_courseDiv">
+    <!-- Accordian title -->
+    <div class="message-header t_courseTitle" @click="toggleExpand">
+      <p class="t_openSymbol" v-show="!expanded">+&nbsp;</p>
+      <p class="t_openSymbol" v-show="expanded">−&nbsp;</p>
+      {{ course.name }}
+      <div class="t_colorSquare" :style="{ 'background-color': course.color }"></div>
+      <a class="delete is-medium t_courseRemove" @click="remove"></a>
+    </div>
+
+    <!-- Accordian body -->
+    <table v-show="expanded" class="message-body table">
+      <tbody>
+        <tr>
+          <td></td>
+          <td style="display: flex; justify-content: space-around">
+            <a :href="timetableLink" target="_blank">View in Academic Timetable</a>&emsp;
+            <a :href="calendarLink" target="_blank">View in Academic Calendar</a>
+          </td>
+        </tr>
+        <tr v-for="(comp, compIndex) in course.components" :key="compIndex">
+          <!-- Component selection -->
+          <th class="t_comp" :class="{ t_compSelected: comp.selected }" @click="toggleComponent(compIndex)">
+            <input type="checkbox" class="checkbox" :checked="comp.selected" />
+            {{ comp.name }}
+          </th>
+          <!-- Section selection -->
+          <td>
+            <table class="table t_sectionTable">
+              <thead>
+                <tr class="t_sectionRowHeader" :class="{ t_sectionRowDisable: !comp.selected }">
+                  <th>
+                    Section
+                    <br />
+                    <button @click="selectAllInComp(compIndex)" class="button is-small is-text">Select All</button>
+                    <br />
+                    <button @click="deselectAllInComp(compIndex)" class="button is-small is-text">Deselect All</button>
+                  </th>
+                  <!-- <th>Section</th> -->
+                  <th>Class Nbr</th>
+                  <!-- <th>Location</th> -->
+                  <th>Instructor</th>
+                  <th>Campus</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
                   v-for="(section, sectionIndex) in comp.sections"
                   class="t_sectionRow"
-                  :class="{ 't_sectionRowSelected': section.selected , 't_sectionRowDisable': !comp.selected}"
+                  :class="{ t_sectionRowSelected: section.selected, t_sectionRowDisable: !comp.selected }"
                   :title="section.timeFull"
                   :key="sectionIndex"
                   @click="toggleSection(compIndex, sectionIndex)"
-                  >
-                    <td><input type="checkbox" class="checkbox" :checked="section.selected"> {{ section.name }}</td>
-                    <!-- <td></td> -->
-                    <td>{{ section.number }}</td>
-                    <td>{{ section.location }}</td>
-                    <td>{{ section.instructor }}</td>
-                    <td>{{ section.campus }}</td>
-                    <td>{{ section.timeShort }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                >
+                  <td><input type="checkbox" class="checkbox" :checked="section.selected" /> {{ section.name }}</td>
+                  <!-- <td></td> -->
+                  <td>{{ section.number }}</td>
+                  <!-- <td>{{ section.location }}</td> -->
+                  <td>{{ section.instructor }}</td>
+                  <td>{{ section.campus }}</td>
+                  <td>{{ section.timeShort }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script setup>
@@ -80,7 +76,7 @@ import { ref, computed } from 'vue'
 import { useStore } from '../store.js'
 
 const props = defineProps({
-  courseIndex: Number
+  courseIndex: Number,
 })
 
 const store = useStore()
@@ -103,7 +99,7 @@ const calendarLink = computed(() => {
 function remove() {
   store.removeCourse({
     semesterId: store.curSemester,
-    courseIndex: props.courseIndex
+    courseIndex: props.courseIndex,
   })
 }
 
@@ -117,7 +113,7 @@ function toggleSection(compIndex, sectionIndex) {
     semesterId: store.curSemester,
     courseIndex: props.courseIndex,
     compIndex: compIndex,
-    sectionIndex: sectionIndex
+    sectionIndex: sectionIndex,
   })
 }
 
@@ -125,7 +121,7 @@ function toggleComponent(compIndex) {
   store.toggleComponent({
     semesterId: store.curSemester,
     courseIndex: props.courseIndex,
-    compIndex: compIndex
+    compIndex: compIndex,
   })
 }
 
@@ -134,7 +130,7 @@ function selectAllInComp(compIndex) {
     semesterId: store.curSemester,
     courseIndex: props.courseIndex,
     compIndex: compIndex,
-    selected: true
+    selected: true,
   })
 }
 
@@ -143,7 +139,7 @@ function deselectAllInComp(compIndex) {
     semesterId: store.curSemester,
     courseIndex: props.courseIndex,
     compIndex: compIndex,
-    selected: false
+    selected: false,
   })
 }
 </script>
@@ -183,7 +179,7 @@ function deselectAllInComp(compIndex) {
 
 .t_comp {
   text-decoration: line-through;
-  cursor:pointer;
+  cursor: pointer;
 }
 .t_compSelected {
   text-decoration: none;
@@ -192,11 +188,12 @@ function deselectAllInComp(compIndex) {
 
 .t_sectionRow {
   cursor: pointer;
-  background:$tt-course-section;
+  background: $tt-course-section;
   opacity: 0.6;
 }
 
-.t_sectionRowSelected, .t_sectionRowHeader {
+.t_sectionRowSelected,
+.t_sectionRowHeader {
   opacity: 1;
   background: $tt-course-section;
 }
@@ -211,8 +208,10 @@ function deselectAllInComp(compIndex) {
   pointer-events: none;
 }
 
-.t_sectionTable, .t_sectionTable td, .t_sectionTable th {
-  border:solid lightgrey 1px;
+.t_sectionTable,
+.t_sectionTable td,
+.t_sectionTable th {
+  border: solid lightgrey 1px;
   padding: 3px !important;
 }
 
@@ -223,5 +222,4 @@ function deselectAllInComp(compIndex) {
   margin-right: 0.75rem;
   margin-left: auto;
 }
-
 </style>
