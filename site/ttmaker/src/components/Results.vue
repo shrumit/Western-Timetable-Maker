@@ -7,10 +7,10 @@
         · Conflict-free combinations: {{ formattedValidCount }}
         <span v-if="validCount == 0" class="t_nonePossible">
           <br>
-          · Sorry, no conflict-free timetables found!
+          · Sorry, no conflict-free timetables found. Remember to check for available online or distance sections!
         </span>
         <br>
-        · Processed in: {{ formattedTimeTaken }}s
+        · Computed in: {{ formattedTimeTaken }}s
       </div>
     </article>
 

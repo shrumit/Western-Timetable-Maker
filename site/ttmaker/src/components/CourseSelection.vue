@@ -34,9 +34,11 @@
     <!-- Message box -->
     <article  class="message is-dark is-marginless">
       <div class="message-body">
-        · Distance/online courses and sections will not appear.
+        · Please check that you're eligible to take your selected courses at your campus.
         <br>
-        · Please remove and re-add cached courses to get the latest section data.
+        · Online and distance sections and courses won't appear in this tool.
+        <br>
+        · To get the latest data, remove and re-add any cached courses.
         <!-- <br> -->
         <!-- · Potential timetables: {{ formattedCombinationsNum }} -->
       </div>
@@ -45,7 +47,7 @@
     <div class="columns is-vcentered">
       <div class="column is-one-fifth">
         <!-- Remove All button -->
-        <button id="t_removeBtn" class="button is-danger is-small is-outlined" @click="removeAll">Reset</button>
+        <button id="t_removeBtn" class="button is-danger is-small is-outlined" @click="removeAll">Remove All</button>
       </div>
     </div>
 
@@ -58,7 +60,7 @@
         @click="compute()">
           Generate Timetables
       </button>
-      <p v-if="combinationsNum > 0">{{ formattedCombinationsNum }} possible combinations</p>
+      <p v-if="combinationsNum > 0">{{ formattedCombinationsNum }} potential combinations</p>
       <p v-if="combinationsNum > COMBINATIONS_LIMIT" class="errorMsg">
         Too many combinations to filter! Please de-select some sections manually or select fewer courses.
       </p>
@@ -128,8 +130,8 @@
   }
 
   function filter(option, label, search) {
-    // don't show results until more than 1 characters typed
-    if (search == null || label == null || search.length < 2) return false;
+    // keep showing all results until more than 1 characters typed
+    if (search == null || label == null || search.length < 2) return label;
     return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
   }
 
@@ -189,6 +191,7 @@
     --vs-menu-border: 1px solid var(--tt-select-border);
     --vs-menu-background-color: var(--tt-select-menu-bg);
     --vs-menu-box-shadow: var(--tt-select-menu-shadow);
+    --vs-menu-height: 400px;
     --vs-option-background-color: var(--tt-select-menu-bg);
     --vs-option-text-color: var(--tt-select-text);
     --vs-option-focused-background-color: var(--tt-select-option-active-bg);

@@ -1,7 +1,7 @@
 <template>
     <div v-show="curStep !== 2">
         <ol>
-            <li :class="{ 'is-active': curStep === 0 }">Select and add a course.</li>
+            <li :class="{ 'is-active': curStep === 0 }">Search for and "Add" your courses.</li>
             <li :class="{ 'is-active': curStep === 1 }">Click "Generate Timetables" to compute conflict-free timetables!
             </li>
         </ol>
