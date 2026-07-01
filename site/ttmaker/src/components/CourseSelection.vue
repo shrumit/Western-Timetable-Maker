@@ -33,14 +33,12 @@
 
     <!-- Message box -->
     <article  class="message is-dark is-marginless">
-      <div class="message-body">
-        · Please check that you're eligible to take your selected courses at your campus.
-        <br>
-        · Online and distance sections and courses won't appear in this tool.
-        <br>
-        · To get the latest data, remove and re-add any cached courses.
-        <!-- <br> -->
-        <!-- · Potential timetables: {{ formattedCombinationsNum }} -->
+      <div class="message-body content">
+        <ul>
+          <li>Check that you're eligible to take your selected courses at your campus.</li>
+          <li>Online and distance sections and courses won't appear in this tool.</li>
+          <li>To get the latest data, remove and re-add any cached courses.</li>
+        </ul>
       </div>
     </article>
     
