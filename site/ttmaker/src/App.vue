@@ -52,11 +52,15 @@
 <style lang="scss">
   #t_bodyContainer {
     max-width: 98%;
-    margin-top: 10px;
-    padding: 2rem;
+    margin-top: 5px;
+    padding: 1.75rem;
     // min-height: 1000px;
     border-radius: 3px;
   }
+
+  .title {
+      font-size: 2rem;
+    }
 
   #disclaimer {
     font-size: 0.8rem;
@@ -87,6 +91,9 @@
     #t_bodyContainer {
       max-width: 99%;
       padding: 0.5rem;
+    }
+    .title {
+      font-size: 1.75rem;
     }
   }
 </style>

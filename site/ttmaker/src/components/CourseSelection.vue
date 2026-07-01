@@ -35,9 +35,9 @@
     <article  class="message is-dark is-marginless">
       <div class="message-body content">
         <ul>
-          <li>Check that you're eligible to take your selected courses at your campus.</li>
-          <li>Online and distance sections and courses won't appear in this tool.</li>
-          <li>To get the latest data, remove and re-add any cached courses.</li>
+          <li>Verify that you're eligible to take your selected courses at your campus.</li>
+          <li>Online and distance sections and courses don't appear in this tool.</li>
+          <li>To get the latest data, remove and re-add any cached courses below.</li>
         </ul>
       </div>
     </article>
