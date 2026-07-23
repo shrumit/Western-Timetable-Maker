@@ -39,6 +39,19 @@ function courseNameOnly(name) {
   // return name.slice(0,4) + ' ' + name.split(' ')[1]
 }
 
+function dfmFormatFromTimeslot([start, length]) {
+  const BASE = 8 * 60; // index 0 → 8:00
+
+  const toTime = (slots) => {
+    const total = BASE + slots * 30;
+    const h24 = Math.floor(total / 60) % 24;
+    const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+    return `${h12}:${String(total % 60).padStart(2, "0")}`;
+  };
+
+  return `${toTime(start)}-${toTime(start + length)}`;
+}
+
 const props = defineProps({
   table: Object,
 })
@@ -78,6 +91,9 @@ const daysArray = computed(() => {
         }
         else if (i == 1) {
           cell.text = coursecomp.value[ccIdx].name + ' ' +  coursecomp.value[ccIdx].sections[section].name// <COMP SEC INSTRUCTOR>
+        }
+        else if (i == 2) {
+          cell.text = dfmFormatFromTimeslot(ts)
         }
         days[tsIdx][ts[0]+i] = cell
       }
