@@ -22,7 +22,7 @@
     <!-- Add button -->
     <div style="text-align: right;">
       <button id="t_addBtn"
-        class="button is-dark is-rounded"
+        class="button is-rounded"
         @click="fetchCourse"
         :disabled="courseAlreadyAdded"
         >
@@ -117,6 +117,7 @@
   const computeLoading = computed(() => store.semester[store.curSemester].computeLoading)
   const errorMsg = computed(() => store.semester[store.curSemester].errorMsg)
   const courseAlreadyAdded = computed(() => selectedCourses.value.some((e => e.id === selected[store.curSemester])))
+  const courseSelectedInSearch = computed(() => Boolean(selected[store.curSemester]))
 
   function fetchCourse() {
     // console.log('fetchCourse:' + selected)
