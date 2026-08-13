@@ -6,7 +6,7 @@
     
     <!-- Search bar -->
     <div class="">
-      <VueSelect
+      <Select
       v-model="selected[store.curSemester]"
       :key="selected[store.curSemester]"
       class="course-select"
@@ -16,7 +16,7 @@
       :options="options"
       :placeholder="searchPlaceholder"
       >
-      </VueSelect>
+      </Select>
     </div>
     
     <!-- Add button -->
@@ -80,7 +80,7 @@
   import { computed, reactive } from 'vue'
   import Course from './Course.vue'
   import { useStore } from '../store.js'
-  import VueSelect from 'vue3-select-component'
+  import { Select } from 'vue3-select-component'
   import 'vue3-select-component/styles'
 
   const store = useStore()
@@ -130,8 +130,8 @@
 
   function filter(option, label, search) {
     // keep showing all results until more than 1 characters typed
-    if (search == null || label == null || search.length < 2) return label;
-    return (label).toLowerCase().indexOf(search.toLowerCase()) > -1;
+    if (search == null || label == null || search.length < 2) return true
+    return label.toLowerCase().includes(search.toLowerCase())
   }
 
   function getOptionLabel(option) {
